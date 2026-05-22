@@ -271,6 +271,17 @@ def react_routes():
     return send_from_directory(CIPHERLAB_DIST, "index.html")
 
 
+@app.route("/training")
+def training_redirect():
+    return redirect("/training/")
+
+
+@app.route("/training/")
+@app.route("/training/<path:filename>")
+def serve_training(filename="index.html"):
+    return send_from_directory(os.path.join(BASE_DIR, "training_academy"), filename)
+
+
 # ── Auth API ──────────────────────────────────────────────────────────────────
 
 

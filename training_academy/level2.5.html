@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CipherQuest | Level 2.5 | Keyed Substitution Cipher</title>
+
+    <style>
+        :root {
+            --ap: #59f2ff;
+            --aw: #ffdd57;
+            --ag: #22c55e;
+            --orange: #ff9f43;
+            --purple: #b97fff;
+
+            --tm: #f4f7ff;
+            --mu: #94a3b8;
+
+            --sp: rgba(15, 23, 42, 0.78);
+            --si: rgba(2, 6, 23, 0.74);
+
+            --bs: rgba(148, 163, 184, 0.34);
+            --bb: rgba(148, 163, 184, 0.55);
+
+            --font: system-ui, -apple-system, BlinkMacSystemFont,
+                "SF Pro Text", "Segoe UI", sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font);
+            color: var(--tm);
+
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            overflow-x: hidden;
+
+            background:
+                radial-gradient(circle at top, #1b243b 0%, #020617 55%);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+
+            background:
+                radial-gradient(ellipse 55% 35% at 0% 100%,
+                    rgba(255, 159, 67, 0.07) 0%,
+                    transparent 70%),
+
+                radial-gradient(ellipse 45% 30% at 100% 0%,
+                    rgba(89, 242, 255, 0.06) 0%,
+                    transparent 70%);
+        }
+
+        .card {
+            width: 100%;
+            max-width: 900px;
+
+            position: relative;
+            z-index: 2;
+
+            overflow: hidden;
+
+            border-radius: 20px;
+
+            border: 1px solid var(--bs);
+
+            background: var(--sp);
+
+            backdrop-filter: blur(16px);
+
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .85);
+        }
+
+        /* TOPBAR */
+
+        .topbar {
+            padding: 14px 22px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            background: var(--si);
+
+            border-bottom: 1px solid var(--bs);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge {
+            padding: 4px 12px;
+
+            border-radius: 999px;
+
+            border: 1px solid rgba(255, 159, 67, .6);
+
+            font-size: 11px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+
+            color: var(--orange);
+        }
+
+        .topbar-title {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .topbar-sub {
+            font-size: 11px;
+            color: var(--mu);
+            letter-spacing: .12em;
+        }
+
+        .live {
+            color: var(--ag);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--ag);
+            box-shadow: 0 0 10px var(--ag);
+            animation: pulse 1.3s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .3
+            }
+        }
+
+        /* STAGE */
+
+        .stage {
+            position: relative;
+
+            min-height: auto;
+
+            overflow: hidden;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            gap: 18px;
+
+            padding: 22px;
+        }
+
+        /* STATUS */
+
+        .status {
+            width: 100%;
+
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+
+            color: var(--ap);
+
+            min-height: 18px;
+        }
+
+        .blink {
+            animation: blink .9s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* KEY */
+
+        .key-section {
+            width: 100%;
+            opacity: 0;
+            transition: .5s;
+        }
+
+        .key-section.vis {
+            opacity: 1;
+        }
+
+        .key-label {
+            margin-bottom: 10px;
+
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+
+            color: var(--mu);
+        }
+
+        .key-chips {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            flex-wrap: wrap;
+        }
+
+        .kchip {
+            width: 48px;
+            height: 52px;
+
+            border-radius: 10px;
+
+            background: var(--si);
+
+            border: 1px solid rgba(255, 159, 67, .18);
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+            font-weight: 700;
+
+            font-family: "Fira Code", monospace;
+
+            color: transparent;
+
+            transition: .3s;
+        }
+
+        .kchip.slam {
+            color: var(--orange);
+
+            border-color: rgba(255, 159, 67, .7);
+
+            box-shadow:
+                0 0 20px rgba(255, 159, 67, .55);
+        }
+
+        /* GRID */
+
+        .mapping-section {
+            width: 100%;
+            opacity: 0;
+            transition: .4s;
+        }
+
+        .mapping-section.vis {
+            opacity: 1;
+        }
+
+        .mapping-label {
+            margin-bottom: 10px;
+
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+
+            color: var(--mu);
+        }
+
+        .alpha-grid {
+            overflow-x: auto;
+
+            border-radius: 12px;
+
+            border: 1px solid rgba(148, 163, 184, .15);
+
+            background: var(--si);
+        }
+
+        .alpha-row-wrap {
+            display: flex;
+        }
+
+        .row-side-label {
+            width: 60px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+
+            border-right: 1px solid rgba(148, 163, 184, .1);
+        }
+
+        .alpha-cells {
+            flex: 1;
+            display: flex;
+        }
+
+        .acell {
+            flex: 1;
+
+            min-width: 34px;
+
+            height: 40px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-right: 1px solid rgba(148, 163, 184, .06);
+
+            font-family: "Fira Code", monospace;
+
+            color: var(--mu);
+
+            transition: .25s;
+        }
+
+        .acell:last-child {
+            border-right: none;
+        }
+
+        .plain-active {
+            background: rgba(89, 242, 255, .1);
+            color: var(--ap);
+            font-weight: 700;
+        }
+
+        .c-key {
+            color: var(--orange);
+        }
+
+        .c-fill {
+            color: rgba(89, 242, 255, .7);
+        }
+
+        .c-empty {
+            color: transparent;
+        }
+
+        .c-active {
+            background: rgba(255, 159, 67, .1);
+
+            color: var(--orange);
+
+            font-weight: 700;
+
+            box-shadow: inset 0 2px 0 var(--orange);
+        }
+
+        /* WORD CHIPS */
+
+        .word-section {
+            width: 100%;
+            opacity: 0;
+            transition: .4s;
+        }
+
+        .word-chips {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+
+            flex-wrap: wrap;
+        }
+
+        .wchip {
+            width: 72px;
+            height: 82px;
+
+            border-radius: 12px;
+
+            background: var(--si);
+
+            border: 1px solid rgba(148, 163, 184, .18);
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            transition: .35s;
+
+            opacity: 0;
+        }
+
+        .wchip-letter {
+            font-size: 30px;
+            font-weight: 700;
+
+            font-family: "Fira Code", monospace;
+        }
+
+        .wchip-idx {
+            font-size: 9px;
+            color: var(--mu);
+        }
+
+        .wchip.active {
+            border-color: var(--ap);
+
+            box-shadow:
+                0 0 20px rgba(89, 242, 255, .4);
+        }
+
+        .wchip.active .wchip-letter {
+            color: var(--ap);
+        }
+
+        .wchip.encoded {
+            border-color: rgba(255, 159, 67, .5);
+        }
+
+        .wchip.encoded .wchip-letter {
+            color: var(--orange);
+        }
+
+        /* OUTPUT */
+
+        .output-section {
+            width: 100%;
+            opacity: 0;
+            transform: translateY(8px);
+
+            transition: .5s;
+        }
+
+        .output-section.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .out-word {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+
+            flex-wrap: wrap;
+        }
+
+        .out-letter {
+            font-size: 34px;
+            font-weight: 700;
+
+            font-family: "Fira Code", monospace;
+
+            color: var(--orange);
+
+            opacity: 0;
+            transform: scale(.6);
+
+            transition: .35s;
+        }
+
+        .out-letter.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* INFO */
+
+        .info-panel {
+            width: 100%;
+
+            padding: 18px;
+
+            border-radius: 14px;
+
+            background: var(--si);
+
+            border: 1px solid var(--bs);
+
+            opacity: 0;
+            transform: translateY(8px);
+
+            transition: .5s;
+        }
+
+        .info-panel.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .info-title {
+            margin-bottom: 12px;
+
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+
+            color: var(--orange);
+        }
+
+        .formula {
+            margin-top: 10px;
+
+            padding: 14px;
+
+            border-radius: 10px;
+
+            background: rgba(2, 6, 23, .7);
+
+            border: 1px solid rgba(148, 163, 184, .1);
+
+            line-height: 1.8;
+
+            font-family: "Fira Code", monospace;
+
+            font-size: 12px;
+
+            color: var(--mu);
+        }
+
+        /* FOOTER */
+
+        .footer {
+            padding: 14px 22px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            border-top: 1px solid var(--bs);
+
+            background: var(--si);
+        }
+
+        .foot-btn {
+            padding: 8px 18px;
+
+            border-radius: 999px;
+
+            border: 1px solid rgba(89, 242, 255, .4);
+
+            background: rgba(89, 242, 255, .06);
+
+            color: var(--ap);
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+        .foot-btn:hover {
+            background: rgba(89, 242, 255, .14);
+        }
+
+        .foot-btn.primary {
+            color: var(--ap);
+            background: rgba(89, 242, 255, 0.06);
+            border-color: rgba(89, 242, 255, 0.4);
+        }
+
+        .replay-tag {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--mu);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rtick {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: rgba(148, 163, 184, 0.3);
+            animation: rtick 1s step-end infinite;
+        }
+
+        @keyframes rtick {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        /* MOBILE */
+
+        @media(max-width:768px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .topbar-title {
+                font-size: 12px;
+            }
+
+            .acell {
+                min-width: 28px;
+                font-size: 11px;
+            }
+
+            .wchip {
+                width: 60px;
+                height: 72px;
+            }
+
+            .wchip-letter {
+                font-size: 24px;
+            }
+
+            .out-letter {
+                font-size: 28px;
+            }
+        }
+    </style>
+    <script src="global_controls.js"></script>
+</head>
+
+<body>
+
+    <div class="card">
+
+        <div class="topbar">
+
+            <div class="topbar-left">
+
+                <span class="badge">CH 02</span>
+
+                <div>
+                    <div class="topbar-title">
+                        Keyed Substitution Cipher
+                    </div>
+
+                    <div class="topbar-sub">
+                        Cipher · Key First Then Remaining Alphabet
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="live">Auto Demo</div>
+
+        </div>
+
+        <div class="stage">
+
+            <!-- FIXED STATUS -->
+            <div class="status" id="status">
+                <span id="statusTxt">
+                    Initializing…
+                </span>
+
+                <span class="blink">
+                    ▌
+                </span>
+            </div>
+
+            <div class="key-section" id="keySec">
+
+                <div class="key-label">
+                    Secret Key
+                </div>
+
+                <div class="key-chips" id="keyChips"></div>
+
+            </div>
+
+            <div class="mapping-section" id="mappingSec">
+
+                <div class="mapping-label">
+                    Substitution Alphabet
+                </div>
+
+                <div class="alpha-grid">
+
+                    <div class="alpha-row-wrap">
+
+                        <div class="row-side-label">
+                            Plain
+                        </div>
+
+                        <div class="alpha-cells" id="plainRow"></div>
+
+                    </div>
+
+                    <div class="alpha-row-wrap">
+
+                        <div class="row-side-label">
+                            Cipher
+                        </div>
+
+                        <div class="alpha-cells" id="cipherRow"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="word-section" id="wordSection">
+
+                <div class="word-chips" id="wordChips"></div>
+
+            </div>
+
+            <div class="output-section" id="outputSec">
+
+                <div class="out-word" id="outWord"></div>
+
+            </div>
+
+            <div class="info-panel" id="infoPanel">
+
+                <div class="info-title">
+                    Cipher Breakdown
+                </div>
+
+                <div class="formula" id="formulaBox"></div>
+
+            </div>
+
+        </div>
+
+        <div class="footer">
+
+        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
+      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
+      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    </div>
+            <button class="foot-btn" id="btn-play">Pause</button>
+            <button class="foot-btn" id="btn-step">Step</button>
+            <div class="replay-tag">
+                <div class="rtick"></div><span id="rcd">Replaying in 2s…</span>
+            </div>
+            <button class="foot-btn primary" id="replayNow">▶ Replay Now</button>
+        </div>
+
+    </div>
+
+    <!-- FLY PARTICLE -->
+
+    <div id="flyer" style="
+position:fixed;
+z-index:400;
+pointer-events:none;
+width:44px;
+height:44px;
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-family:'Fira Code',monospace;
+font-size:19px;
+font-weight:700;
+background:rgba(2,6,23,.95);
+opacity:0;
+will-change:transform,left,top;
+"></div>
+
+    <script>
+let speedMultiplier = 1.0;
+
+        const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const WORD = 'CIPHER';
+        const KEY = 'XIATUV';
+
+        const $ = id => document.getElementById(id);
+        const rcd = $('rcd');
+        let replayTimer = null;
+        let countdown = 2;
+        let isPlaying = true;
+        let stepRequested = false;
+        let runToken = 0;
+
+        const sleep = ms =>
+            new Promise(r => setTimeout(r, ms / speedMultiplier));
+
+        async function waitForPlaybackStep(activeToken) {
+            if (activeToken !== runToken) return false;
+            if (isPlaying) {
+                await sleep(2000);
+                return activeToken === runToken;
+            }
+            setStatus('Paused - press Step to continue.', 'var(--orange)');
+            while (activeToken === runToken && !isPlaying && !stepRequested) {
+                await sleep(80);
+            }
+            if (stepRequested) stepRequested = false;
+            return activeToken === runToken;
+        }
+
+        function startReplayCountdown() {
+            countdown = 2;
+            rcd.textContent = `Replaying in ${countdown}s…`;
+            replayTimer = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    rcd.textContent = `Replaying in ${countdown}s…`;
+                } else {
+                    clearInterval(replayTimer);
+                    rcd.textContent = 'Replaying…';
+                    kickDemo();
+                }
+            }, 1000 / speedMultiplier);
+        }
+
+        function cancelReplay() {
+            if (replayTimer) {
+                clearInterval(replayTimer);
+                replayTimer = null;
+            }
+            rcd.textContent = '';
+        }
+
+        function kickDemo() {
+            cancelReplay();
+            runDemo();
+        }
+
+        function setStatus(txt, color) {
+            $('statusTxt').textContent = txt;
+            $('status').style.color = color;
+        }
+
+        function buildCipherAlpha(key) {
+
+            const seen = new Set();
+            const out = [];
+
+            for (const ch of key) {
+
+                if (!seen.has(ch)) {
+                    seen.add(ch);
+                    out.push(ch);
+                }
+            }
+
+            for (const ch of ALPHA) {
+
+                if (!seen.has(ch)) {
+                    seen.add(ch);
+                    out.push(ch);
+                }
+            }
+
+            return out;
+        }
+
+        async function runDemo() {
+            const activeToken = ++runToken;
+
+            const cipherAlpha = buildCipherAlpha(KEY);
+
+            $('keySec').classList.add('vis');
+            $('mappingSec').classList.add('vis');
+            $('wordSection').style.opacity = '1';
+
+            $('plainRow').innerHTML = '';
+            $('cipherRow').innerHTML = '';
+            $('wordChips').innerHTML = '';
+            $('outWord').innerHTML = '';
+
+            /* build rows */
+
+            ALPHA.split('').forEach((c, i) => {
+
+                const p = document.createElement('div');
+                p.className = 'acell';
+                p.id = 'p' + i;
+                p.textContent = c;
+
+                $('plainRow').appendChild(p);
+
+                const cc = document.createElement('div');
+                cc.className = 'acell c-empty';
+                cc.id = 'c' + i;
+
+                $('cipherRow').appendChild(cc);
+            });
+
+            /* key chips */
+
+            $('keyChips').innerHTML = '';
+
+            for (let i = 0; i < KEY.length; i++) {
+
+                const k = document.createElement('div');
+
+                k.className = 'kchip';
+
+                k.textContent = KEY[i];
+
+                $('keyChips').appendChild(k);
+
+                await sleep(220);
+
+                k.classList.add('slam');
+            }
+
+            await sleep(500);
+            if (!(await waitForPlaybackStep(activeToken))) return;
+
+            setStatus(
+                'Building cipher alphabet...',
+                'var(--orange)'
+            );
+
+            for (let i = 0; i < 26; i++) {
+
+                const cell = $('c' + i);
+
+                cell.textContent = cipherAlpha[i];
+
+                if (i < KEY.length) {
+                    cell.className = 'acell c-key';
+                }
+                else {
+                    cell.className = 'acell c-fill';
+                }
+
+                await sleep(70);
+            }
+
+            await sleep(600);
+            if (!(await waitForPlaybackStep(activeToken))) return;
+
+            /* word chips */
+
+            WORD.split('').forEach((c, i) => {
+
+                const w = document.createElement('div');
+
+                w.className = 'wchip';
+                w.id = 'w' + i;
+
+                w.innerHTML = `
+      <div class="wchip-letter" id="wl${i}">
+        ${c}
+      </div>
+
+      <div class="wchip-idx">
+        [${i}]
+      </div>
+    `;
+
+                $('wordChips').appendChild(w);
+
+                setTimeout(() => {
+                    w.style.opacity = '1';
+                }, 100 * i);
+            });
+
+            await sleep(800);
+
+            /* encode */
+
+            const encoded = [];
+
+            for (let i = 0; i < WORD.length; i++) {
+
+                const ch = WORD[i];
+
+                const idx = ALPHA.indexOf(ch);
+
+                const enc = cipherAlpha[idx];
+
+                encoded.push(enc);
+
+                $('p' + idx).classList.add('plain-active');
+                $('c' + idx).classList.add('c-active');
+
+                $('w' + i).classList.add('active');
+
+                setStatus(
+                    `${ch} → ${enc}`,
+                    'var(--ap)'
+                );
+
+                await sleep(700);
+
+                $('wl' + i).textContent = enc;
+
+                $('w' + i).classList.remove('active');
+                $('w' + i).classList.add('encoded');
+
+                $('p' + idx).classList.remove('plain-active');
+                $('c' + idx).classList.remove('c-active');
+
+                const out = document.createElement('div');
+
+                out.className = 'out-letter';
+                out.textContent = enc;
+
+                $('outWord').appendChild(out);
+
+                $('outputSec').classList.add('vis');
+
+                await sleep(100);
+
+                out.classList.add('show');
+
+                await sleep(300);
+                if (!(await waitForPlaybackStep(activeToken))) return;
+            }
+
+            const finalWord = encoded.join('');
+
+            setStatus(
+                `Encoded → ${finalWord}`,
+                'var(--ag)'
+            );
+
+            $('formulaBox').innerHTML = `
+  KEY: ${KEY}
+
+  Cipher Alphabet:
+  ${cipherAlpha.join(' ')}
+
+  Encoded Word:
+  CIPHER → ${finalWord}
+  `;
+
+            $('infoPanel').classList.add('vis');
+            startReplayCountdown();
+        }
+
+        $('replayNow').onclick = () => kickDemo();
+        $('btn-play').addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            $('btn-play').textContent = isPlaying ? 'Pause' : 'Resume';
+        });
+        $('btn-step').addEventListener('click', () => {
+            if (isPlaying) {
+                isPlaying = false;
+                $('btn-play').textContent = 'Resume';
+            }
+            stepRequested = true;
+        });
+
+        runDemo();
+
+    
+        const sDisplay = document.getElementById("speedDisplay");
+  if (document.getElementById("speedUp")) {
+    document.getElementById("speedUp").addEventListener("click", () => {
+      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+    document.getElementById("speedDown").addEventListener("click", () => {
+      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+  }
+
+  const nextBtn = document.getElementById("nextBtn");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
+      if (match) {
+        let ch = parseInt(match[1]);
+        let lvl = parseInt(match[2]);
+        lvl++;
+        if (lvl > 5) { lvl = 1; ch++; }
+        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
+      }
+    });
+  }
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CipherQuest | Level 2.3 | Positional Cipher</title>
+    <style>
+        :root {
+            --ap: #59f2ff;
+            --aw: #ffdd57;
+            --ag: #22c55e;
+            --purple: #b97fff;
+            --tm: #f4f7ff;
+            --mu: #94a3b8;
+            --sp: rgba(15, 23, 42, 0.78);
+            --si: rgba(2, 6, 23, 0.72);
+            --bs: rgba(148, 163, 184, 0.4);
+            --bb: rgba(148, 163, 184, 0.55);
+            --font: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font);
+            color: var(--tm);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: radial-gradient(circle at top, #1b243b 0%, #020617 55%);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 55% 35% at 0% 100%, rgba(185, 127, 255, 0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 45% 30% at 100% 0%, rgba(89, 242, 255, 0.06) 0%, transparent 70%);
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px,
+                    rgba(89, 242, 255, 0.012) 3px, rgba(89, 242, 255, 0.012) 4px);
+        }
+
+        /* ── Card ── */
+        .card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 800px;
+            background: var(--sp);
+            border: 1px solid var(--bs);
+            border-radius: 18px;
+            backdrop-filter: blur(14px);
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.85);
+            overflow: hidden;
+        }
+
+        /* ── Topbar ── */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 22px;
+            background: var(--si);
+            border-bottom: 1px solid var(--bs);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+            padding: 3px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(185, 127, 255, 0.6);
+            background: rgba(2, 6, 23, 0.3);
+            color: var(--purple);
+        }
+
+        .topbar-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        .topbar-sub {
+            font-size: 11px;
+            color: var(--mu);
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            margin-top: 1px;
+        }
+
+        .live-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--ag);
+        }
+
+        .live-tag::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--ag);
+            box-shadow: 0 0 8px var(--ag);
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .35
+            }
+        }
+
+        /* ── Stage ── */
+        .stage {
+            padding: 22px 22px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            position: relative;
+            min-height: 540px;
+        }
+
+        .stage::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px,
+                    rgba(89, 242, 255, 0.007) 3px, rgba(89, 242, 255, 0.007) 4px);
+        }
+
+        /* ── Status ── */
+        .status {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+            color: var(--ap);
+            min-height: 18px;
+            align-self: flex-start;
+            position: relative;
+            z-index: 2;
+        }
+
+        .blink {
+            animation: blink .9s step-end infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0
+            }
+        }
+
+        /* ══ STAIRCASE SECTION ══ */
+        .staircase-wrap {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .stair-row {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.07);
+            opacity: 0;
+            transform: translateX(-12px);
+            transition: opacity .4s, transform .4s;
+        }
+
+        .stair-row:last-child {
+            border-bottom: none;
+        }
+
+        .stair-row.vis {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* The input letter box */
+        .stair-in {
+            width: 56px;
+            flex-shrink: 0;
+            height: 54px;
+            border-radius: 10px;
+            background: var(--si);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--tm);
+            transition: all .35s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stair-in .sin-idx {
+            font-size: 8px;
+            color: var(--mu);
+            letter-spacing: .1em;
+        }
+
+        .stair-in.active {
+            border-color: var(--purple);
+            color: var(--purple);
+            box-shadow: 0 0 22px rgba(185, 127, 255, .5), inset 0 0 12px rgba(185, 127, 255, .07);
+        }
+
+        .stair-in.active::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(185, 127, 255, .12) 60%, transparent 80%);
+            animation: shimmer 1s linear infinite;
+        }
+
+        @keyframes shimmer {
+            from {
+                transform: translateX(-120%)
+            }
+
+            to {
+                transform: translateX(200%)
+            }
+        }
+
+        .stair-in.done {
+            border-color: rgba(185, 127, 255, .3);
+            color: rgba(185, 127, 255, .5);
+        }
+
+        /* The shift indicator */
+        .stair-shift {
+            flex-shrink: 0;
+            width: 52px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .shift-arrow {
+            font-size: 11px;
+            color: rgba(148, 163, 184, 0.25);
+            letter-spacing: .05em;
+            transition: color .3s;
+        }
+
+        .shift-badge {
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: var(--si);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            color: var(--mu);
+            transition: all .3s;
+            white-space: nowrap;
+        }
+
+        .stair-row.active-row .shift-arrow {
+            color: var(--ap);
+        }
+
+        .stair-row.active-row .shift-badge {
+            color: var(--ap);
+            border-color: rgba(89, 242, 255, .45);
+            background: rgba(89, 242, 255, .07);
+            box-shadow: 0 0 10px rgba(89, 242, 255, .25);
+        }
+
+        /* The growing shift bar */
+        .stair-bar-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .stair-bar-track {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(148, 163, 184, 0.08);
+            border-radius: 1px;
+        }
+
+        .stair-bar-fill {
+            position: absolute;
+            left: 0;
+            height: 2px;
+            border-radius: 1px;
+            background: linear-gradient(to right, rgba(185, 127, 255, .5), var(--ap));
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .stair-bar-fill.filled {
+            width: 100%;
+        }
+
+        .stair-steps {
+            position: absolute;
+            right: 0;
+            left: 0;
+            display: flex;
+            justify-content: flex-start;
+            gap: 4px;
+            align-items: center;
+        }
+
+        /* individual step marks */
+        .step-mark {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(148, 163, 184, 0.15);
+            flex-shrink: 0;
+            transition: all .25s;
+        }
+
+        .step-mark.lit {
+            background: var(--ap);
+            box-shadow: 0 0 7px var(--ap);
+        }
+
+        /* The output letter box */
+        .stair-out {
+            width: 56px;
+            flex-shrink: 0;
+            height: 54px;
+            border-radius: 10px;
+            background: var(--si);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 22px;
+            font-weight: 700;
+            color: transparent;
+            transition: all .4s;
+        }
+
+        .stair-out .sout-enc {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .stair-out .sout-code {
+            font-size: 8px;
+            color: var(--mu);
+        }
+
+        .stair-out.landed {
+            color: var(--ap);
+            border-color: rgba(89, 242, 255, .5);
+            box-shadow: 0 0 20px rgba(89, 242, 255, .35);
+            animation: landIn .5s cubic-bezier(.34, 1.56, .64, 1);
+        }
+
+        @keyframes landIn {
+            from {
+                transform: scale(.65) translateY(-8px);
+                opacity: 0
+            }
+
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1
+            }
+        }
+
+        /* The tape (hidden, shared, just for scrolling visualization) */
+        .tape-section {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            opacity: 0;
+            transition: opacity .4s;
+        }
+
+        .tape-section.vis {
+            opacity: 1;
+        }
+
+        .tape-lbl {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .18em;
+            color: var(--mu);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tape-lbl span {
+            color: var(--ap);
+        }
+
+        .tape-outer {
+            overflow: hidden;
+            border-radius: 8px;
+            height: 50px;
+            background: var(--si);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            position: relative;
+            transition: border-color .3s, box-shadow .3s;
+        }
+
+        .tape-outer.glow {
+            border-color: rgba(89, 242, 255, .5);
+            box-shadow: 0 0 16px rgba(89, 242, 255, .22);
+        }
+
+        .tape-outer::before,
+        .tape-outer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 60px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .tape-outer::before {
+            left: 0;
+            background: linear-gradient(to right, var(--si), transparent);
+        }
+
+        .tape-outer::after {
+            right: 0;
+            background: linear-gradient(to left, var(--si), transparent);
+        }
+
+        .reticle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 42px;
+            z-index: 3;
+            pointer-events: none;
+            border-left: 1px solid rgba(89, 242, 255, .65);
+            border-right: 1px solid rgba(89, 242, 255, .65);
+            background: rgba(89, 242, 255, .05);
+        }
+
+        .reticle::before,
+        .reticle::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--ap);
+            box-shadow: 0 0 8px var(--ap);
+        }
+
+        .reticle::before {
+            top: -2px;
+        }
+
+        .reticle::after {
+            bottom: -2px;
+        }
+
+        .tape-inner {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            will-change: transform;
+        }
+
+        .tcell {
+            width: 42px;
+            height: 50px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 15px;
+            color: var(--mu);
+            transition: color .2s;
+        }
+
+        .tcell .tp {
+            font-size: 7px;
+            color: rgba(148, 163, 184, 0.35);
+        }
+
+        .tcell.tsrc {
+            color: var(--purple);
+            text-shadow: 0 0 12px rgba(185, 127, 255, .8);
+        }
+
+        .tcell.tdst {
+            color: var(--ap);
+            text-shadow: 0 0 16px rgba(89, 242, 255, 1);
+            font-weight: 700;
+        }
+
+        /* ── Progress bar ── */
+        .progress-bar-wrap {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            color: var(--mu);
+            white-space: nowrap;
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 3px;
+            border-radius: 2px;
+            background: rgba(148, 163, 184, 0.1);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 2px;
+            background: linear-gradient(to right, var(--purple), var(--ap));
+            transition: width .5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .progress-pct {
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 11px;
+            color: var(--ap);
+            min-width: 36px;
+            text-align: right;
+        }
+
+        /* ── Output final ── */
+        .output-final {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity .5s, transform .5s;
+        }
+
+        .output-final.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .of-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .18em;
+            color: var(--mu);
+            margin-bottom: 10px;
+        }
+
+        .of-pill {
+            font-size: 10px;
+            padding: 2px 9px;
+            border-radius: 999px;
+            border: 1px solid;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+        }
+
+        .of-pill.p1 {
+            color: rgba(185, 127, 255, .8);
+            border-color: rgba(185, 127, 255, .3);
+            background: rgba(185, 127, 255, .06);
+        }
+
+        .of-pill.p2 {
+            color: rgba(89, 242, 255, .8);
+            border-color: rgba(89, 242, 255, .3);
+            background: rgba(89, 242, 255, .06);
+        }
+
+        .of-pill.p3 {
+            color: rgba(34, 197, 94, .85);
+            border-color: rgba(34, 197, 94, .35);
+            background: rgba(34, 197, 94, .06);
+        }
+
+        .of-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .of-pair {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .of-letter {
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--ap);
+            opacity: 0;
+            transform: scale(.6);
+            transition: opacity .4s, transform .4s;
+        }
+
+        .of-letter.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .of-shift-tag {
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 9px;
+            color: var(--mu);
+            letter-spacing: .1em;
+        }
+
+        .of-original {
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 11px;
+            color: rgba(148, 163, 184, .45);
+            letter-spacing: .08em;
+        }
+
+        /* ── Info panel ── */
+        .info-panel {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            background: var(--si);
+            border: 1px solid var(--bs);
+            border-radius: 12px;
+            padding: 14px 18px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity .5s, transform .5s;
+        }
+
+        .info-panel.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .info-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+            color: var(--purple);
+            margin-bottom: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .irow {
+            background: rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+        .irow-lbl {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            color: var(--mu);
+            margin-bottom: 4px;
+        }
+
+        .irow-val {
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .formula {
+            grid-column: 1/-1;
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 11px;
+            color: var(--mu);
+            line-height: 1.85;
+            background: rgba(2, 6, 23, 0.75);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+
+        .fx {
+            color: var(--ap);
+        }
+
+        .fy {
+            color: var(--purple);
+        }
+
+        .fg {
+            color: var(--ag);
+        }
+
+        .fm {
+            color: var(--tm);
+        }
+
+        /* ── Footer ── */
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 22px;
+            background: var(--si);
+            border-top: 1px solid var(--bs);
+        }
+
+        .foot-btn {
+            font-family: var(--font);
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            padding: 7px 16px;
+            border-radius: 999px;
+            border: 1px solid var(--bs);
+            background: transparent;
+            color: var(--mu);
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .foot-btn:hover {
+            border-color: var(--bb);
+            color: var(--tm);
+        }
+
+        .foot-btn.primary {
+            color: var(--ap);
+            border-color: rgba(89, 242, 255, .4);
+            background: rgba(89, 242, 255, .05);
+        }
+
+        .foot-btn.primary:hover {
+            background: rgba(89, 242, 255, .1);
+            box-shadow: 0 0 14px rgba(89, 242, 255, .25);
+        }
+
+        .replay-tag {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            color: var(--mu);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rtick {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: rgba(148, 163, 184, .3);
+            animation: rtick 1s step-end infinite;
+        }
+
+        @keyframes rtick {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .2
+            }
+        }
+    </style>
+    <script src="global_controls.js"></script>
+</head>
+
+<body>
+    <div class="card">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <span class="badge">CH 02</span>
+                <div>
+                    <div class="topbar-title">Positional Cipher</div>
+                    <div class="topbar-sub">Level 3 - Shift grows with position</div>
+                </div>
+            </div>
+            <div class="live-tag">Auto Demo</div>
+        </div>
+
+        <!-- STAGE -->
+        <div class="stage">
+            <div class="status"><span id="statusTxt">Initializing…</span><span class="blink"> ▌</span></div>
+
+            <!-- Progress bar -->
+            <div class="progress-bar-wrap" id="progWrap" style="opacity:0;transition:opacity .4s">
+                <span class="progress-label">Encoding</span>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progFill"></div>
+                </div>
+                <span class="progress-pct" id="progPct">0%</span>
+            </div>
+
+            <!-- Staircase rows (built by JS) -->
+            <div class="staircase-wrap" id="staircaseWrap"></div>
+
+            <!-- Single shared alphabet tape -->
+            <div class="tape-section" id="tapeSec">
+                <div class="tape-lbl">
+                    <span>Alphabet tape — <span id="tapeCurrLabel">scanning…</span></span>
+                    <span style="font-size:9px;letter-spacing:.12em">position → destination</span>
+                </div>
+                <div class="tape-outer" id="tapeOuter">
+                    <div class="reticle"></div>
+                    <div class="tape-inner" id="tapeInner"></div>
+                </div>
+            </div>
+
+            <!-- Final output big display -->
+            <div class="output-final" id="outputFinal">
+                <div class="of-header">
+                    <span>Encoded</span>
+                    <span class="of-pill p1">pos 0 → +1</span>
+                    <span class="of-pill p2">pos 1 → +2</span>
+                    <span class="of-pill p3">grows…</span>
+                </div>
+                <div class="of-row" id="ofRow"></div>
+            </div>
+
+            <!-- Info panel -->
+            <div class="info-panel" id="infoPanel">
+                <div class="info-title">↳ Cipher Breakdown</div>
+                <div class="info-grid" id="infoGrid"></div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+
+        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
+      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
+      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    </div>
+            <button class="foot-btn" id="btn-play">Pause</button>
+            <button class="foot-btn" id="btn-step">Step</button>
+            <div class="replay-tag">
+                <div class="rtick"></div><span id="rcd"></span>
+            </div>
+            <button class="foot-btn primary" id="replayNow">▶ Replay Now</button>
+        </div>
+    </div>
+
+    <!-- Flyer particle -->
+    <div id="flyer" style="
+  position:fixed;z-index:400;pointer-events:none;
+  width:46px;height:46px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'SF Mono','Fira Code',monospace;
+  font-size:20px;font-weight:700;
+  background:rgba(2,6,23,0.95);opacity:0;
+"></div>
+
+    <script>
+let speedMultiplier = 1.0;
+        const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const WORD = 'CIPHER';
+        const TW = 42;   // tape cell width
+        const BASE = 1;    // shift starts at +1 for position 0
+
+        let running = false, ct = { cancelled: false };
+        let replayTimer = null, countdown = 2;
+        let isPlaying = true, stepRequested = false;
+
+        const $ = id => document.getElementById(id);
+        const sleep = ms => new Promise(r => { ct._t = setTimeout(r, ms / speedMultiplier); });
+        const vis = (el, on = true) => el.classList.toggle('vis', on);
+        const setStatus = t => $('statusTxt').textContent = t;
+
+        async function waitForPlaybackStep() {
+            if (ct.cancelled) return;
+            if (isPlaying) {
+                await sleep(2000);
+                return;
+            }
+            setStatus('Paused - press Step to continue.');
+            while (!ct.cancelled && !isPlaying && !stepRequested) {
+                await sleep(80);
+            }
+            if (stepRequested) stepRequested = false;
+        }
+
+        /* ── Build triple alphabet tape ── */
+        function buildTape() {
+            const inner = $('tapeInner');
+            inner.innerHTML = '';
+            for (let rep = 0; rep < 3; rep++)
+                for (let i = 0; i < 26; i++) {
+                    const c = document.createElement('div');
+                    c.className = 'tcell'; c.id = `tc-${rep * 26 + i}`;
+                    c.innerHTML = `<span>${ALPHA[i]}</span><span class="tp">${i}</span>`;
+                    inner.appendChild(c);
+                }
+        }
+
+        function setTapePos(tapeIdx, animated, ms) {
+            const outer = $('tapeOuter');
+            const inner = $('tapeInner');
+            const w = outer.offsetWidth || 600;
+            const x = w / 2 - tapeIdx * TW - TW / 2;
+            inner.style.transition = animated ? `transform ${ms}ms cubic-bezier(0.25,0.1,0.25,1)` : 'none';
+            inner.style.transform = `translateX(${x}px)`;
+        }
+
+        function clearTapeHL() {
+            $('tapeInner').querySelectorAll('.tcell').forEach(c => c.classList.remove('tsrc', 'tdst'));
+        }
+
+        /* ── Build staircase rows ── */
+        function buildStaircase(result) {
+            const wrap = $('staircaseWrap');
+            wrap.innerHTML = '';
+            const maxShift = result.length; // max bar = n
+
+            result.forEach((r, i) => {
+                const row = document.createElement('div');
+                row.className = 'stair-row'; row.id = `sr-${i}`;
+
+                // Step marks count = shift amount
+                const stepMarks = Array.from({ length: r.shift }, (_, k) =>
+                    `<div class="step-mark" id="sm-${i}-${k}"></div>`
+                ).join('');
+
+                row.innerHTML = `
+      <div class="stair-in" id="si-${i}">
+        <span>${r.ch}</span>
+        <span class="sin-idx">[${i}]</span>
+      </div>
+      <div class="stair-shift">
+        <div class="shift-arrow">+${r.shift}</div>
+        <div class="shift-badge" id="sb-${i}">+${r.shift}</div>
+      </div>
+      <div class="stair-bar-wrap">
+        <div class="stair-bar-track"></div>
+        <div class="stair-bar-fill" id="bf-${i}"></div>
+        <div class="stair-steps" style="gap:${Math.max(2, Math.floor(100 / maxShift))}%">
+          ${stepMarks}
+        </div>
+      </div>
+      <div class="stair-out" id="so-${i}">
+        <span class="sout-enc" id="soe-${i}"> </span>
+        <span class="sout-code">pos ${r.src}+${r.shift}=${r.dst}</span>
+      </div>
+    `;
+                wrap.appendChild(row);
+            });
+
+            // Also build final output row
+            const ofRow = $('ofRow');
+            ofRow.innerHTML = '';
+            result.forEach((r, i) => {
+                const pair = document.createElement('div');
+                pair.className = 'of-pair';
+                pair.innerHTML = `
+      <div class="of-letter" id="ofl-${i}">${r.enc}</div>
+      <div class="of-original">${r.ch} +${r.shift}</div>
+      <div class="of-shift-tag">pos ${i}</div>
+    `;
+                ofRow.appendChild(pair);
+            });
+        }
+
+        /* ── Fly particle ── */
+        async function fly(srcEl, dstEl, letter, col, glow) {
+            if (!srcEl || !dstEl) return;
+            const flyer = $('flyer');
+            const sr = srcEl.getBoundingClientRect();
+            const dr = dstEl.getBoundingClientRect();
+            flyer.textContent = letter;
+            flyer.style.color = col;
+            flyer.style.border = `2px solid ${col}`;
+            flyer.style.boxShadow = `0 0 18px ${glow}`;
+            flyer.style.transition = 'none';
+            flyer.style.opacity = '1';
+            flyer.style.left = (sr.left + sr.width / 2 - 23) + 'px';
+            flyer.style.top = (sr.top + sr.height / 2 - 23) + 'px';
+
+            await sleep(50); if (ct.cancelled) { flyer.style.opacity = '0'; return; }
+
+            const tx = dr.left + dr.width / 2 - 23;
+            const ty = dr.top + dr.height / 2 - 23;
+            const dist = Math.hypot(tx - (sr.left + sr.width / 2 - 23), ty - (sr.top + sr.height / 2 - 23));
+            const ms = 260 + dist * 0.5;
+            flyer.style.transition = `left ${ms}ms cubic-bezier(0.4,0,0.2,1),top ${ms}ms cubic-bezier(0.4,0,0.2,1)`;
+            flyer.style.left = tx + 'px'; flyer.style.top = ty + 'px';
+            await sleep(ms);
+            flyer.style.opacity = '0';
+        }
+
+        /* ── Replay countdown ── */
+        function startReplayCountdown() {
+            countdown = 2;
+            $('rcd').textContent = `Replaying in ${countdown}s…`;
+            replayTimer = setInterval(() => {
+                countdown--;
+                if (countdown > 0) { $('rcd').textContent = `Replaying in ${countdown}s…`; }
+                else { clearInterval(replayTimer); $('rcd').textContent = 'Replaying…'; kickDemo(); }
+            }, 1000 / speedMultiplier);
+        }
+        function cancelReplay() {
+            if (replayTimer) { clearInterval(replayTimer); replayTimer = null; }
+            $('rcd').textContent = '';
+        }
+
+        /* ══ MAIN ANIMATION ══ */
+        async function runDemo() {
+            if (running) { ct.cancelled = true; await sleep(130); }
+            ct = { cancelled: false }; running = true;
+
+            const n = WORD.length;
+            const result = WORD.split('').map((ch, i) => {
+                const shift = i + BASE;            // +1, +2, +3, +4, +5, +6
+                const src = ALPHA.indexOf(ch);
+                const dst = ((src + shift) % 26 + 26) % 26;
+                return { ch, src, dst, enc: ALPHA[dst], shift, i };
+            });
+            const encoded = result.map(r => r.enc).join('');
+
+            /* ── Reset UI ── */
+            vis($('infoPanel'), false);
+            vis($('outputFinal'), false);
+            $('tapeInner').innerHTML = '';
+            $('infoGrid').innerHTML = '';
+            $('flyer').style.opacity = '0';
+            $('progWrap').style.opacity = '0';
+            $('progFill').style.width = '0%';
+            $('progPct').textContent = '0%';
+            $('tapeOuter').classList.remove('glow');
+            $('tapeSec').style.opacity = '0';
+
+            buildTape();
+            buildStaircase(result);
+            setTapePos(26, false);
+
+            /* ── Intro ── */
+            setStatus('CIPHER loaded · shifts grow with each position…');
+            await sleep(600); if (ct.cancelled) { running = false; return; }
+
+            /* Stagger-in stair rows */
+            for (let i = 0; i < n; i++) {
+                if (ct.cancelled) { running = false; return; }
+                $(`sr-${i}`)?.classList.add('vis');
+                await sleep(160);
+            }
+            await sleep(500); if (ct.cancelled) { running = false; return; }
+            await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
+
+            /* Show progress bar */
+            $('progWrap').style.opacity = '1';
+            $('tapeSec').style.opacity = '1';
+            $('tapeOuter').classList.add('glow');
+            await sleep(400); if (ct.cancelled) { running = false; return; }
+            await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
+
+            /* ══ ENCODE EACH LETTER ══ */
+            for (let i = 0; i < n; i++) {
+                if (ct.cancelled) { running = false; return; }
+                const r = result[i];
+
+                /* Activate stair row */
+                document.querySelectorAll('.stair-row').forEach(row => row.classList.remove('active-row'));
+                $(`sr-${i}`)?.classList.add('active-row');
+                $(`si-${i}`)?.classList.add('active');
+
+                /* Update tape label */
+                $('tapeCurrLabel').textContent = `"${r.ch}" at pos ${r.i} · shifting +${r.shift}`;
+                setStatus(`[${r.i}] "${r.ch}" at pos ${r.i} · shift = pos+1 = +${r.shift} → "${r.enc}"`);
+
+                /* Snap tape to source (mid rep) */
+                const tapeSrc = 26 + r.src;
+                setTapePos(tapeSrc, false);
+                clearTapeHL();
+                $(`tc-${tapeSrc}`)?.classList.add('tsrc');
+                await sleep(400); if (ct.cancelled) { running = false; return; }
+
+                /* Fly letter from stair-in to tape */
+                const sinEl = $(`si-${i}`);
+                const tapeEl = $('tapeOuter');
+                await fly(sinEl, tapeEl, r.ch, '#b97fff', 'rgba(185,127,255,0.75)');
+                if (ct.cancelled) { running = false; return; }
+
+                /* ── Animate step marks one by one ── */
+                setStatus(`Counting ${r.shift} steps forward on the tape…`);
+                let tapeDst = tapeSrc;
+                const stepMs = Math.max(60, Math.min(140, 700 / r.shift));
+
+                for (let s = 0; s < r.shift; s++) {
+                    if (ct.cancelled) { running = false; return; }
+                    tapeDst++;
+                    if (tapeDst >= 78) tapeDst -= 26;
+
+                    /* Light up step mark */
+                    $(`sm-${i}-${s}`)?.classList.add('lit');
+
+                    /* Scroll tape one step */
+                    setTapePos(tapeDst, true, stepMs * 1.1);
+                    await sleep(stepMs);
+                }
+                await sleep(200); if (ct.cancelled) { running = false; return; }
+
+                /* Highlight destination */
+                clearTapeHL();
+                $(`tc-${26 + r.dst}`)?.classList.add('tdst') || $(`tc-${r.dst}`)?.classList.add('tdst');
+
+                /* Fill the bar */
+                $(`bf-${i}`)?.classList.add('filled');
+                await sleep(350); if (ct.cancelled) { running = false; return; }
+
+                /* Fly encoded letter from tape to stair-out */
+                const soEl = $(`so-${i}`);
+                await fly(tapeEl, soEl, r.enc, '#59f2ff', 'rgba(89,242,255,0.75)');
+                if (ct.cancelled) { running = false; return; }
+
+                /* Land output */
+                const soeEl = $(`soe-${i}`);
+                if (soEl && soeEl) { soeEl.textContent = r.enc; soEl.classList.add('landed'); }
+
+                /* Mark row done */
+                $(`si-${i}`)?.classList.remove('active');
+                $(`si-${i}`)?.classList.add('done');
+
+                /* Progress bar */
+                const pct = Math.round(((i + 1) / n) * 100);
+                $('progFill').style.width = pct + '%';
+                $('progPct').textContent = pct + '%';
+
+                await sleep(320);
+                await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
+            }
+
+            /* ── ALL DONE ── */
+            document.querySelectorAll('.stair-row').forEach(r => r.classList.remove('active-row'));
+            $('flyer').style.opacity = '0';
+            $('tapeCurrLabel').textContent = 'all letters encoded';
+            setStatus(`Complete · CIPHER → ${encoded}`);
+            clearTapeHL();
+
+            /* Pulse all outputs */
+            document.querySelectorAll('.stair-out').forEach(el => {
+                el.style.boxShadow = '0 0 28px rgba(89,242,255,.85)';
+            });
+            await sleep(380);
+            document.querySelectorAll('.stair-out').forEach(el => {
+                el.style.boxShadow = '0 0 10px rgba(89,242,255,.22)';
+            });
+
+            /* Reveal final output row */
+            vis($('outputFinal'), true);
+            await sleep(300); if (ct.cancelled) { running = false; return; }
+            for (let i = 0; i < n; i++) {
+                $(`ofl-${i}`)?.classList.add('show');
+                await sleep(90);
+            }
+            await sleep(350); if (ct.cancelled) { running = false; return; }
+
+            /* Info panel */
+            $('infoGrid').innerHTML = `
+    <div class="irow">
+      <div class="irow-lbl">Input</div>
+      <div class="irow-val fm">CIPHER</div>
+    </div>
+    <div class="irow">
+      <div class="irow-lbl">Output</div>
+      <div class="irow-val fx">${encoded}</div>
+    </div>
+    <div class="irow">
+      <div class="irow-lbl">Shift pattern</div>
+      <div class="irow-val fy">+1 +2 +3 +4 +5 +6</div>
+    </div>
+    <div class="irow">
+      <div class="irow-lbl">Letter map</div>
+      <div class="irow-val fx" style="font-size:10px;letter-spacing:.04em">
+        ${result.map(r => `${r.ch}→${r.enc}`).join('  ')}
+      </div>
+    </div>
+    <div class="formula">
+<span class="fm">Rule :</span>  shift[i] = i + 1
+
+<span class="fy">C</span> [0] + 1 = <span class="fx">${result[0].enc}</span>   <span class="fy">I</span> [1] + 2 = <span class="fx">${result[1].enc}</span>   <span class="fy">P</span> [2] + 3 = <span class="fx">${result[2].enc}</span>
+<span class="fy">H</span> [3] + 4 = <span class="fx">${result[3].enc}</span>   <span class="fy">E</span> [4] + 5 = <span class="fx">${result[4].enc}</span>   <span class="fy">R</span> [5] + 6 = <span class="fx">${result[5].enc}</span>
+
+<span class="fg">Why harder?</span> <span class="fm">Every position has a different shift. Even if you
+crack one letter, the others all use different keys.</span></div>
+  `;
+            vis($('infoPanel'), true);
+
+            await sleep(800);
+            running = false;
+            startReplayCountdown();
+        }
+
+        function kickDemo() { cancelReplay(); runDemo(); }
+        $('replayNow').addEventListener('click', kickDemo);
+        $('btn-play').addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            $('btn-play').textContent = isPlaying ? 'Pause' : 'Resume';
+        });
+        $('btn-step').addEventListener('click', () => {
+            if (isPlaying) {
+                isPlaying = false;
+                $('btn-play').textContent = 'Resume';
+            }
+            stepRequested = true;
+        });
+
+        /* ── Boot ── */
+        buildTape();
+        buildStaircase(WORD.split('').map((ch, i) => ({
+            ch, src: ALPHA.indexOf(ch), shift: i + BASE,
+            dst: ((ALPHA.indexOf(ch) + i + BASE) % 26 + 26) % 26,
+            enc: ALPHA[((ALPHA.indexOf(ch) + i + BASE) % 26 + 26) % 26], i
+        })));
+        runDemo();
+    
+        const sDisplay = document.getElementById("speedDisplay");
+  if (document.getElementById("speedUp")) {
+    document.getElementById("speedUp").addEventListener("click", () => {
+      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+    document.getElementById("speedDown").addEventListener("click", () => {
+      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+  }
+
+  const nextBtn = document.getElementById("nextBtn");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
+      if (match) {
+        let ch = parseInt(match[1]);
+        let lvl = parseInt(match[2]);
+        lvl++;
+        if (lvl > 5) { lvl = 1; ch++; }
+        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
+      }
+    });
+  }
+</script>
+</body>
+
+</html>

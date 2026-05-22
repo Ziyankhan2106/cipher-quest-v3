@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CipherQuest | Level 1.4 | Monoalphabetic Substitution</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+:root {
+  --bg:     #05080f;
+  --panel:  rgba(12,18,34,0.92);
+  --border: rgba(148,163,184,0.34);
+  --cyan:   #59f2ff;
+  --yellow: #ffdd57;
+  --purple: #b97fff;
+  --green:  #22c55e;
+  --muted:  #4a607a;
+  --text:   #cde0f5;
+  --mono:   'Share Tech Mono', monospace;
+  --sans:   'Rajdhani', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  background: var(--bg);
+  font-family: var(--sans);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  overflow-x: hidden;
+}
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(ellipse 55% 35% at 15% 10%, rgba(185,127,255,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 40% at 85% 85%, rgba(89,242,255,0.05) 0%, transparent 70%);
+}
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    linear-gradient(rgba(185,127,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(185,127,255,0.02) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+
+/* ── Card ── */
+.card {
+  position:relative; z-index:1;
+  width:100%; max-width:760px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 0 1px rgba(185,127,255,0.04), 0 40px 100px rgba(0,0,0,0.85);
+  overflow:hidden;
+}
+
+/* ── Top bar ── */
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 20px;
+  background:rgba(5,8,15,0.7);
+  border-bottom:1px solid var(--border);
+}
+.topbar-left { display:flex; align-items:center; gap:10px; }
+.badge {
+  font-family:var(--mono); font-size:10px; letter-spacing:.2em;
+  padding:3px 10px; border-radius:4px;
+  border:1px solid rgba(185,127,255,0.5);
+  color:var(--purple); background:rgba(185,127,255,0.06);
+}
+.topbar-title { font-size:15px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.topbar-sub { font-family:var(--mono); font-size:9px; color:var(--muted); margin-top:2px; letter-spacing:.15em; }
+.live {
+  display:flex; align-items:center; gap:6px;
+  font-family:var(--mono); font-size:11px; color:var(--green);
+  letter-spacing:.16em; text-transform:uppercase;
+}
+.live::before {
+  content:''; width:6px; height:6px; border-radius:50%;
+  background:var(--green); box-shadow:0 0 10px var(--green);
+  animation:pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+
+/* ── Controls ── */
+.controls {
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  padding:12px 20px;
+  border-bottom:1px solid rgba(89,242,255,0.08);
+  background:rgba(5,8,15,0.4);
+}
+.ctrl-label { font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:.2em; }
+.word-input {
+  font-family:var(--mono); font-size:14px; font-weight:700;
+  background:rgba(5,8,15,0.8);
+  border:1px solid rgba(185,127,255,0.28);
+  border-radius:8px;
+  padding:6px 14px; color:var(--purple);
+  letter-spacing:.2em; text-transform:uppercase;
+  outline:none; width:180px;
+  transition:border-color .2s, box-shadow .2s;
+}
+.word-input:focus { border-color:rgba(185,127,255,0.6); box-shadow:0 0 14px rgba(185,127,255,0.15); }
+.go-btn {
+  margin-left:auto;
+  padding:7px 22px; border-radius:999px;
+  border:none; background:var(--purple); color:#05080f;
+  font-family:var(--sans); font-size:11px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase;
+  cursor:pointer; transition:all .2s;
+}
+.go-btn:hover { box-shadow:0 0 22px rgba(185,127,255,0.55); background:#cba6ff; }
+.go-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+/* ── Stage ── */
+.stage {
+  padding:22px 20px 20px;
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+  position:relative; min-height:460px;
+}
+.stage::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(
+    to bottom, transparent 0, transparent 3px,
+    rgba(185,127,255,0.008) 3px, rgba(185,127,255,0.008) 4px
+  );
+}
+
+/* ── Status ── */
+.status {
+  font-family:var(--mono); font-size:11px; color:var(--purple);
+  letter-spacing:.2em; min-height:18px;
+  align-self:flex-start; position:relative; z-index:2;
+}
+.blink { animation:blink .9s step-end infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
+
+/* ── Word chips (input) ── */
+.word-display { display:flex; gap:8px; position:relative; z-index:2; }
+.letter-chip {
+  width:50px; height:56px; border-radius:10px;
+  border:1px solid rgba(185,127,255,0.2);
+  background:rgba(5,8,15,0.7);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:2px;
+  font-family:var(--mono); font-size:20px; font-weight:700; color:var(--text);
+  transition:all .35s; opacity:0;
+  position:relative; overflow:hidden;
+}
+.letter-chip .idx { font-size:8px; color:var(--muted); letter-spacing:.1em; }
+.letter-chip.active {
+  border-color:var(--yellow); color:var(--yellow);
+  box-shadow:0 0 22px rgba(255,229,102,0.45), inset 0 0 10px rgba(255,229,102,0.06);
+}
+.letter-chip.active::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,transparent 40%,rgba(255,229,102,.1) 60%,transparent 80%);
+  animation:shimmer 1.1s linear infinite;
+}
+@keyframes shimmer { from{transform:translateX(-120%)} to{transform:translateX(200%)} }
+.letter-chip.done { border-color:rgba(185,127,255,0.4); color:rgba(185,127,255,0.7); }
+
+/* ── Mirror grid ── */
+.mirror-section {
+  position:relative; z-index:2; width:100%;
+  opacity:0; transition:opacity .5s;
+}
+.mirror-section.vis { opacity:1; }
+.mirror-grid-label {
+  display:flex; justify-content:space-between;
+  font-family:var(--mono); font-size:9px; color:var(--muted);
+  letter-spacing:.18em; margin-bottom:6px; padding:0 2px;
+}
+.mirror-grid-label span { color:var(--yellow); }
+.mirror-grid-label span.rev { color:var(--cyan); }
+
+/* The two alphabet rows + axis */
+.mirror-block {
+  background:rgba(5,8,15,0.7);
+  border:1px solid rgba(185,127,255,0.14);
+  border-radius:12px;
+  overflow:hidden;
+  position:relative;
+}
+
+/* Top row: A→Z */
+.alpha-row {
+  display:flex; width:100%; overflow:hidden;
+}
+.alpha-cell {
+  flex:1; min-width:0;
+  height:46px;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:1px;
+  font-family:var(--mono); font-size:13px;
+  color:var(--muted);
+  border-right:1px solid rgba(185,127,255,0.05);
+  transition:color .25s, background .25s, box-shadow .25s;
+  position:relative; cursor:default;
+}
+.alpha-cell:last-child { border-right:none; }
+.alpha-cell .apos { font-size:7px; color:rgba(74,96,122,0.5); }
+
+.alpha-cell.src-glow {
+  color:var(--yellow);
+  background:rgba(255,229,102,0.08);
+  box-shadow:inset 0 0 12px rgba(255,229,102,0.12);
+  text-shadow:0 0 14px rgba(255,229,102,0.9);
+}
+.alpha-cell.dst-glow {
+  color:var(--cyan);
+  background:rgba(89,242,255,0.08);
+  box-shadow:inset 0 0 12px rgba(89,242,255,0.12);
+  text-shadow:0 0 14px rgba(89,242,255,0.9);
+}
+.alpha-cell.pair-soft {
+  color:rgba(185,127,255,0.55);
+}
+
+/* Mirror axis */
+.mirror-axis {
+  position:relative;
+  height:26px;
+  display:flex; align-items:center;
+  overflow:hidden;
+}
+.axis-line {
+  position:absolute; left:0; right:0; top:50%;
+  height:1px;
+  background:linear-gradient(to right,
+    transparent 0%,
+    rgba(185,127,255,0.15) 5%,
+    rgba(185,127,255,0.6) 50%,
+    rgba(185,127,255,0.15) 95%,
+    transparent 100%
+  );
+}
+.axis-label {
+  position:absolute; left:50%; transform:translateX(-50%);
+  font-family:var(--mono); font-size:8px; letter-spacing:.22em;
+  color:rgba(185,127,255,0.7);
+  background:rgba(5,8,15,0.85);
+  padding:1px 8px; border-radius:3px;
+  border:1px solid rgba(185,127,255,0.2);
+  white-space:nowrap;
+}
+
+/* The beam column that travels down */
+.beam-col {
+  position:absolute;
+  top:0; bottom:0;
+  width:0;
+  pointer-events:none;
+  z-index:4;
+  transition:left .0s;
+}
+.beam-col.active {
+  width:1px;
+  background:linear-gradient(to bottom,
+    rgba(255,229,102,0) 0%,
+    rgba(255,229,102,0.9) 40%,
+    rgba(185,127,255,0.9) 60%,
+    rgba(89,242,255,0) 100%
+  );
+  box-shadow: 0 0 12px 3px rgba(185,127,255,0.4);
+}
+
+/* ── Output word ── */
+.output-wrap {
+  position:relative; z-index:2;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  width:100%;
+}
+.output-lbl {
+  font-family:var(--mono); font-size:9px; color:var(--muted);
+  letter-spacing:.2em; align-self:flex-start;
+  opacity:0; transition:opacity .3s;
+}
+.output-lbl.vis { opacity:1; }
+.output-chips { display:flex; gap:8px; }
+.out-chip {
+  width:50px; height:56px; border-radius:10px;
+  border:1px solid rgba(89,242,255,0.08);
+  background:rgba(5,8,15,0.5);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:2px;
+  font-family:var(--mono); font-size:20px; color:transparent;
+  transition:all .4s;
+}
+.out-chip .idx { font-size:8px; color:var(--muted); }
+.out-chip.landed {
+  color:var(--cyan);
+  border-color:rgba(89,242,255,0.5);
+  box-shadow:0 0 22px rgba(89,242,255,0.35);
+  animation:landIn .5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes landIn {
+  from{transform:scale(.7) translateY(-10px);opacity:0;}
+  to{transform:scale(1) translateY(0);opacity:1;}
+}
+
+/* ── Pair legend ── */
+.pair-legend {
+  position:relative; z-index:2; width:100%;
+  opacity:0; transform:translateY(6px);
+  transition:opacity .5s, transform .5s;
+}
+.pair-legend.vis { opacity:1; transform:translateY(0); }
+.pair-legend-title {
+  font-family:var(--mono); font-size:9px; color:var(--purple);
+  letter-spacing:.22em; margin-bottom:10px;
+}
+.pair-grid {
+  display:flex; flex-wrap:wrap; gap:5px;
+}
+.pair-pill {
+  font-family:var(--mono); font-size:10px;
+  padding:3px 8px; border-radius:5px;
+  border:1px solid rgba(185,127,255,0.15);
+  background:rgba(5,8,15,0.5);
+  color:var(--muted);
+  transition:all .3s;
+}
+.pair-pill.active-pair {
+  border-color:rgba(185,127,255,0.5);
+  color:var(--purple);
+  box-shadow:0 0 10px rgba(185,127,255,0.25);
+}
+.pair-pill span.a { color:var(--yellow); }
+.pair-pill span.b { color:var(--cyan); }
+
+/* ── Info panel ── */
+.info-panel {
+  position:relative; z-index:2; width:100%;
+  background:rgba(5,8,15,0.6);
+  border:1px solid rgba(185,127,255,0.14);
+  border-radius:12px; padding:14px 18px;
+  opacity:0; transform:translateY(8px);
+  transition:opacity .5s, transform .5s;
+}
+.info-panel.vis { opacity:1; transform:translateY(0); }
+.info-title {
+  font-family:var(--mono); font-size:9px; color:var(--purple);
+  letter-spacing:.22em; margin-bottom:10px;
+}
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.info-row {
+  background:rgba(5,8,15,0.5);
+  border:1px solid rgba(185,127,255,0.08);
+  border-radius:8px; padding:10px 12px;
+}
+.info-row-label { font-family:var(--mono); font-size:8px; color:var(--muted); letter-spacing:.18em; margin-bottom:4px; }
+.info-row-val { font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:.1em; }
+.formula {
+  grid-column:1/-1;
+  font-family:var(--mono); font-size:11px; color:var(--text); line-height:1.75;
+  background:rgba(5,8,15,0.8);
+  border:1px solid rgba(185,127,255,0.12);
+  border-radius:8px; padding:12px 14px;
+}
+.formula em { color:var(--cyan); font-style:normal; }
+.formula strong { color:var(--yellow); }
+.formula .purple { color:var(--purple); }
+
+/* ── Footer ── */
+.footer {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 20px;
+  border-top:1px solid rgba(148,163,184,0.34);
+  background:rgba(2,6,23,0.74);
+}
+.foot-btn {
+  font-family:var(--sans); font-size:11px; font-weight:600;
+  letter-spacing:.12em; text-transform:uppercase;
+  padding:7px 16px; border-radius:999px;
+  border:1px solid rgba(185,127,255,0.25);
+  background:transparent; color:var(--muted);
+  cursor:pointer; transition:all .2s;
+}
+.foot-btn:hover { color:var(--text); border-color:rgba(185,127,255,0.5); }
+.foot-btn.primary {
+  color:var(--purple); background:rgba(185,127,255,0.06);
+  border-color:rgba(185,127,255,0.4);
+}
+.foot-btn.primary:hover { background:rgba(185,127,255,0.12); box-shadow:0 0 14px rgba(185,127,255,0.3); }
+</style>
+    <script src="global_controls.js"></script>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="badge">CH 01</span>
+      <div>
+        <div class="topbar-title">Monoalphabetic Substitution</div>
+        <div class="topbar-sub">Level 4 - CUSTOM KEY</div>
+      </div>
+    </div>
+    <div class="live">Auto Demo</div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <span class="ctrl-label" style="display:none;">WORD</span>
+    <input class="word-input" id="wordInput" type="hidden" value="CIPHER" />
+    <button class="go-btn" id="goBtn">▶ Encrypt</button>
+  </div>
+
+  <!-- STAGE -->
+  <div class="stage" id="stage">
+
+    <div class="status" id="status">
+      <span id="statusTxt">Ready to encrypt</span><span class="blink"> ▌</span>
+    </div>
+
+    <!-- Input chips -->
+    <div class="word-display" id="wordDisplay"></div>
+
+    <!-- Mirror section -->
+    <div class="mirror-section" id="mirrorSection">
+      <div class="mirror-grid-label">
+        <span>A → Z &nbsp;·&nbsp; PLAIN</span>
+        <span class="rev">KEY &nbsp;·&nbsp; CIPHER</span>
+      </div>
+      <div class="mirror-block" id="mirrorBlock">
+        <!-- Top row: A-Z -->
+        <div class="alpha-row" id="topRow"></div>
+        <!-- Axis -->
+        <div class="mirror-axis">
+          <div class="axis-line"></div>
+          <div class="axis-label">◆ SUBSTITUTION AXIS · pos i → key[i] ◆</div>
+        </div>
+        <!-- Bottom row: Z-A -->
+        <div class="alpha-row" id="botRow"></div>
+        <!-- The beam element -->
+        <div class="beam-col" id="beamCol"></div>
+      </div>
+    </div>
+
+    <!-- Output word -->
+    <div class="output-wrap">
+      <div class="output-lbl" id="outputLbl">Output · Encrypted String</div>
+      <div class="output-chips" id="outputChips"></div>
+    </div>
+
+    <!-- Pair legend -->
+    <div class="pair-legend" id="pairLegend">
+      <div class="pair-legend-title">↳ SUBSTITUTION MAP — custom randomized key</div>
+      <div class="pair-grid" id="pairGrid"></div>
+    </div>
+
+    <!-- Info panel -->
+    <div class="info-panel" id="infoPanel">
+      <div class="info-title">↳ CIPHER BREAKDOWN</div>
+      <div class="info-grid" id="infoGrid"></div>
+    </div>
+
+  </div><!-- /stage -->
+
+  <!-- FOOTER -->
+  <div class="footer">
+
+        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
+      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
+      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    </div>
+    <button class="foot-btn" id="replayBtn">↩ Replay</button>
+    <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
+  </div>
+
+</div>
+
+<script>
+let speedMultiplier = 1.0;
+const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const SUBST = 'QWERTYUIOPASDFGHJKLZXCVBNM';
+let running = false;
+let ct = { cancelled:false };
+
+/* ── DOM ── */
+const wordInput   = document.getElementById('wordInput');
+const goBtn       = document.getElementById('goBtn');
+const replayBtn   = document.getElementById('replayBtn');
+const statusTxt   = document.getElementById('statusTxt');
+const wordDisplay = document.getElementById('wordDisplay');
+const mirrorSec   = document.getElementById('mirrorSection');
+const topRow      = document.getElementById('topRow');
+const botRow      = document.getElementById('botRow');
+const beamCol     = document.getElementById('beamCol');
+const mirrorBlock = document.getElementById('mirrorBlock');
+const outputLbl   = document.getElementById('outputLbl');
+const outputChips = document.getElementById('outputChips');
+const pairLegend  = document.getElementById('pairLegend');
+const pairGrid    = document.getElementById('pairGrid');
+const infoPanel   = document.getElementById('infoPanel');
+const infoGrid    = document.getElementById('infoGrid');
+
+/* ── Helpers ── */
+const sleep = ms => new Promise(r => { ct._tid = setTimeout(r, ms / speedMultiplier); });
+const vis   = (el, on=true) => el.classList.toggle('vis', on);
+const setStatus = t => statusTxt.textContent = t;
+
+/* ── Build alphabet rows ── */
+function buildRows() {
+  topRow.innerHTML = '';
+  botRow.innerHTML = '';
+  for (let i = 0; i < 26; i++) {
+    // Top: A-Z
+    const t = document.createElement('div');
+    t.className = 'alpha-cell';
+    t.id = 'top' + i;
+    t.innerHTML = `<span>${ALPHA[i]}</span><span class="apos">${i}</span>`;
+    topRow.appendChild(t);
+
+    // Bottom: Substitution Key
+    const b = document.createElement('div');
+    b.className = 'alpha-cell';
+    b.id = 'bot' + i;
+    b.innerHTML = `<span>${SUBST[i]}</span><span class="apos">${i}</span>`;
+    botRow.appendChild(b);
+  }
+}
+
+/* ── Build chips ── */
+function buildChips(word) {
+  wordDisplay.innerHTML = '';
+  outputChips.innerHTML = '';
+  word.split('').forEach((ch, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'letter-chip';
+    chip.id = 'wchip' + i;
+    chip.innerHTML = `<span>${ch}</span><span class="idx">[${i}]</span>`;
+    wordDisplay.appendChild(chip);
+
+    const oc = document.createElement('div');
+    oc.className = 'out-chip';
+    oc.id = 'ochip' + i;
+    oc.innerHTML = `<span id="ochr${i}"> </span><span class="idx">[${i}]</span>`;
+    outputChips.appendChild(oc);
+  });
+}
+
+/* ── Build pair legend ── */
+function buildPairLegend() {
+  pairGrid.innerHTML = '';
+  for (let i = 0; i < 26; i++) {
+    const pill = document.createElement('div');
+    pill.className = 'pair-pill';
+    pill.id = 'pill' + i;
+    pill.innerHTML = `<span class="a">${ALPHA[i]}</span>→<span class="b">${SUBST[i]}</span>`;
+    pairGrid.appendChild(pill);
+  }
+}
+
+/* ── Get cell left center (% of block width) ── */
+function getCellLeft(idx) {
+  const cell = document.getElementById('top' + idx);
+  const block = mirrorBlock.getBoundingClientRect();
+  const rect  = cell.getBoundingClientRect();
+  return rect.left - block.left + rect.width / 2;
+}
+
+/* ── Clear row highlights ── */
+function clearHighlights() {
+  for (let i = 0; i < 26; i++) {
+    document.getElementById('top'+i).classList.remove('src-glow','dst-glow','pair-soft');
+    document.getElementById('bot'+i).classList.remove('src-glow','dst-glow','pair-soft');
+  }
+  document.querySelectorAll('.pair-pill').forEach(p => p.classList.remove('active-pair'));
+}
+
+/* ── Animate beam from src col to dst col ── */
+async function animateBeam(srcIdx, dstIdx) {
+  // Move beam to src column (top)
+  const srcLeft = getCellLeft(srcIdx);
+  beamCol.style.transition = 'none';
+  beamCol.style.left = srcLeft + 'px';
+  beamCol.style.transform = 'translateX(-50%)';
+  beamCol.classList.add('active');
+
+  await sleep(50);
+  if (ct.cancelled) return;
+
+  // If src !== dst, slide beam across to dst column
+  if (srcIdx !== dstIdx) {
+    const dstLeft = getCellLeft(dstIdx);
+    beamCol.style.transition = `left ${0.5 + Math.abs(srcIdx-dstIdx)*0.025}s cubic-bezier(0.4,0,0.2,1)`;
+    beamCol.style.left = dstLeft + 'px';
+    await sleep(600 + Math.abs(srcIdx-dstIdx)*25);
+    if (ct.cancelled) return;
+  }
+}
+
+/* ── Main ── */
+async function runDemo() {
+  if (running) { ct.cancelled = true; await sleep(80); }
+  ct = { cancelled:false };
+  running = true;
+  goBtn.disabled = true;
+
+  const raw = 'CIPHER';
+  wordInput.value = raw;
+  const word = raw.split('');
+  const n    = word.length;
+
+  // Reset
+  vis(mirrorSec, false);
+  vis(pairLegend, false);
+  vis(infoPanel, false);
+  outputLbl.classList.remove('vis');
+  infoGrid.innerHTML = '';
+  beamCol.classList.remove('active');
+
+  buildRows();
+  buildChips(raw);
+  buildPairLegend();
+
+  // ── Fade in input chips
+  setStatus('Initializing substitution engine…');
+  await sleep(400);
+  if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
+
+  for (let i = 0; i < n; i++) {
+    if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
+    const chip = document.getElementById('wchip'+i);
+    chip.style.transition = 'opacity .35s, transform .35s';
+    chip.style.opacity = '1';
+    await sleep(110);
+  }
+
+  await sleep(500);
+  if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
+
+  // Reveal mirror grid
+  vis(mirrorSec, true);
+  vis(outputLbl, true);
+  await sleep(600);
+  if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
+
+  // ── Show all 26 pairs softly first ──
+  setStatus('Mapping substitution key…');
+  for (let i = 0; i < 26; i++) {
+    if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
+    document.getElementById('top'+i).classList.add('pair-soft');
+    document.getElementById('bot'+i).classList.add('pair-soft');
+    await sleep(30);
+  }
+  await sleep(500);
+  if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
+
+  // ── Process each letter ──
+  const results = [];
+  for (let i = 0; i < n; i++) {
+    if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
+
+    const ch     = word[i];
+    const srcIdx = ALPHA.indexOf(ch);        // column in top row
+    const dstIdx = srcIdx;                   // substitution column is same
+    const dstCh  = SUBST[srcIdx];
+    results.push({ ch, srcIdx, dstIdx, dstCh });
+
+    // Activate input chip
+    document.querySelectorAll('.letter-chip').forEach(c => c.classList.remove('active','done'));
+    const chip = document.getElementById('wchip'+i);
+    if (chip) chip.classList.add('active');
+
+    clearHighlights();
+    setStatus(`Substituting "${ch}" (pos ${srcIdx}) → "${dstCh}"`);
+
+    // Light source in top row
+    document.getElementById('top'+srcIdx).classList.add('src-glow');
+
+    // Highlight pair pill
+    const pillIdx = srcIdx;
+    const pill = document.getElementById('pill'+pillIdx);
+    if (pill) pill.classList.add('active-pair');
+
+    await sleep(350);
+    if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
+
+    // Animate beam across top then down
+    await animateBeam(srcIdx, dstIdx);
+    if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
+
+    // Light cell in bottom row
+    document.getElementById('bot'+dstIdx).classList.add('dst-glow');
+    await sleep(350);
+    if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
+
+    // Beam fades, output letter lands
+    beamCol.classList.remove('active');
+
+    const oc   = document.getElementById('ochip'+i);
+    const ochr = document.getElementById('ochr'+i);
+    if (oc && ochr) { ochr.textContent = dstCh; oc.classList.add('landed'); }
+
+    await sleep(400);
+    if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
+
+    if (chip) { chip.classList.remove('active'); chip.classList.add('done'); }
+    await sleep(200);
+  }
+
+  /* ── All done ── */
+  setStatus(`Substitution complete · "${raw}" → "${results.map(r=>r.dstCh).join('')}"`);
+  clearHighlights();
+  beamCol.classList.remove('active');
+
+  // Pulse output
+  for (let i = 0; i < n; i++) {
+    const oc = document.getElementById('ochip'+i);
+    if (oc) oc.style.boxShadow = '0 0 28px rgba(89,242,255,0.75)';
+  }
+  await sleep(300);
+  for (let i = 0; i < n; i++) {
+    const oc = document.getElementById('ochip'+i);
+    if (oc) oc.style.boxShadow = '0 0 10px rgba(89,242,255,0.22)';
+  }
+
+  // Pair legend
+  vis(pairLegend, true);
+  await sleep(300);
+  if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
+
+  // Info panel
+  infoGrid.innerHTML = `
+    <div class="info-row">
+      <div class="info-row-label">INPUT</div>
+      <div class="info-row-val" style="color:var(--yellow)">${raw}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-row-label">OUTPUT</div>
+      <div class="info-row-val" style="color:var(--cyan)">${results.map(r=>r.dstCh).join('')}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-row-label">CIPHER TYPE</div>
+      <div class="info-row-val" style="color:var(--purple)">SUBSTITUTION</div>
+    </div>
+    <div class="info-row">
+      <div class="info-row-label">LETTER MAP</div>
+      <div class="info-row-val" style="color:var(--cyan);font-size:10px;letter-spacing:.05em">
+        ${results.map(r=>`${r.ch}→${r.dstCh}`).join('  ')}
+      </div>
+    </div>
+    <div class="formula">
+      <em>Formula:</em>&nbsp; encoded_char = <strong>SUBST[plain_pos]</strong><br>
+      <em>Example:</em>&nbsp; '${results[0].ch}' is pos <strong>${results[0].srcIdx}</strong>
+      &nbsp;→&nbsp; SUBST[${results[0].srcIdx}]
+      &nbsp;→&nbsp; '<em>${results[0].dstCh}</em>'<br>
+      <span class="purple">◆ Custom substitution using a randomized mapping key.</span>
+    </div>
+  `;
+  vis(infoPanel, true);
+
+  running = false;
+  goBtn.disabled = false;
+}
+
+/* ── Events ── */
+goBtn.addEventListener('click', runDemo);
+replayBtn.addEventListener('click', runDemo);
+wordInput.addEventListener('keydown', e => { if(e.key==='Enter') runDemo(); });
+document.getElementById('nextBtn').addEventListener('click', () => {
+  alert('Next cipher coming soon in the full game!');
+});
+
+runDemo();
+
+        const sDisplay = document.getElementById("speedDisplay");
+  if (document.getElementById("speedUp")) {
+    document.getElementById("speedUp").addEventListener("click", () => {
+      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+    document.getElementById("speedDown").addEventListener("click", () => {
+      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+  }
+
+  const nextBtn = document.getElementById("nextBtn");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
+      if (match) {
+        let ch = parseInt(match[1]);
+        let lvl = parseInt(match[2]);
+        lvl++;
+        if (lvl > 5) { lvl = 1; ch++; }
+        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
+      }
+    });
+  }
+</script>
+</body>
+</html>

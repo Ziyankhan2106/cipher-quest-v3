@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CipherQuest | Level 2.1 | Reverse + Caesar</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+    :root {
+      --bg: #05080f;
+      --panel: rgba(12, 18, 34, 0.92);
+      --border: rgba(148, 163, 184, 0.34);
+      --purple: #b97fff;
+      --cyan: #59f2ff;
+      --yellow: #ffdd57;
+      --green: #22c55e;
+      --muted: #4a607a;
+      --text: #cde0f5;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Rajdhani', system-ui, sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: var(--sans);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 50% 35% at 10% 10%, rgba(89, 242, 255, 0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 35% at 90% 90%, rgba(255, 229, 102, 0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(185, 127, 255, 0.04) 0%, transparent 70%);
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(185, 127, 255, 0.016) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(185, 127, 255, 0.016) 1px, transparent 1px);
+      background-size: 44px 44px;
+    }
+
+    /* ── Card ── */
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 820px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 0 0 1px rgba(185, 127, 255, 0.04), 0 40px 100px rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: rgba(5, 8, 15, 0.7);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .2em;
+      padding: 3px 10px;
+      border-radius: 4px;
+      border: 1px solid rgba(185, 127, 255, 0.55);
+      color: var(--purple);
+      background: rgba(185, 127, 255, 0.07);
+    }
+
+    .topbar-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .topbar-sub {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      margin-top: 2px;
+      letter-spacing: .15em;
+    }
+
+    .live {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--green);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .live::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    /* ── Controls ── */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 10px 20px;
+      border-bottom: 1px solid rgba(185, 127, 255, 0.08);
+      background: rgba(5, 8, 15, 0.4);
+    }
+
+    .ctrl-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: .18em;
+    }
+
+    .word-input {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      background: rgba(5, 8, 15, 0.8);
+      border: 1px solid rgba(185, 127, 255, 0.3);
+      border-radius: 8px;
+      padding: 6px 12px;
+      color: var(--purple);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      outline: none;
+      width: 150px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .word-input:focus {
+      border-color: rgba(185, 127, 255, .65);
+      box-shadow: 0 0 12px rgba(185, 127, 255, .15);
+    }
+
+    .shift-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .shift-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 229, 102, 0.3);
+      background: rgba(255, 229, 102, 0.06);
+      color: var(--yellow);
+      font-size: 16px;
+      font-family: var(--mono);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+    }
+
+    .shift-btn:hover {
+      background: rgba(255, 229, 102, 0.14);
+      box-shadow: 0 0 8px rgba(255, 229, 102, .3);
+    }
+
+    .shift-val {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--yellow);
+      width: 40px;
+      text-align: center;
+    }
+
+    .go-btn {
+      margin-left: auto;
+      padding: 7px 22px;
+      border-radius: 999px;
+      border: none;
+      background: var(--purple);
+      color: #05080f;
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .go-btn:hover {
+      box-shadow: 0 0 22px rgba(185, 127, 255, .55);
+      background: #d4a8ff;
+    }
+
+    .go-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    /* ── Stage ── */
+    .stage {
+      padding: 18px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      min-height: 560px;
+    }
+
+    .stage::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px,
+          rgba(185, 127, 255, 0.007) 3px, rgba(185, 127, 255, 0.007) 4px);
+    }
+
+    /* ── Status ── */
+    .status {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--purple);
+      letter-spacing: .18em;
+      min-height: 18px;
+      align-self: flex-start;
+      position: relative;
+      z-index: 2;
+    }
+
+    .blink {
+      animation: blink .9s step-end infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0
+      }
+    }
+
+    /* ── Input word row ── */
+    .input-row {
+      display: flex;
+      gap: 8px;
+      position: relative;
+      z-index: 2;
+      align-items: center;
+      align-self: flex-start;
+    }
+
+    .irow-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: .16em;
+      margin-right: 4px;
+    }
+
+    .ichip {
+      width: 50px;
+      height: 54px;
+      border-radius: 9px;
+      border: 1px solid rgba(185, 127, 255, 0.22);
+      background: rgba(5, 8, 15, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      opacity: 0;
+      transition: all .3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ichip .idx {
+      font-size: 8px;
+      color: var(--muted);
+    }
+
+    .ichip.in {
+      opacity: 1;
+    }
+
+    .ichip.active {
+      border-color: var(--purple);
+      color: var(--purple);
+      box-shadow: 0 0 20px rgba(185, 127, 255, .4), inset 0 0 10px rgba(185, 127, 255, .06);
+    }
+
+    .ichip.done {
+      border-color: rgba(185, 127, 255, .3);
+      color: rgba(185, 127, 255, .5);
+    }
+
+    /* ── Split section ── */
+    .split-section {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+      background: rgba(5, 8, 15, 0.5);
+      border: 1px solid rgba(185, 127, 255, 0.12);
+      border-radius: 14px;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity .5s;
+    }
+
+    .split-section.vis {
+      opacity: 1;
+    }
+
+    /* ── Left panel — Reverse ── */
+    .left-panel {
+      flex: 1;
+      min-width: 0;
+      padding: 14px 12px;
+      border-right: 1px solid rgba(185, 127, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: background .4s, box-shadow .4s;
+    }
+
+    .left-panel.active-phase {
+      background: rgba(89, 242, 255, 0.04);
+      box-shadow: inset 0 0 30px rgba(89, 242, 255, 0.04);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .18em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .phase-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(74, 96, 122, 0.4);
+      transition: background .3s, box-shadow .3s;
+    }
+
+    .left-panel.active-phase .phase-dot {
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+
+    .left-panel.active-phase .panel-header {
+      color: var(--cyan);
+    }
+
+    .right-panel.active-phase .phase-dot {
+      background: var(--yellow);
+      box-shadow: 0 0 8px var(--yellow);
+    }
+
+    .right-panel.active-phase .panel-header {
+      color: var(--yellow);
+    }
+
+    /* Chips inside panels */
+    .panel-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      min-height: 44px;
+      align-items: center;
+    }
+
+    .pchip {
+      width: 38px;
+      height: 42px;
+      border-radius: 7px;
+      border: 1px solid rgba(89, 242, 255, 0.15);
+      background: rgba(5, 8, 15, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      font-family: var(--mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: rgba(74, 96, 122, 0.5);
+      transition: all .35s;
+    }
+
+    .pchip.filled-rev {
+      color: var(--cyan);
+      border-color: rgba(89, 242, 255, 0.45);
+      box-shadow: 0 0 10px rgba(89, 242, 255, 0.2);
+      animation: chipIn .4s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .pchip.filled-cae {
+      color: var(--yellow);
+      border-color: rgba(255, 229, 102, 0.45);
+      box-shadow: 0 0 10px rgba(255, 229, 102, 0.2);
+      animation: chipIn .4s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .pchip.lit-rev {
+      color: var(--cyan);
+      border-color: var(--cyan);
+      box-shadow: 0 0 18px rgba(89, 242, 255, .55);
+    }
+
+    .pchip.lit-yellow {
+      color: var(--yellow);
+      border-color: var(--yellow);
+      box-shadow: 0 0 18px rgba(255, 229, 102, .55);
+    }
+
+    @keyframes chipIn {
+      from {
+        transform: scale(.6) translateY(-6px);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1) translateY(0);
+        opacity: 1
+      }
+    }
+
+    .pchip .pidx {
+      font-size: 7px;
+      color: var(--muted);
+    }
+
+    .panel-divider {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: .14em;
+      text-align: center;
+      opacity: 0;
+      transition: opacity .4s;
+      padding: 4px 0;
+    }
+
+    .panel-divider.vis {
+      opacity: 1;
+    }
+
+    .panel-divider.cyan {
+      color: var(--cyan);
+    }
+
+    .panel-divider.yellow {
+      color: var(--yellow);
+    }
+
+    /* ── Center lock ── */
+    .center-lock {
+      width: 130px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 8px;
+      border-right: 1px solid rgba(185, 127, 255, 0.1);
+      position: relative;
+    }
+
+    .lock-phase-label {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 4px 8px;
+      border-radius: 5px;
+      transition: all .4s;
+    }
+
+    .lock-phase-label.top {
+      border: 1px solid rgba(89, 242, 255, 0.2);
+      color: rgba(89, 242, 255, 0.5);
+      background: rgba(89, 242, 255, 0.04);
+    }
+
+    .lock-phase-label.top.active {
+      color: var(--cyan);
+      border-color: rgba(89, 242, 255, .55);
+      background: rgba(89, 242, 255, 0.1);
+    }
+
+    .lock-phase-label.bot {
+      border: 1px solid rgba(255, 229, 102, 0.2);
+      color: rgba(255, 229, 102, 0.5);
+      background: rgba(255, 229, 102, 0.04);
+    }
+
+    .lock-phase-label.bot.active {
+      color: var(--yellow);
+      border-color: rgba(255, 229, 102, .55);
+      background: rgba(255, 229, 102, 0.1);
+    }
+
+    /* Lock dial SVG */
+    #lockSvg {
+      display: block;
+      filter: drop-shadow(0 0 6px rgba(185, 127, 255, 0.3));
+    }
+
+    #dialDisc {
+      transition: transform 0.9s cubic-bezier(0.25, 0.1, 0.25, 1);
+      transform-origin: 55px 55px;
+    }
+
+    .lock-shift-badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--yellow);
+      background: rgba(255, 229, 102, 0.1);
+      border: 1px solid rgba(255, 229, 102, 0.3);
+      border-radius: 6px;
+      padding: 3px 10px;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .lock-shift-badge.vis {
+      opacity: 1;
+    }
+
+    /* Flying letter particle */
+    .flyer {
+      position: fixed;
+      z-index: 200;
+      pointer-events: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 700;
+      transition: none;
+      opacity: 0;
+    }
+
+    /* ── Right panel — Caesar ── */
+    .right-panel {
+      flex: 1;
+      min-width: 0;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: background .4s, box-shadow .4s;
+    }
+
+    .right-panel.active-phase {
+      background: rgba(255, 229, 102, 0.03);
+      box-shadow: inset 0 0 30px rgba(255, 229, 102, 0.03);
+    }
+
+    /* Alphabet tape in right panel */
+    .tape-wrap {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 229, 102, 0.15);
+      background: rgba(5, 8, 15, 0.7);
+      height: 50px;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .tape-wrap.vis {
+      opacity: 1;
+    }
+
+    /* fade masks */
+    .tape-wrap::before,
+    .tape-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 40px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .tape-wrap::before {
+      left: 0;
+      background: linear-gradient(to right, rgba(5, 8, 15, 1), transparent);
+    }
+
+    .tape-wrap::after {
+      right: 0;
+      background: linear-gradient(to left, rgba(5, 8, 15, 1), transparent);
+    }
+
+    /* center reticle */
+    .tape-reticle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 38px;
+      border-left: 1px solid rgba(255, 229, 102, 0.6);
+      border-right: 1px solid rgba(255, 229, 102, 0.6);
+      background: rgba(255, 229, 102, 0.05);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .tape-reticle::before,
+    .tape-reticle::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--yellow);
+      box-shadow: 0 0 8px var(--yellow);
+    }
+
+    .tape-reticle::before {
+      top: -2px;
+    }
+
+    .tape-reticle::after {
+      bottom: -2px;
+    }
+
+    .tape-inner {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      will-change: transform;
+    }
+
+    .tcell {
+      width: 38px;
+      height: 50px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-family: var(--mono);
+      font-size: 15px;
+      color: var(--muted);
+      transition: color .2s;
+    }
+
+    .tcell .tpos {
+      font-size: 7px;
+      color: rgba(74, 96, 122, 0.5);
+    }
+
+    .tcell.tape-src {
+      color: var(--cyan);
+      text-shadow: 0 0 12px rgba(89, 242, 255, .8);
+    }
+
+    .tcell.tape-dst {
+      color: var(--yellow);
+      text-shadow: 0 0 12px rgba(255, 229, 102, .8);
+    }
+
+    /* ── Output row ── */
+    .output-section {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity .5s;
+    }
+
+    .output-section.vis {
+      opacity: 1;
+    }
+
+    .out-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: .18em;
+    }
+
+    .out-header .step-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .step-pill {
+      font-size: 9px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      border: 1px solid;
+    }
+
+    .step-pill.s1 {
+      color: rgba(89, 242, 255, .7);
+      border-color: rgba(89, 242, 255, .25);
+      background: rgba(89, 242, 255, .05);
+    }
+
+    .step-pill.s2 {
+      color: rgba(255, 229, 102, .7);
+      border-color: rgba(255, 229, 102, .25);
+      background: rgba(255, 229, 102, .05);
+    }
+
+    .step-pill.sf {
+      color: rgba(34, 211, 110, .8);
+      border-color: rgba(34, 211, 110, .3);
+      background: rgba(34, 211, 110, .05);
+    }
+
+    .out-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ochip {
+      width: 50px;
+      height: 54px;
+      border-radius: 9px;
+      border: 1px solid rgba(34, 211, 110, 0.1);
+      background: rgba(5, 8, 15, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-family: var(--mono);
+      font-size: 20px;
+      color: transparent;
+      transition: all .4s;
+    }
+
+    .ochip .oidx {
+      font-size: 8px;
+      color: var(--muted);
+    }
+
+    .ochip.landed {
+      color: var(--green);
+      border-color: rgba(34, 211, 110, .5);
+      box-shadow: 0 0 18px rgba(34, 211, 110, .3);
+      animation: landIn .5s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes landIn {
+      from {
+        transform: scale(.65) translateY(-8px);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1) translateY(0);
+        opacity: 1
+      }
+    }
+
+    /* ── Info panel ── */
+    .info-panel {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      background: rgba(5, 8, 15, 0.6);
+      border: 1px solid rgba(185, 127, 255, 0.14);
+      border-radius: 12px;
+      padding: 14px 18px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .5s, transform .5s;
+    }
+
+    .info-panel.vis {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .info-title {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--purple);
+      letter-spacing: .22em;
+      margin-bottom: 10px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .irow {
+      background: rgba(5, 8, 15, 0.5);
+      border: 1px solid rgba(185, 127, 255, 0.08);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .irow-lbl {
+      font-family: var(--mono);
+      font-size: 8px;
+      color: var(--muted);
+      letter-spacing: .18em;
+      margin-bottom: 4px;
+    }
+
+    .irow-val {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+
+    .formula {
+      grid-column: 1/-1;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text);
+      line-height: 1.8;
+      background: rgba(5, 8, 15, 0.8);
+      border: 1px solid rgba(185, 127, 255, 0.12);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .formula em {
+      color: var(--cyan);
+      font-style: normal;
+    }
+
+    .formula strong {
+      color: var(--yellow);
+    }
+
+    .formula .gr {
+      color: var(--green);
+    }
+
+    .formula .pu {
+      color: var(--purple);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-top: 1px solid rgba(148, 163, 184, 0.34);
+      background: rgba(2, 6, 23, 0.74);
+    }
+
+    .foot-btn {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(185, 127, 255, 0.25);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .foot-btn:hover {
+      color: var(--text);
+      border-color: rgba(185, 127, 255, .5);
+    }
+
+    .foot-btn.primary {
+      color: var(--purple);
+      background: rgba(185, 127, 255, 0.06);
+      border-color: rgba(185, 127, 255, .4);
+    }
+
+    .foot-btn.primary:hover {
+      background: rgba(185, 127, 255, 0.12);
+      box-shadow: 0 0 14px rgba(185, 127, 255, .28);
+    }
+  </style>
+    <script src="global_controls.js"></script>
+</head>
+
+<body>
+  <div class="card">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="badge">CH 02</span>
+        <div>
+          <div class="topbar-title">Reverse + Caesar</div>
+          <div class="topbar-sub">Level 1 - FLIP THE WORD, THEN SHIFT EACH LETTER</div>
+        </div>
+      </div>
+      <div class="live">Auto Demo</div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <span class="ctrl-label" style="display:none;">WORD</span>
+      <input class="word-input" id="wordInput" type="hidden" value="CIPHER" />
+      <span class="ctrl-label" style="margin-left:8px">SHIFT</span>
+      <div class="shift-wrap">
+        <button class="shift-btn" id="shiftDown">−</button>
+        <div class="shift-val" id="shiftVal">+3</div>
+        <button class="shift-btn" id="shiftUp">+</button>
+      </div>
+      <button class="go-btn" id="goBtn">▶ Scramble</button>
+    </div>
+
+    <!-- STAGE -->
+    <div class="stage" id="stage">
+      <div class="status"><span id="statusTxt">Set your word and shift — then hit Scramble</span><span class="blink">
+          ▌</span></div>
+
+      <!-- Input word -->
+      <div class="input-row" id="inputRow">
+        <span class="irow-label">INPUT</span>
+      </div>
+
+      <!-- Main split section -->
+      <div class="split-section" id="splitSection">
+
+        <!-- LEFT: Reverse -->
+        <div class="left-panel" id="leftPanel">
+          <div class="panel-header">
+            <div class="phase-dot"></div>
+            <span>Stage 1 · Reverse</span>
+          </div>
+          <!-- original chips -->
+          <div class="panel-chips" id="leftOriginal"></div>
+          <div class="panel-divider" id="leftDivider">↓&nbsp; spin dial back &nbsp;↓</div>
+          <!-- reversed chips -->
+          <div class="panel-chips" id="leftReversed"></div>
+        </div>
+
+        <!-- CENTER: Lock -->
+        <div class="center-lock">
+          <div class="lock-phase-label top" id="lockLabel1">← spin back</div>
+          <svg id="lockSvg" width="110" height="110" viewBox="0 0 110 110">
+            <!-- Lock body -->
+            <circle cx="55" cy="55" r="52" fill="rgba(5,8,15,0.9)" stroke="rgba(185,127,255,0.3)" stroke-width="1.5" />
+            <!-- Rotating disc -->
+            <g id="dialDisc">
+              <!-- tick marks -->
+              <g stroke="rgba(74,96,122,0.4)" stroke-width="1">
+                <line x1="55" y1="5" x2="55" y2="13" />
+                <line x1="55" y1="97" x2="55" y2="105" />
+                <line x1="5" y1="55" x2="13" y2="55" />
+                <line x1="97" y1="55" x2="105" y2="55" />
+                <line x1="18.5" y1="18.5" x2="24.1" y2="24.1" />
+                <line x1="85.9" y1="85.9" x2="91.5" y2="91.5" />
+                <line x1="91.5" y1="18.5" x2="85.9" y2="24.1" />
+                <line x1="18.5" y1="91.5" x2="24.1" y2="85.9" />
+              </g>
+              <!-- inner ring -->
+              <circle cx="55" cy="55" r="38" fill="none" stroke="rgba(185,127,255,0.15)" stroke-width="1" />
+              <!-- dial numbers -->
+              <text x="55" y="22" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8"
+                fill="rgba(185,127,255,0.5)">0</text>
+              <text x="88" y="58" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8"
+                fill="rgba(185,127,255,0.5)">6</text>
+              <text x="55" y="93" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8"
+                fill="rgba(185,127,255,0.5)">13</text>
+              <text x="22" y="58" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8"
+                fill="rgba(185,127,255,0.5)">19</text>
+              <!-- center dot -->
+              <circle cx="55" cy="55" r="4" fill="rgba(185,127,255,0.3)" />
+            </g>
+            <!-- Fixed pointer notch at top -->
+            <polygon points="55,3 51,12 59,12" fill="rgba(185,127,255,0.8)" />
+            <!-- center pin -->
+            <circle cx="55" cy="55" r="2.5" fill="rgba(185,127,255,0.8)" />
+          </svg>
+          <div class="lock-shift-badge" id="lockShiftBadge"></div>
+          <div class="lock-phase-label bot" id="lockLabel2">click fwd →</div>
+        </div>
+
+        <!-- RIGHT: Caesar -->
+        <div class="right-panel" id="rightPanel">
+          <div class="panel-header">
+            <div class="phase-dot"></div>
+            <span>Stage 2 · Caesar</span>
+          </div>
+          <div class="tape-wrap" id="tapeWrap">
+            <div class="tape-reticle"></div>
+            <div class="tape-inner" id="tapeInner"></div>
+          </div>
+          <div class="panel-divider" id="rightDivider">↓&nbsp; letter lands &nbsp;↓</div>
+          <div class="panel-chips" id="rightShifted"></div>
+        </div>
+
+      </div><!-- /split-section -->
+
+      <!-- Output -->
+      <div class="output-section" id="outputSection">
+        <div class="out-header">
+          <span>OUTPUT</span>
+          <div class="step-badge">
+            <span class="step-pill s1">flip</span>
+            <span style="color:var(--muted);font-family:var(--mono);font-size:10px">+</span>
+            <span class="step-pill s2">shift</span>
+            <span style="color:var(--muted);font-family:var(--mono);font-size:10px">=</span>
+            <span class="step-pill sf">encoded</span>
+          </div>
+        </div>
+        <div class="out-chips" id="outChips"></div>
+      </div>
+
+      <!-- Info -->
+      <div class="info-panel" id="infoPanel">
+        <div class="info-title">↳ DUAL-STAGE BREAKDOWN</div>
+        <div class="info-grid" id="infoGrid"></div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+
+        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
+      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
+      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    </div>
+      <button class="foot-btn" id="btn-play">Pause</button>
+      <button class="foot-btn" id="btn-step">Step</button>
+      <button class="foot-btn" id="replayBtn">↩ Replay</button>
+      <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
+    </div>
+  </div>
+
+  <!-- Flying letter particle -->
+  <div class="flyer" id="flyer"></div>
+
+  <script>
+let speedMultiplier = 1.0;
+    const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const TAPE_W = 38;
+    let shift = 3, running = false, ct = { cancelled: false }, dialRot = 0;
+    let isPlaying = true, stepRequested = false;
+
+    /* ── DOM ── */
+    const wordInput = document.getElementById('wordInput');
+    const shiftDown = document.getElementById('shiftDown');
+    const shiftUp = document.getElementById('shiftUp');
+    const shiftVal = document.getElementById('shiftVal');
+    const goBtn = document.getElementById('goBtn');
+    const replayBtn = document.getElementById('replayBtn');
+    const statusTxt = document.getElementById('statusTxt');
+    const inputRow = document.getElementById('inputRow');
+    const splitSec = document.getElementById('splitSection');
+    const leftPanel = document.getElementById('leftPanel');
+    const leftOrig = document.getElementById('leftOriginal');
+    const leftRev = document.getElementById('leftReversed');
+    const leftDiv = document.getElementById('leftDivider');
+    const lockLabel1 = document.getElementById('lockLabel1');
+    const lockLabel2 = document.getElementById('lockLabel2');
+    const lockBadge = document.getElementById('lockShiftBadge');
+    const dialDisc = document.getElementById('dialDisc');
+    const rightPanel = document.getElementById('rightPanel');
+    const tapeWrap = document.getElementById('tapeWrap');
+    const tapeInner = document.getElementById('tapeInner');
+    const rightDiv = document.getElementById('rightDivider');
+    const rightShift = document.getElementById('rightShifted');
+    const outputSec = document.getElementById('outputSection');
+    const outChips = document.getElementById('outChips');
+    const infoPanel = document.getElementById('infoPanel');
+    const infoGrid = document.getElementById('infoGrid');
+    const flyer = document.getElementById('flyer');
+
+    const sleep = ms => new Promise(r => { ct._t = setTimeout(r, ms / speedMultiplier); });
+    const vis = (el, on = true) => el.classList.toggle('vis', on);
+    const setStatus = t => statusTxt.textContent = t;
+
+    async function waitForPlaybackStep() {
+      if (ct.cancelled) return;
+      if (isPlaying) {
+        await sleep(2000);
+        return;
+      }
+      setStatus('Paused - press Step to continue.');
+      while (!ct.cancelled && !isPlaying && !stepRequested) {
+        await sleep(80);
+      }
+      if (stepRequested) stepRequested = false;
+    }
+
+    /* ── Shift controls ── */
+    function updateShift() {
+      shiftVal.textContent = (shift >= 0 ? '+' : '') + shift;
+      lockBadge.textContent = (shift >= 0 ? '+' : '') + shift + ' steps';
+    }
+    shiftDown.addEventListener('click', () => { if (shift > -25) { shift--; updateShift(); } });
+    shiftUp.addEventListener('click', () => { if (shift < 25) { shift++; updateShift(); } });
+
+    /* ── Build alphabet tape ── */
+    function buildTape() {
+      tapeInner.innerHTML = '';
+      // triple alphabet so we can always scroll to any letter
+      for (let rep = 0; rep < 3; rep++) {
+        for (let i = 0; i < 26; i++) {
+          const c = document.createElement('div');
+          c.className = 'tcell';
+          c.id = `tc-${rep}-${i}`;
+          c.innerHTML = `<span>${ALPHA[i]}</span><span class="tpos">${i}</span>`;
+          tapeInner.appendChild(c);
+        }
+      }
+    }
+
+    /* ── Position tape so letter at tapeIdx is centered ── */
+    function setTapePos(tapeIdx, animated, ms) {
+      const outerW = tapeWrap.offsetWidth || 220;
+      const center = outerW / 2;
+      const target = center - tapeIdx * TAPE_W - TAPE_W / 2;
+      tapeInner.style.transition = animated ? `transform ${ms || 900}ms cubic-bezier(0.25,0.1,0.25,1)` : 'none';
+      tapeInner.style.transform = `translateX(${target}px)`;
+    }
+
+    function clearTapeHighlights() {
+      document.querySelectorAll('.tcell').forEach(c => c.classList.remove('tape-src', 'tape-dst'));
+    }
+
+    /* ── Spin the dial ── */
+    async function spinDial(degrees, ms) {
+      dialRot += degrees;
+      dialDisc.style.transition = `transform ${ms}ms cubic-bezier(0.25,0.1,0.25,1)`;
+      dialDisc.style.transform = `rotate(${dialRot}deg)`;
+      await sleep(ms);
+    }
+
+    /* ── Build input chips in the top row ── */
+    function buildInputRow(word) {
+      // remove old chips (keep the label)
+      const lbl = inputRow.querySelector('.irow-label');
+      inputRow.innerHTML = '';
+      inputRow.appendChild(lbl);
+      word.split('').forEach((ch, i) => {
+        const c = document.createElement('div');
+        c.className = 'ichip';
+        c.id = `ic-${i}`;
+        c.innerHTML = `<span>${ch}</span><span class="idx">[${i}]</span>`;
+        inputRow.appendChild(c);
+      });
+    }
+
+    /* ── Build panel placeholder chips ── */
+    function buildPanelChips(container, n, prefix) {
+      container.innerHTML = '';
+      for (let i = 0; i < n; i++) {
+        const c = document.createElement('div');
+        c.className = 'pchip';
+        c.id = `${prefix}-${i}`;
+        c.innerHTML = `<span id="${prefix}ch-${i}">·</span><span class="pidx">[${i}]</span>`;
+        container.appendChild(c);
+      }
+    }
+
+    /* ── Build output chips ── */
+    function buildOutChips(n) {
+      outChips.innerHTML = '';
+      for (let i = 0; i < n; i++) {
+        const c = document.createElement('div');
+        c.className = 'ochip';
+        c.id = `oc-${i}`;
+        c.innerHTML = `<span id="ocv-${i}"> </span><span class="oidx">[${i}]</span>`;
+        outChips.appendChild(c);
+      }
+    }
+
+    /* ── Animate a letter flying from one element to another ── */
+    async function flyLetter(srcEl, dstEl, letter, color, glowColor) {
+      if (!srcEl || !dstEl) return;
+      const sr = srcEl.getBoundingClientRect();
+      const dr = dstEl.getBoundingClientRect();
+
+      flyer.textContent = letter;
+      flyer.style.background = 'rgba(5,8,15,0.95)';
+      flyer.style.border = `2px solid ${color}`;
+      flyer.style.color = color;
+      flyer.style.boxShadow = `0 0 18px ${glowColor}`;
+      flyer.style.transition = 'none';
+      flyer.style.opacity = '1';
+      flyer.style.left = (sr.left + sr.width / 2 - 21) + 'px';
+      flyer.style.top = (sr.top + sr.height / 2 - 21) + 'px';
+
+      await sleep(40); if (ct.cancelled) { flyer.style.opacity = '0'; return; }
+
+      const tx = dr.left + dr.width / 2 - 21;
+      const ty = dr.top + dr.height / 2 - 21;
+      const dist = Math.hypot(tx - parseFloat(flyer.style.left), ty - parseFloat(flyer.style.top));
+      const ms = 320 + dist * 0.5;
+
+      flyer.style.transition = `left ${ms}ms cubic-bezier(0.4,0,0.2,1), top ${ms}ms cubic-bezier(0.4,0,0.2,1)`;
+      flyer.style.left = tx + 'px';
+      flyer.style.top = ty + 'px';
+      await sleep(ms);
+      flyer.style.opacity = '0';
+    }
+
+    /* ── Main ── */
+    async function runDemo() {
+      if (running) { ct.cancelled = true; await sleep(120); }
+      ct = { cancelled: false };
+      running = true;
+      goBtn.disabled = true;
+
+      const raw = 'CIPHER';
+      wordInput.value = raw;
+      const n = raw.length;
+      const rev = raw.split('').reverse().join('');
+
+      /* compute final output */
+      const finalWord = rev.split('').map(ch => {
+        const idx = ALPHA.indexOf(ch);
+        return ALPHA[((idx + shift) % 26 + 26) % 26];
+      }).join('');
+
+      /* ── Reset UI ── */
+      vis(infoPanel, false);
+      vis(outputSec, false);
+      leftPanel.classList.remove('active-phase');
+      rightPanel.classList.remove('active-phase');
+      lockLabel1.classList.remove('active');
+      lockLabel2.classList.remove('active');
+      vis(lockBadge, false);
+      vis(leftDiv, false);
+      vis(rightDiv, false);
+      leftDiv.classList.remove('cyan', 'yellow');
+      rightDiv.classList.remove('yellow');
+      infoGrid.innerHTML = '';
+      flyer.style.opacity = '0';
+      clearTapeHighlights();
+      dialRot = 0;
+      dialDisc.style.transition = 'none';
+      dialDisc.style.transform = 'rotate(0deg)';
+
+      buildTape();
+      buildInputRow(raw);
+      buildPanelChips(leftOrig, n, 'lo');
+      buildPanelChips(leftRev, n, 'lr');
+      buildPanelChips(rightShifted, n, 'rs');
+      buildOutChips(n);
+
+      setStatus('Initializing dual-stage scrambler…');
+      vis(splitSec, true);
+      vis(outputSec, true);
+      setTapePos(26, false); // start tape at second ALPHA set, letter A centered
+
+      await sleep(500); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+      /* ── Phase 0: Load input chips ── */
+      setStatus('Loading word onto input belt…');
+      for (let i = 0; i < n; i++) {
+        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+        const ic = document.getElementById(`ic-${i}`);
+        if (ic) ic.classList.add('in');
+        await sleep(110);
+      }
+      await sleep(500); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+      await waitForPlaybackStep(); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+      /* ══ PHASE 1: REVERSE ══ */
+      setStatus('Stage 1 · Spinning dial back — reversing the word…');
+      leftPanel.classList.add('active-phase');
+      lockLabel1.classList.add('active');
+
+      /* Spin dial backwards dramatically */
+      const reverseSpin = -(720 + n * 14);
+      await spinDial(reverseSpin, 1400);
+      if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+      /* Fly each letter from input to its reversed slot in leftOriginal */
+      for (let i = 0; i < n; i++) {
+        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+        const ic = document.getElementById(`ic-${i}`);
+        const slot = document.getElementById(`lo-${i}`);
+        if (ic) ic.classList.add('active');
+        if (slot) {
+          await flyLetter(ic, slot, raw[i], '#59f2ff', 'rgba(89,242,255,0.7)');
+          if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+          const ch = document.getElementById(`loch-${i}`);
+          if (ch) ch.textContent = raw[i];
+          slot.classList.add('filled-rev');
+        }
+        if (ic) ic.classList.remove('active');
+        await sleep(80);
+      }
+      await sleep(500); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+      /* Now show the reversed result in leftReversed — fly from leftOriginal in reverse order */
+      leftDiv.textContent = '↓   mirror positions   ↓';
+      vis(leftDiv, true);
+      leftDiv.classList.add('cyan');
+      await sleep(300); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+      for (let i = 0; i < n; i++) {
+        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+        const srcSlot = document.getElementById(`lo-${n - 1 - i}`); // source: position (n-1-i) in original
+        const dstSlot = document.getElementById(`lr-${i}`);       // lands at position i in reversed row
+        if (srcSlot) srcSlot.classList.add('lit-rev');
+        await sleep(60);
+        if (srcSlot && dstSlot) {
+          await flyLetter(srcSlot, dstSlot, rev[i], '#59f2ff', 'rgba(89,242,255,0.7)');
+          if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+          const ch = document.getElementById(`lrch-${i}`);
+          if (ch) ch.textContent = rev[i];
+          dstSlot.classList.add('filled-rev');
+        }
+        if (srcSlot) srcSlot.classList.remove('lit-rev');
+        await sleep(100);
+      }
+
+      await sleep(600); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+      await waitForPlaybackStep(); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+      /* ══ PHASE 2: CAESAR ══ */
+      setStatus('Stage 2 · Clicking dial forward — applying Caesar shift…');
+      leftPanel.classList.remove('active-phase');
+      lockLabel1.classList.remove('active');
+      rightPanel.classList.add('active-phase');
+      lockLabel2.classList.add('active');
+      lockBadge.textContent = (shift >= 0 ? '+' : '') + shift + ' steps';
+      vis(lockBadge, true);
+      vis(tapeWrap, true);
+      vis(rightDiv, true);
+      rightDiv.textContent = '↓   letter lands below   ↓';
+      rightDiv.classList.add('yellow');
+
+      await sleep(300); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+      for (let i = 0; i < n; i++) {
+        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+        const ch = rev[i];
+        const srcIdx = ALPHA.indexOf(ch);
+        const dstIdx = ((srcIdx + shift) % 26 + 26) % 26;
+        const dstCh = ALPHA[dstIdx];
+
+        /* Highlight reversed chip */
+        document.querySelectorAll('[id^="lr-"]').forEach(c => c.classList.remove('lit-yellow'));
+        const revChip = document.getElementById(`lr-${i}`);
+        if (revChip) revChip.classList.add('lit-yellow');
+
+        setStatus(`"${ch}" (pos ${srcIdx}) + ${shift >= 0 ? '+' : ''}${shift} = pos ${dstIdx} → "${dstCh}"`);
+
+        /* Snap tape to source letter (middle set = rep 1, idx 26+srcIdx) */
+        const tapeSrc = 26 + srcIdx;
+        setTapePos(tapeSrc, false);
+        clearTapeHighlights();
+        document.getElementById(`tc-1-${srcIdx}`)?.classList.add('tape-src');
+
+        await sleep(350); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+        /* Spin dial forward */
+        const fwdDeg = (Math.abs(shift) / 26) * 360 * (shift >= 0 ? 1 : -1);
+        const travelMs = 700 + Math.abs(shift) * 30;
+
+        /* Fly letter from reversed chip → tape area while dial spins */
+        const tapeAreaEl = tapeWrap;
+        flyLetter(revChip, tapeAreaEl, ch, '#ffe566', 'rgba(255,229,102,0.7)');
+        spinDial(fwdDeg, travelMs);
+
+        /* Scroll tape to destination */
+        const tapeDst = tapeSrc + shift;
+        setTapePos(tapeDst < 0 ? tapeDst + 26 : tapeDst >= 78 ? tapeDst - 26 : tapeDst, true, travelMs);
+
+        await sleep(travelMs + 100); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+        clearTapeHighlights();
+        document.getElementById(`tc-1-${dstIdx}`)?.classList.add('tape-dst') ||
+          document.getElementById(`tc-0-${dstIdx}`)?.classList.add('tape-dst');
+        await sleep(300); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+        /* Land into right panel shifted row */
+        const dstChip = document.getElementById(`rs-${i}`);
+        if (dstChip) {
+          const tapeCenter = tapeWrap;
+          await flyLetter(tapeCenter, dstChip, dstCh, '#ffe566', 'rgba(255,229,102,0.7)');
+          if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+          const ch2 = document.getElementById(`rsch-${i}`);
+          if (ch2) ch2.textContent = dstCh;
+          dstChip.classList.add('filled-cae');
+        }
+
+        /* Also land in final output row */
+        const oc = document.getElementById(`oc-${i}`);
+        const ocv = document.getElementById(`ocv-${i}`);
+        if (oc && ocv) { ocv.textContent = dstCh; oc.classList.add('landed'); }
+
+        await sleep(350); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+        if (revChip) revChip.classList.remove('lit-yellow');
+        await waitForPlaybackStep(); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+      }
+
+      /* ══ DONE ══ */
+      setStatus(`Done! "${raw}" → reversed "${rev}" → encoded "${finalWord}"`);
+      clearTapeHighlights();
+      rightPanel.classList.remove('active-phase');
+      lockLabel2.classList.remove('active');
+      flyer.style.opacity = '0';
+
+      /* Pulse output */
+      for (let i = 0; i < n; i++) {
+        const oc = document.getElementById(`oc-${i}`);
+        if (oc) oc.style.boxShadow = '0 0 26px rgba(34,211,110,.75)';
+      }
+      await sleep(320);
+      for (let i = 0; i < n; i++) {
+        const oc = document.getElementById(`oc-${i}`);
+        if (oc) oc.style.boxShadow = '0 0 10px rgba(34,211,110,.22)';
+      }
+
+      /* Info panel */
+      infoGrid.innerHTML = `
+    <div class="irow">
+      <div class="irow-lbl">INPUT</div>
+      <div class="irow-val" style="color:var(--purple)">${raw}</div>
+    </div>
+    <div class="irow">
+      <div class="irow-lbl">AFTER REVERSE</div>
+      <div class="irow-val" style="color:var(--cyan)">${rev}</div>
+    </div>
+    <div class="irow">
+      <div class="irow-lbl">SHIFT APPLIED</div>
+      <div class="irow-val" style="color:var(--yellow)">${shift >= 0 ? '+' : ''}${shift} positions</div>
+    </div>
+    <div class="irow">
+      <div class="irow-lbl">FINAL OUTPUT</div>
+      <div class="irow-val" style="color:var(--green)">${finalWord}</div>
+    </div>
+    <div class="formula">
+      <span class="pu">Step 1 · Spin back:</span> Read the word backwards — last letter becomes first.<br>
+      &nbsp;&nbsp;<em>${raw}</em> → <strong>${rev}</strong><br><br>
+      <span class="pu">Step 2 · Click forward:</span> Each reversed letter shifts by <strong>${shift >= 0 ? '+' : ''}${shift}</strong> in the alphabet.<br>
+      &nbsp;&nbsp;<em>${rev}</em> → <span class="gr">${finalWord}</span><br><br>
+      <span class="pu">Why two steps?</span> Reversing alone is easy to crack. Shifting alone is easy to crack. Together, <span class="gr">the combo is much harder</span> — like a padlock that needs both the spin and the click.
+    </div>
+  `;
+      vis(infoPanel, true);
+
+      running = false;
+      goBtn.disabled = false;
+    }
+
+    /* ── Events ── */
+    goBtn.addEventListener('click', runDemo);
+    replayBtn.addEventListener('click', runDemo);
+    document.getElementById('btn-play').addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      document.getElementById('btn-play').textContent = isPlaying ? 'Pause' : 'Resume';
+    });
+    document.getElementById('btn-step').addEventListener('click', () => {
+      if (isPlaying) {
+        isPlaying = false;
+        document.getElementById('btn-play').textContent = 'Resume';
+      }
+      stepRequested = true;
+    });
+    wordInput.addEventListener('keydown', e => { if (e.key === 'Enter') runDemo(); });
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      alert('Next cipher coming soon in the full game!');
+    });
+
+    /* ── Init ── */
+    updateShift();
+    buildTape();
+    vis(splitSec, true);
+    vis(outputSec, true);
+  
+        const sDisplay = document.getElementById("speedDisplay");
+  if (document.getElementById("speedUp")) {
+    document.getElementById("speedUp").addEventListener("click", () => {
+      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+    document.getElementById("speedDown").addEventListener("click", () => {
+      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+  }
+
+  const nextBtn = document.getElementById("nextBtn");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
+      if (match) {
+        let ch = parseInt(match[1]);
+        let lvl = parseInt(match[2]);
+        lvl++;
+        if (lvl > 5) { lvl = 1; ch++; }
+        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
+      }
+    });
+  }
+</script>
+</body>
+
+</html>

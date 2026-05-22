@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CipherQuest | Level 3.3 | Affined Scrambler</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --cyan: #06b6d4;
+      --cyan-glow: #22d3ee;
+      --orange: #f97316;
+      --orange-glow: #fb923c;
+      --purple: #a855f7;
+      --purple-glow: #c084fc;
+      --pink: #ec4899;
+      --pink-glow: #f472b6;
+      --green: #22c55e;
+      --bg-dark: #0f172a;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #e2e8f0;
+      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+      background-image:
+        linear-gradient(rgba(30, 41, 59, 0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30, 41, 59, 0.5) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* Pipeline Animations */
+    .flow-row {
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0.15;
+      filter: grayscale(100%);
+      transform: translateY(-10px);
+    }
+
+    .flow-row.active {
+      opacity: 1;
+      filter: grayscale(0%);
+      transform: translateY(0);
+    }
+
+    .node {
+      transition: all 0.5s ease;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    .node.glow-cyan {
+      box-shadow: 0 0 15px rgba(34, 211, 238, 0.4), inset 0 0 0 2px var(--cyan-glow);
+      background: rgba(6, 182, 212, 0.1);
+      color: #cffafe;
+    }
+
+    .node.glow-orange {
+      box-shadow: 0 0 15px rgba(251, 146, 60, 0.4), inset 0 0 0 2px var(--orange-glow);
+      background: rgba(249, 115, 22, 0.1);
+      color: #ffedd5;
+    }
+
+    .node.glow-purple {
+      box-shadow: 0 0 15px rgba(192, 132, 252, 0.4), inset 0 0 0 2px var(--purple-glow);
+      background: rgba(168, 85, 247, 0.1);
+      color: #f3e8ff;
+    }
+
+    .node.glow-pink {
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.4), inset 0 0 0 2px var(--pink-glow);
+      background: rgba(236, 72, 153, 0.1);
+      color: #fce7f3;
+    }
+
+    .flow-arrow {
+      transition: all 0.4s ease;
+      height: 0;
+      opacity: 0;
+    }
+
+    .flow-row.active .flow-arrow {
+      height: 20px;
+      opacity: 1;
+    }
+
+    .pipeline-col {
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      margin: 0 0.5rem;
+    }
+
+    @keyframes pulse-border {
+
+      0%,
+      100% {
+        border-color: rgba(34, 211, 238, 0.3);
+      }
+
+      50% {
+        border-color: rgba(34, 211, 238, 0.8);
+      }
+    }
+
+    .active-step-border {
+      animation: pulse-border 2s infinite;
+    }
+  </style>
+    <script src="global_controls.js"></script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4 overflow-x-hidden">
+
+  <div
+    class="w-full max-w-5xl bg-slate-900/90 border border-slate-700/80 rounded-2xl shadow-2xl backdrop-blur-md overflow-hidden flex flex-col">
+
+    <header
+      class="flex flex-col sm:flex-row items-center justify-between p-5 bg-slate-950/80 border-b border-slate-800">
+      <div>
+        <h1 class="text-xl font-bold text-white flex items-center gap-2">
+          <i data-lucide="calculator" class="w-6 h-6 text-pink-400"></i>
+          Affined Scrambler
+        </h1>
+        <p class="text-sm text-slate-400 mt-1">y = (a * x + b) mod 26</p>
+      </div>
+
+      <div class="flex gap-4 mt-4 sm:mt-0">
+        <div class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-1.5 flex flex-col items-center">
+          <span class="text-[10px] text-slate-500 font-bold uppercase">Multiplier (a)</span>
+          <span class="text-sm font-mono font-bold text-orange-400">5</span>
+        </div>
+        <div class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-1.5 flex flex-col items-center">
+          <span class="text-[10px] text-slate-500 font-bold uppercase">Adder (b)</span>
+          <span class="text-sm font-mono font-bold text-purple-400">8</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="p-6 md:p-8 flex-1 relative flex flex-col">
+
+      <div
+        class="mb-6 bg-slate-800/50 border border-slate-700 rounded-xl p-4 flex items-start gap-4 active-step-border transition-colors duration-500 min-h-[120px]">
+        <div class="bg-slate-900 p-2 rounded-lg mt-1 border border-slate-700 shrink-0">
+          <i data-lucide="info" class="w-5 h-5 text-pink-400"></i>
+        </div>
+        <div class="w-full">
+          <h2 id="step-title" class="text-lg font-bold text-pink-400 mb-2">1. Input Word</h2>
+          <div id="step-desc" class="text-slate-300 text-sm leading-relaxed">
+          </div>
+        </div>
+      </div>
+
+      <div id="pipeline-container" class="flex justify-center flex-1 transition-all duration-700">
+      </div>
+
+    </main>
+
+    <footer class="flex items-center justify-between p-4 bg-slate-950/90 border-t border-slate-800">
+      <div class="flex gap-3">
+        <button id="btn-play"
+          class="bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+          <i data-lucide="pause" class="w-4 h-4"></i> <span id="play-text">Pause</span>
+        </button>
+        <button id="btn-next"
+          class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+          <i data-lucide="step-forward" class="w-4 h-4"></i> Step
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="speed-controls flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1">
+          <button id="speedDown" class="text-slate-400 hover:text-white px-2">-</button>
+          <span id="speedDisplay" class="text-xs font-mono text-cyan-400 w-8 text-center">1.0x</span>
+          <button id="speedUp" class="text-slate-400 hover:text-white px-2">+</button>
+        </div>
+        <div class="flex gap-1" id="progress-dots">
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // The Data (Word: MATH, a: 5, b: 8)
+    const columnsData = [
+      { char: 'M', idx: '12', mult: '60', add: '68', mod: '16', final: 'Q' },
+      { char: 'A', idx: '0', mult: '0', add: '8', mod: '8', final: 'I' },
+      { char: 'T', idx: '19', mult: '95', add: '103', mod: '25', final: 'Z' },
+      { char: 'H', idx: '7', mult: '35', add: '43', mod: '17', final: 'R' }
+    ];
+
+    const steps = [
+      {
+        id: 0,
+        title: "1. Input Word",
+        desc: `<p>We want to encrypt the word <strong>"MATH"</strong> using the Affined Scrambler.</p>`,
+        activeRows: ['row-char']
+      },
+      {
+        id: 1,
+        title: "2. Alphabet Index (x)",
+        desc: `<p>Just like standard ciphers, we convert the letters into their numerical indexes (A=0, B=1... M=12).</p>`,
+        activeRows: ['row-char', 'row-idx']
+      },
+      {
+        id: 2,
+        title: "3. The Stretch (Multiply by a)",
+        desc: `<p>First, we multiply each index by our multiplier <strong class="text-orange-400">a = 5</strong>. This "stretches" the alphabet out securely.</p>
+             <p class="text-xs text-slate-400 font-mono mt-1">E.g., 12 × 5 = 60</p>`,
+        activeRows: ['row-char', 'row-idx', 'row-mult']
+      },
+      {
+        id: 3,
+        title: "4. The Shift (Add b)",
+        desc: `<p>Next, we add our shift value <strong class="text-purple-400">b = 8</strong> to every stretched number.</p>
+             <p class="text-xs text-slate-400 font-mono mt-1">E.g., 60 + 8 = 68</p>`,
+        activeRows: ['row-char', 'row-idx', 'row-mult', 'row-add']
+      },
+      {
+        id: 4,
+        title: "5. The Modulo Loop (mod 26)",
+        desc: `<p>Because there are only 26 letters in the alphabet, any number larger than 25 "wraps around" like a clock.</p>
+             <p class="text-xs text-slate-400 font-mono mt-1">E.g., 68 ÷ 26 has a remainder of 16.</p>`,
+        activeRows: ['row-char', 'row-idx', 'row-mult', 'row-add', 'row-mod']
+      },
+      {
+        id: 5,
+        title: "6. Ciphertext Output",
+        desc: `<p>Finally, we convert our Modulo numbers back into letters! <strong>MATH</strong> has successfully become <strong class="text-pink-400">QIZR</strong>.</p>`,
+        activeRows: ['row-char', 'row-idx', 'row-mult', 'row-add', 'row-mod', 'row-final']
+      }
+    ];
+
+    let speedMultiplier = 1.0;
+let currentStep = 0;
+    let isPlaying = true;
+    let playInterval;
+    const $ = (id) => document.getElementById(id);
+
+    function buildPipeline() {
+      const container = $('pipeline-container');
+      container.innerHTML = '';
+
+      columnsData.forEach((col, i) => {
+        const colDiv = document.createElement('div');
+        colDiv.className = 'pipeline-col flex flex-col items-center';
+
+        colDiv.innerHTML = `
+        <div class="flow-row row-char flex flex-col items-center w-full">
+          <div class="node bg-slate-800 rounded-lg w-12 h-12 md:w-16 md:h-16 flex items-center justify-center text-xl md:text-2xl font-black">${col.char}</div>
+          <div class="flow-arrow flex flex-col items-center justify-center text-slate-600">
+            <div class="w-0.5 h-full bg-slate-600"></div><i data-lucide="chevron-down" class="w-4 h-4 -mt-2"></i>
+          </div>
+        </div>
+
+        <div class="flow-row row-idx flex flex-col items-center w-full">
+          <div class="node bg-slate-800 rounded-lg w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-md md:text-lg font-bold font-mono text-slate-300">${col.idx}</div>
+          <div class="flow-arrow flex flex-col items-center justify-center text-orange-600/50">
+            <div class="text-[9px] font-mono text-orange-400/80 mb-1 absolute ml-12 bg-slate-900/80 px-1 rounded whitespace-nowrap ${i === 0 ? 'block' : 'hidden'}">× 5</div>
+            <div class="w-0.5 h-full bg-orange-600/50"></div><i data-lucide="chevron-down" class="w-4 h-4 -mt-2 text-orange-600/50"></i>
+          </div>
+        </div>
+
+        <div class="flow-row row-mult flex flex-col items-center w-full">
+          <div class="node glow-orange rounded-lg w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-md md:text-lg font-bold font-mono">${col.mult}</div>
+          <div class="flow-arrow flex flex-col items-center justify-center text-purple-600/50">
+            <div class="text-[9px] font-mono text-purple-400/80 mb-1 absolute ml-12 bg-slate-900/80 px-1 rounded whitespace-nowrap ${i === 0 ? 'block' : 'hidden'}">+ 8</div>
+            <div class="w-0.5 h-full bg-purple-600/50"></div><i data-lucide="chevron-down" class="w-4 h-4 -mt-2 text-purple-600/50"></i>
+          </div>
+        </div>
+
+        <div class="flow-row row-add flex flex-col items-center w-full">
+          <div class="node glow-purple rounded-lg w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-md md:text-lg font-bold font-mono">${col.add}</div>
+          <div class="flow-arrow flex flex-col items-center justify-center text-cyan-600/50">
+            <div class="text-[9px] font-mono text-cyan-400/80 mb-1 absolute ml-14 bg-slate-900/80 px-1 rounded whitespace-nowrap ${i === 0 ? 'block' : 'hidden'}">mod 26</div>
+            <div class="w-0.5 h-full bg-cyan-600/50"></div><i data-lucide="chevron-down" class="w-4 h-4 -mt-2 text-cyan-600/50"></i>
+          </div>
+        </div>
+
+        <div class="flow-row row-mod flex flex-col items-center w-full">
+          <div class="node glow-cyan rounded-lg w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-md md:text-lg font-bold font-mono">${col.mod}</div>
+          <div class="flow-arrow flex flex-col items-center justify-center text-pink-600/50">
+            <div class="w-0.5 h-full bg-pink-600/50"></div><i data-lucide="chevron-down" class="w-4 h-4 -mt-2 text-pink-600/50"></i>
+          </div>
+        </div>
+
+        <div class="flow-row row-final flex flex-col items-center w-full">
+           <div class="node glow-pink rounded-lg w-12 h-12 md:w-16 md:h-16 flex items-center justify-center text-xl md:text-2xl font-black">${col.final}</div>
+        </div>
+      `;
+        container.appendChild(colDiv);
+      });
+
+      // Build progress dots
+      const dotsContainer = $('progress-dots');
+      steps.forEach((s, i) => {
+        const dot = document.createElement('div');
+        dot.className = `w-2 h-2 rounded-full transition-colors duration-300 ${i === 0 ? 'bg-pink-500' : 'bg-slate-700'}`;
+        dot.id = `dot-${i}`;
+        dotsContainer.appendChild(dot);
+      });
+
+      lucide.createIcons();
+    }
+
+    function renderStep(stepIndex) {
+      const step = steps[stepIndex];
+
+      $('step-title').textContent = step.title;
+      $('step-desc').innerHTML = step.desc;
+
+      document.querySelectorAll('.flow-row').forEach(row => row.classList.remove('active'));
+
+      step.activeRows.forEach(rowClass => {
+        document.querySelectorAll(`.${rowClass}`).forEach(el => el.classList.add('active'));
+      });
+
+      steps.forEach((s, i) => {
+        const dot = $(`dot-${i}`);
+        if (i === stepIndex) {
+          dot.classList.add('bg-pink-500');
+          dot.classList.remove('bg-slate-700');
+        } else {
+          dot.classList.remove('bg-pink-500');
+          dot.classList.add('bg-slate-700');
+        }
+      });
+    }
+
+    function nextStep() {
+      currentStep = (currentStep + 1) % steps.length;
+      renderStep(currentStep);
+    }
+
+    function togglePlay() {
+      isPlaying = !isPlaying;
+      const btnText = $('play-text');
+      const icon = $('btn-play').querySelector('svg');
+
+      if (isPlaying) {
+        btnText.textContent = "Pause";
+        icon.innerHTML = `<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>`;
+        playInterval = setInterval(nextStep, 2000 / speedMultiplier);
+      } else {
+        btnText.textContent = "Resume";
+        icon.innerHTML = `<polygon points="5 3 19 12 5 21 5 3"></polygon>`;
+        clearInterval(playInterval);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      buildPipeline();
+      renderStep(0);
+      playInterval = setInterval(nextStep, 2000 / speedMultiplier);
+
+      $('btn-play').addEventListener('click', togglePlay);
+      $('btn-next').addEventListener('click', () => {
+        if (isPlaying) togglePlay();
+        nextStep();
+      });
+    });
+  
+        const sDisplay = document.getElementById("speedDisplay");
+  if (document.getElementById("speedUp")) {
+    document.getElementById("speedUp").addEventListener("click", () => {
+      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+      if (isPlaying) {
+        clearInterval(playInterval);
+        playInterval = setInterval(nextStep, 2000 / speedMultiplier);
+      }
+    });
+    document.getElementById("speedDown").addEventListener("click", () => {
+      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+      if (isPlaying) {
+        clearInterval(playInterval);
+        playInterval = setInterval(nextStep, 2000 / speedMultiplier);
+      }
+    });
+  }
+
+  const nextBtn = document.getElementById("nextBtn");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
+      if (match) {
+        let ch = parseInt(match[1]);
+        let lvl = parseInt(match[2]);
+        lvl++;
+        if (lvl > 5) { lvl = 1; ch++; }
+        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
+      }
+    });
+  }
+</script>
+</body>
+
+</html>

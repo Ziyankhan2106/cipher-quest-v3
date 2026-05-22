@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CipherQuest | Level 3.4 | Permutation Cipher</title>
+<style>
+:root{
+  --cyan:#59f2ff;
+  --yellow:#ffdd57;
+  --green:#22c55e;
+  --purple:#b97fff;
+  --ink:#f4f7ff;
+  --muted:#94a3b8;
+  --panel:rgba(15,23,42,.78);
+  --inner:rgba(2,6,23,.72);
+  --border:rgba(148,163,184,.36);
+  --font:system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  font-family:var(--font);
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 20% 0%,rgba(89,242,255,.12),transparent 34%),
+    radial-gradient(circle at 80% 20%,rgba(255,221,87,.10),transparent 30%),
+    radial-gradient(circle at 50% 100%,rgba(34,197,94,.08),transparent 38%),
+    #020617;
+  overflow-x:hidden;
+}
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(rgba(89,242,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(89,242,255,.02) 1px,transparent 1px);
+  background-size:36px 36px;
+  mask-image:radial-gradient(circle,black 28%,transparent 82%);
+}
+.card{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:940px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 32px 90px rgba(0,0,0,.82);
+  backdrop-filter:blur(16px);
+}
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:14px 22px;
+  background:var(--inner);
+  border-bottom:1px solid var(--border);
+}
+.badge{
+  font-size:11px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--yellow);
+  border:1px solid rgba(255,221,87,.48);
+  background:rgba(255,221,87,.06);
+  border-radius:999px;
+  padding:4px 10px;
+}
+.title{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.14em}
+.sub{margin-top:2px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
+.live{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.16em}
+.live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 1.3s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.stage{
+  position:relative;
+  min-height:650px;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.status{
+  position:relative;
+  z-index:4;
+  min-height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border:1px solid rgba(89,242,255,.22);
+  border-radius:12px;
+  background:rgba(2,6,23,.62);
+  color:var(--cyan);
+  font-family:"SF Mono","Fira Code",Consolas,monospace;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.table{
+  position:relative;
+  z-index:3;
+  display:grid;
+  grid-template-columns:128px 1fr;
+  gap:12px;
+  align-items:center;
+}
+.label{
+  min-height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border-radius:10px;
+  border:1px solid rgba(148,163,184,.16);
+  background:rgba(2,6,23,.48);
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+}
+.cards,.rule,.output{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:10px;
+}
+.rule-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.example-note{
+  text-align:center;
+  font-size:10px;
+  color:rgba(255,221,87,.72);
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.input-card,.rule-card,.out-card{
+  position:relative;
+  min-width:0;
+  height:86px;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  background:rgba(2,6,23,.7);
+  transition:transform .25s,border-color .25s,box-shadow .25s,opacity .25s;
+  overflow:hidden;
+}
+.input-card{
+  border:1px solid rgba(89,242,255,.22);
+  opacity:0;
+  transform:translateY(10px);
+}
+.input-card.show{opacity:1;transform:translateY(0)}
+.rule-card{border:1px solid rgba(255,221,87,.22);color:var(--yellow)}
+.out-card{border:1px dashed rgba(34,197,94,.22)}
+.num{
+  position:absolute;
+  top:7px;
+  left:8px;
+  font-family:"SF Mono","Fira Code",Consolas,monospace;
+  font-size:10px;
+  color:rgba(148,163,184,.74);
+}
+.letter,.out-letter{
+  font-family:"SF Mono","Fira Code",Consolas,monospace;
+  font-size:34px;
+  line-height:1;
+  font-weight:900;
+}
+.letter{color:var(--ink)}
+.small{
+  font-size:9px;
+  color:var(--muted);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.rule-num{
+  font-family:"SF Mono","Fira Code",Consolas,monospace;
+  font-size:32px;
+  font-weight:900;
+}
+.arrow{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  color:rgba(255,221,87,.45);
+  font-size:18px;
+}
+.input-card.active{
+  transform:translateY(-8px) scale(1.04);
+  border-color:var(--cyan);
+  box-shadow:0 0 24px rgba(89,242,255,.46),inset 0 0 20px rgba(89,242,255,.08);
+}
+.rule-card.active{
+  transform:translateY(-8px) scale(1.04);
+  border-color:var(--yellow);
+  box-shadow:0 0 24px rgba(255,221,87,.42),inset 0 0 18px rgba(255,221,87,.08);
+}
+.out-card.active{
+  transform:translateY(-8px) scale(1.04);
+  border-style:solid;
+  border-color:var(--green);
+  box-shadow:0 0 24px rgba(34,197,94,.36),inset 0 0 18px rgba(34,197,94,.08);
+}
+.input-card.used{opacity:.38}
+.rule-card.done{color:var(--green);border-color:rgba(34,197,94,.45)}
+.out-card.filled{
+  border-style:solid;
+  border-color:rgba(34,197,94,.6);
+  box-shadow:0 0 22px rgba(34,197,94,.28);
+  animation:land .42s cubic-bezier(.34,1.56,.64,1);
+}
+.out-letter{color:transparent}
+.out-card.filled .out-letter{color:var(--green);text-shadow:0 0 14px rgba(34,197,94,.8)}
+@keyframes land{from{transform:scale(.72);opacity:.3}to{transform:scale(1);opacity:1}}
+.workspace{
+  position:relative;
+  z-index:5;
+  min-height:124px;
+  border:1px solid rgba(148,163,184,.14);
+  border-radius:14px;
+  background:
+    linear-gradient(90deg,transparent,rgba(89,242,255,.06),transparent),
+    rgba(2,6,23,.55);
+  overflow:visible;
+}
+.workspace::before{
+  content:"";
+  position:absolute;
+  left:18px;
+  right:18px;
+  top:50%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(89,242,255,.28),rgba(255,221,87,.22),rgba(34,197,94,.24),transparent);
+}
+#pathSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+#pathSvg path{
+  fill:none;
+  stroke:rgba(89,242,255,.5);
+  stroke-width:3;
+  stroke-linecap:round;
+  stroke-dasharray:8 10;
+  filter:drop-shadow(0 0 9px rgba(89,242,255,.65));
+  opacity:0;
+}
+#pathSvg path.active{opacity:1;animation:dash .7s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-36}}
+#fly{
+  position:absolute;
+  z-index:10;
+  left:0;
+  top:0;
+  width:58px;
+  height:58px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  border:1px solid var(--cyan);
+  background:rgba(2,6,23,.95);
+  color:var(--cyan);
+  font-family:"SF Mono","Fira Code",Consolas,monospace;
+  font-size:32px;
+  font-weight:900;
+  box-shadow:0 0 28px rgba(89,242,255,.55);
+  pointer-events:none;
+  opacity:0;
+}
+.explain{
+  position:relative;
+  z-index:3;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.box{
+  min-height:74px;
+  border:1px solid rgba(148,163,184,.14);
+  border-radius:12px;
+  background:rgba(2,6,23,.62);
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  gap:5px;
+}
+.box-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
+.box-val{font-family:"SF Mono","Fira Code",Consolas,monospace;font-size:18px;font-weight:900;color:var(--ink)}
+.box.active{border-color:rgba(255,221,87,.45);box-shadow:0 0 18px rgba(255,221,87,.18)}
+.box.active .box-val{color:var(--yellow)}
+.final{
+  position:relative;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 16px;
+  border-radius:12px;
+  border:1px solid rgba(34,197,94,.25);
+  background:rgba(2,6,23,.66);
+}
+.final-main{font-family:"SF Mono","Fira Code",Consolas,monospace;font-size:15px;font-weight:900;color:var(--green)}
+.final-sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.13em}
+.footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 22px;
+  border-top:1px solid var(--border);
+  background:var(--inner);
+}
+.timer{font-size:10px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase}
+.btn{
+  border:1px solid rgba(89,242,255,.4);
+  border-radius:999px;
+  background:rgba(89,242,255,.06);
+  color:var(--cyan);
+  padding:7px 16px;
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  cursor:pointer;
+}
+.btn:hover{background:rgba(89,242,255,.12);box-shadow:0 0 16px rgba(89,242,255,.25)}
+@media(max-width:760px){
+  body{padding:12px}
+  .topbar{align-items:flex-start;flex-direction:column;padding:14px}
+  .stage{padding:14px;min-height:640px}
+  .table{grid-template-columns:1fr;gap:7px}
+  .label{min-height:34px}
+  .cards,.rule,.output{gap:6px}
+  .example-note{font-size:8px;line-height:1.35}
+  .input-card,.rule-card,.out-card{height:66px;border-radius:9px}
+  .letter,.out-letter{font-size:24px}
+  .rule-num{font-size:22px}
+  .small{font-size:7px}
+  .num{font-size:8px}
+  .workspace{min-height:108px}
+  .explain{grid-template-columns:1fr 1fr}
+  .final{align-items:flex-start;flex-direction:column}
+}
+</style>
+    <script src="global_controls.js"></script>
+</head>
+<body>
+<main class="card">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="badge">CH 03</span>
+      <div>
+        <div class="title">Permutation Cipher</div>
+        <div class="sub">Level 4 - reorder using a rule</div>
+      </div>
+    </div>
+    <div class="live">Auto Demo</div>
+  </header>
+
+  <section class="stage">
+    <div class="status" id="status">Number the cards first: CIPHER is position 1 to 6</div>
+
+    <div class="table">
+      <div class="label">Old Cards</div>
+      <div class="cards" id="inputRow"></div>
+
+      <div class="label">Pick Order</div>
+      <div class="rule-wrap">
+        <div class="rule" id="ruleRow"></div>
+        <div class="example-note">Rule 1 3 5 2 4 6 (even-index chars first, then odd-index chars)</div>
+      </div>
+
+      <div class="label">New Word</div>
+      <div class="output" id="outputRow"></div>
+    </div>
+
+    <div class="workspace" id="workspace">
+      <svg id="pathSvg" aria-hidden="true"></svg>
+      <div id="fly"></div>
+    </div>
+
+    <div class="explain">
+      <div class="box" id="bStep"><div class="box-lbl">Step</div><div class="box-val">-</div></div>
+      <div class="box" id="bPick"><div class="box-lbl">Pick Old Position</div><div class="box-val">-</div></div>
+      <div class="box" id="bLetter"><div class="box-lbl">Card Letter</div><div class="box-val">-</div></div>
+      <div class="box" id="bPlace"><div class="box-lbl">Place In New Slot</div><div class="box-val">-</div></div>
+    </div>
+
+    <div class="final">
+      <div>
+        <div class="final-sub">Card shuffle idea</div>
+        <div class="final-main" id="finalText">CIPHER -> ------</div>
+      </div>
+      <div class="final-sub">Same letters. New positions.</div>
+    </div>
+  </section>
+
+  <footer class="footer">
+
+        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
+      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
+      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    </div>
+    <button class="btn" id="btn-play">Pause</button>
+    <button class="btn" id="btn-step">Step</button>
+    <div class="timer" id="timer">Looping demo</div>
+    <button class="btn" id="replay">Replay Now</button>
+  </footer>
+</main>
+
+<script>
+const WORD = "CIPHER";
+// FIX: collect all even-index chars then odd-index chars (e.g. ABCDEF → ACE + BDF = ACEBDF)
+const RULE = [1, 3, 5, 2, 4, 6];
+const RESULT = RULE.map((n) => WORD[n - 1]).join("");
+let running = false;
+let timer = null;
+let token = { stop: false };
+let isPlaying = true;
+let stepRequested = false;
+
+const $ = (id) => document.getElementById(id);
+let speedMultiplier = 1.0;
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms / speedMultiplier));
+
+async function waitForPlaybackStep(runToken) {
+  if (runToken.stop) return;
+  if (isPlaying) {
+    await wait(2000);
+    return;
+  }
+  $("timer").textContent = "Paused";
+  while (!runToken.stop && !isPlaying && !stepRequested) {
+    await wait(80);
+  }
+  if (stepRequested) stepRequested = false;
+}
+
+function inputCard(letter, index) {
+  const el = document.createElement("div");
+  el.className = "input-card";
+  el.innerHTML = `<div class="num">${index}</div><div class="letter">${letter}</div><div class="small">old pos ${index}</div>`;
+  return el;
+}
+
+function ruleCard(source, step) {
+  const el = document.createElement("div");
+  el.className = "rule-card";
+  el.innerHTML = `<div class="small">step ${step}</div><div class="rule-num">${source}</div><div class="arrow">→</div>`;
+  return el;
+}
+
+function outputCard(index) {
+  const el = document.createElement("div");
+  el.className = "out-card";
+  el.innerHTML = `<div class="num">${index}</div><div class="out-letter"></div><div class="small">new pos ${index}</div>`;
+  return el;
+}
+
+function build() {
+  $("inputRow").innerHTML = "";
+  $("ruleRow").innerHTML = "";
+  $("outputRow").innerHTML = "";
+  [...WORD].forEach((letter, i) => $("inputRow").appendChild(inputCard(letter, i + 1)));
+  RULE.forEach((source, i) => $("ruleRow").appendChild(ruleCard(source, i + 1)));
+  RULE.forEach((_, i) => $("outputRow").appendChild(outputCard(i + 1)));
+}
+
+function center(el, base) {
+  const a = el.getBoundingClientRect();
+  const b = base.getBoundingClientRect();
+  return { x: a.left - b.left + a.width / 2, y: a.top - b.top + a.height / 2 };
+}
+
+function drawPath(sourceIndex, outputIndex) {
+  const svg = $("pathSvg");
+  svg.innerHTML = "";
+  if (sourceIndex < 0) return;
+
+  const source = document.querySelectorAll(".input-card")[sourceIndex];
+  const target = document.querySelectorAll(".out-card")[outputIndex];
+  const base = $("workspace");
+  const start = center(source, base);
+  const end = center(target, base);
+  const middle = (start.y + end.y) / 2;
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", `M ${start.x} ${start.y} C ${start.x} ${middle - 60}, ${end.x} ${middle - 60}, ${end.x} ${end.y}`);
+  path.classList.add("active");
+  svg.appendChild(path);
+}
+
+function setBox(id, value, active = true) {
+  const box = $(id);
+  box.querySelector(".box-val").textContent = value;
+  box.classList.toggle("active", active);
+}
+
+function clearBoxes() {
+  ["bStep", "bPick", "bLetter", "bPlace"].forEach((id) => {
+    $(id).classList.remove("active");
+    $(id).querySelector(".box-val").textContent = "-";
+  });
+}
+
+function reset() {
+  token.stop = true;
+  token = { stop: false };
+  clearInterval(timer);
+  build();
+  clearBoxes();
+  drawPath(-1, -1);
+  $("fly").style.opacity = 0;
+  $("status").textContent = "Number the cards first: CIPHER is position 1 to 6";
+  $("finalText").textContent = "CIPHER -> ------";
+  $("timer").textContent = "Looping demo";
+}
+
+async function revealCards(runToken) {
+  for (const card of document.querySelectorAll(".input-card")) {
+    if (runToken.stop) return;
+    card.classList.add("show");
+    await wait(120);
+  }
+}
+
+async function moveOne(step, runToken) {
+  const oldPosition = RULE[step];
+  const letter = WORD[oldPosition - 1];
+  const input = document.querySelectorAll(".input-card");
+  const rules = document.querySelectorAll(".rule-card");
+  const output = document.querySelectorAll(".out-card");
+  const source = input[oldPosition - 1];
+  const rule = rules[step];
+  const target = output[step];
+  const fly = $("fly");
+  const base = $("workspace");
+  const start = center(source, base);
+  const end = center(target, base);
+
+  $("status").textContent = `Step ${step + 1}: pick card ${oldPosition}, the letter ${letter}, and place it in new slot ${step + 1}`;
+  setBox("bStep", step + 1);
+  await wait(300);
+  if (runToken.stop) return;
+
+  setBox("bPick", oldPosition);
+  source.classList.add("active");
+  rule.classList.add("active");
+  drawPath(oldPosition - 1, step);
+  await wait(500);
+  if (runToken.stop) return;
+
+  setBox("bLetter", letter);
+  fly.textContent = letter;
+  fly.style.opacity = 1;
+  fly.style.transform = `translate(${start.x - 29}px, ${start.y - 29}px) scale(1)`;
+  await wait(300);
+  if (runToken.stop) return;
+
+  target.classList.add("active");
+  setBox("bPlace", step + 1);
+  const animation = fly.animate([
+    { transform: `translate(${start.x - 29}px, ${start.y - 29}px) scale(1)` },
+    { transform: `translate(${(start.x + end.x) / 2 - 29}px, ${(start.y + end.y) / 2 - 90}px) scale(1.16)`, offset: .55 },
+    { transform: `translate(${end.x - 29}px, ${end.y - 29}px) scale(1)` }
+  ], { duration: 1350, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+
+  await animation.finished;
+  if (runToken.stop) return;
+
+  fly.style.opacity = 0;
+  target.querySelector(".out-letter").textContent = letter;
+  target.classList.add("filled");
+  source.classList.remove("active");
+  source.classList.add("used");
+  rule.classList.remove("active");
+  rule.classList.add("done");
+  target.classList.remove("active");
+  drawPath(-1, -1);
+
+  const partial = [...output].map((slot) => slot.querySelector(".out-letter").textContent || "-").join("");
+  $("finalText").textContent = `CIPHER -> ${partial}`;
+  await wait(500);
+}
+
+async function run() {
+  if (running) return;
+  running = true;
+  reset();
+  const runToken = token;
+  await wait(300);
+  await revealCards(runToken);
+  if (runToken.stop) { running = false; return; }
+
+  $("status").textContent = "Rule 1 3 5 2 4 6 means: even-index chars first, then odd-index chars";
+  await waitForPlaybackStep(runToken);
+
+  for (let step = 0; step < RULE.length; step += 1) {
+    if (runToken.stop) { running = false; return; }
+    await moveOne(step, runToken);
+    await waitForPlaybackStep(runToken);
+  }
+
+  clearBoxes();
+  $("status").textContent = `Done: CIPHER becomes ${RESULT}`;
+  $("finalText").textContent = `CIPHER -> ${RESULT}`;
+  startLoop(runToken);
+  running = false;
+}
+
+function startLoop(runToken) {
+  let left = 2;
+  $("timer").textContent = `Replay in ${left}s`;
+  timer = setInterval(() => {
+    if (runToken.stop) {
+      clearInterval(timer);
+      return;
+    }
+    left -= 1;
+    $("timer").textContent = left > 0 ? `Replay in ${left}s` : "Looping demo";
+    if (left <= 0) {
+      clearInterval(timer);
+      run();
+    }
+  }, 1000 / speedMultiplier);
+}
+
+$("replay").addEventListener("click", () => {
+  running = false;
+  run();
+});
+
+$("btn-play").addEventListener("click", () => {
+  isPlaying = !isPlaying;
+  $("btn-play").textContent = isPlaying ? "Pause" : "Resume";
+  if (isPlaying) $("timer").textContent = "Looping demo";
+});
+
+$("btn-step").addEventListener("click", () => {
+  if (isPlaying) {
+    isPlaying = false;
+    $("btn-play").textContent = "Resume";
+  }
+  stepRequested = true;
+});
+
+window.addEventListener("resize", () => drawPath(-1, -1));
+window.addEventListener("load", run);
+
+        const sDisplay = document.getElementById("speedDisplay");
+  if (document.getElementById("speedUp")) {
+    document.getElementById("speedUp").addEventListener("click", () => {
+      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+    document.getElementById("speedDown").addEventListener("click", () => {
+      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+  }
+
+  const nextBtn = document.getElementById("nextBtn");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
+      if (match) {
+        let ch = parseInt(match[1]);
+        let lvl = parseInt(match[2]);
+        lvl++;
+        if (lvl > 5) { lvl = 1; ch++; }
+        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
+      }
+    });
+  }
+</script>
+</body>
+</html>

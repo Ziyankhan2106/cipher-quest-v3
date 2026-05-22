@@ -236,7 +236,7 @@ const Dashboard = () => {
     { id: 0, name: 'Story Mode', path: '/story', desc: 'Campaign Operations', color: '#00f2ff' },
     { id: 1, name: 'Cipher Lab', path: '/cipherlab', desc: 'Infiltration Training', color: '#ff00ff' },
     { id: 2, name: 'Multiplayer', path: '/multiplayer', desc: 'Active Warzone', color: '#ffaa00' },
-    { id: 3, name: 'Training', path: '#', desc: 'Combat Academy', color: '#00ff88' }
+    { id: 3, name: 'Training', path: '/training', desc: 'Combat Academy', color: '#00ff88' }
   ];
 
   return (
@@ -456,7 +456,15 @@ const Dashboard = () => {
               return (
                 <button
                   key={mode.name}
-                  onClick={() => !tutorialMode && mode.path !== '#' && navigate(mode.path)}
+                  onClick={() => {
+                    if (!tutorialMode && mode.path !== '#') {
+                      if (mode.path === '/training') {
+                        window.location.href = mode.path;
+                      } else {
+                        navigate(mode.path);
+                      }
+                    }
+                  }}
                   className={`group relative text-left transition-all duration-500 opacity-100 hover:scale-[1.02] ${
                     tutorialMode && !isHighlighted ? 'opacity-30 pointer-events-none' : ''
                   }`}

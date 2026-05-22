@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CipherQuest | Level 2.4 | Vowel Scrambler</title>
+    <style>
+        :root {
+            --ap: #59f2ff;
+            --aw: #ffdd57;
+            --ag: #22c55e;
+            --red: #ff5f6d;
+            --orange: #ff9f43;
+            --tm: #f4f7ff;
+            --mu: #94a3b8;
+            --sp: rgba(15, 23, 42, 0.78);
+            --si: rgba(2, 6, 23, 0.72);
+            --bs: rgba(148, 163, 184, 0.4);
+            --bb: rgba(148, 163, 184, 0.55);
+            --font: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font);
+            color: var(--tm);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: radial-gradient(circle at top, #1b243b 0%, #020617 55%);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 50% 35% at 5% 95%, rgba(255, 95, 109, 0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 45% 30% at 95% 5%, rgba(89, 242, 255, 0.06) 0%, transparent 70%);
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px,
+                    rgba(89, 242, 255, 0.011) 3px, rgba(89, 242, 255, 0.011) 4px);
+        }
+
+        .card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 780px;
+            background: var(--sp);
+            border: 1px solid var(--bs);
+            border-radius: 18px;
+            backdrop-filter: blur(14px);
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.85);
+            overflow: hidden;
+        }
+
+        /* ── Topbar ── */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 22px;
+            background: var(--si);
+            border-bottom: 1px solid var(--bs);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+            padding: 3px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 95, 109, 0.6);
+            background: rgba(2, 6, 23, 0.3);
+            color: var(--red);
+        }
+
+        .topbar-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        .topbar-sub {
+            font-size: 11px;
+            color: var(--mu);
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            margin-top: 1px;
+        }
+
+        .live-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--ag);
+        }
+
+        .live-tag::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--ag);
+            box-shadow: 0 0 8px var(--ag);
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .35
+            }
+        }
+
+        /* ── Stage ── */
+        .stage {
+            padding: 22px 22px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            position: relative;
+            min-height: 560px;
+        }
+
+        .stage::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px,
+                    rgba(255, 95, 109, 0.006) 3px, rgba(255, 95, 109, 0.006) 4px);
+        }
+
+        /* ── Status ── */
+        .status {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+            color: var(--ap);
+            min-height: 18px;
+            align-self: flex-start;
+            position: relative;
+            z-index: 2;
+            transition: color .3s;
+        }
+
+        .status.danger {
+            color: var(--red);
+        }
+
+        .blink {
+            animation: blink .9s step-end infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0
+            }
+        }
+
+        /* ══ MAPPING TABLE ══ */
+        .map-table {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            opacity: 0;
+            transition: opacity .5s;
+        }
+
+        .map-table.vis {
+            opacity: 1;
+        }
+
+        .map-table-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+            color: var(--mu);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .map-table-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(148, 163, 184, 0.12);
+        }
+
+        .map-pills {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .mpill {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 11px;
+            border-radius: 8px;
+            background: var(--si);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 12px;
+            transition: all .3s;
+        }
+
+        .mpill.active-pill {
+            border-color: rgba(255, 95, 109, 0.6);
+            background: rgba(255, 95, 109, 0.08);
+            box-shadow: 0 0 12px rgba(255, 95, 109, 0.25);
+        }
+
+        .mpill .from {
+            color: var(--mu);
+        }
+
+        .mpill .marr {
+            color: rgba(148, 163, 184, 0.25);
+        }
+
+        .mpill .to {
+            color: var(--red);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .mpill.active-pill .from {
+            color: var(--aw);
+        }
+
+        .mpill.active-pill .to {
+            color: var(--aw);
+            text-shadow: 0 0 12px rgba(255, 221, 87, .8);
+        }
+
+        /* ══ MAIN WORD DISPLAY ══ */
+        .word-section {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Scanner laser */
+        .scanner-wrap {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .scanner-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 95, 109, 0.9), transparent);
+            box-shadow: 0 0 14px 4px rgba(255, 95, 109, 0.5);
+            border-radius: 2px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+            transition: left .0s;
+        }
+
+        .word-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            position: relative;
+        }
+
+        .letter-slot {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .letter-chip {
+            width: 80px;
+            height: 88px;
+            border-radius: 12px;
+            background: var(--si);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-family: "SF Mono", "Fira Code", monospace;
+            transition: all .35s;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        .lchip-char {
+            font-size: 34px;
+            font-weight: 700;
+            color: var(--tm);
+            transition: all .35s;
+        }
+
+        .lchip-idx {
+            font-size: 9px;
+            color: var(--mu);
+            letter-spacing: .12em;
+        }
+
+        .lchip-type {
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+            color: transparent;
+            transition: all .3s;
+        }
+
+        /* Consonant state */
+        .letter-chip.consonant {
+            border-color: rgba(148, 163, 184, 0.25);
+        }
+
+        .letter-chip.consonant .lchip-type {
+            color: rgba(148, 163, 184, 0.3);
+        }
+
+        /* Scanning highlight */
+        .letter-chip.scanning {
+            border-color: rgba(255, 95, 109, 0.7);
+            box-shadow: 0 0 22px rgba(255, 95, 109, 0.45), inset 0 0 14px rgba(255, 95, 109, 0.07);
+        }
+
+        .letter-chip.scanning .lchip-char {
+            color: var(--red);
+            text-shadow: 0 0 16px rgba(255, 95, 109, .9);
+        }
+
+        .letter-chip.scanning .lchip-type {
+            color: rgba(255, 95, 109, .7);
+        }
+
+        .letter-chip.scanning::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(255, 95, 109, .1) 60%, transparent 80%);
+            animation: shimmer .8s linear infinite;
+        }
+
+        /* Consonant scanned — stays safe */
+        .letter-chip.safe {
+            border-color: rgba(89, 242, 255, 0.28);
+        }
+
+        .letter-chip.safe .lchip-char {
+            color: rgba(89, 242, 255, 0.65);
+        }
+
+        .letter-chip.safe .lchip-type {
+            color: rgba(89, 242, 255, 0.35);
+        }
+
+        /* Vowel targeted */
+        .letter-chip.targeted {
+            border-color: var(--red);
+            box-shadow: 0 0 28px rgba(255, 95, 109, .65), inset 0 0 16px rgba(255, 95, 109, .1);
+            animation: targetShake .45s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        .letter-chip.targeted .lchip-char {
+            color: var(--red);
+            text-shadow: 0 0 18px rgba(255, 95, 109, 1);
+        }
+
+        .letter-chip.targeted .lchip-type {
+            color: var(--red);
+        }
+
+        @keyframes targetShake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-5px);
+            }
+
+            40% {
+                transform: translateX(5px);
+            }
+
+            60% {
+                transform: translateX(-4px);
+            }
+
+            80% {
+                transform: translateX(4px);
+            }
+        }
+
+        /* Vowel extracted (empty) */
+        .letter-chip.extracted {
+            border-color: rgba(255, 95, 109, 0.2);
+            background: rgba(255, 95, 109, 0.03);
+        }
+
+        .letter-chip.extracted .lchip-char {
+            color: transparent;
+        }
+
+        /* Symbol landing */
+        .letter-chip.landed {
+            border-color: rgba(255, 221, 87, 0.55);
+            box-shadow: 0 0 24px rgba(255, 221, 87, .45), inset 0 0 14px rgba(255, 221, 87, .08);
+            animation: landCrash .5s cubic-bezier(.34, 1.56, .64, 1);
+        }
+
+        .letter-chip.landed .lchip-char {
+            color: var(--aw);
+            text-shadow: 0 0 18px rgba(255, 221, 87, .9);
+        }
+
+        .letter-chip.landed .lchip-type {
+            color: rgba(255, 221, 87, .5);
+        }
+
+        @keyframes landCrash {
+            0% {
+                transform: scale(.5) translateY(-20px);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.15);
+            }
+
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shimmer {
+            from {
+                transform: translateX(-120%)
+            }
+
+            to {
+                transform: translateX(200%)
+            }
+        }
+
+        /* Type label under chip */
+        .chip-role {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+            color: var(--mu);
+            transition: color .3s;
+            text-align: center;
+        }
+
+        .chip-role.vowel {
+            color: rgba(255, 95, 109, .7);
+        }
+
+        .chip-role.consonant {
+            color: rgba(89, 242, 255, .45);
+        }
+
+        .chip-role.symbol {
+            color: rgba(255, 221, 87, .7);
+        }
+
+        /* ── Extraction container (for particles) ── */
+        .particle {
+            position: fixed;
+            z-index: 300;
+            pointer-events: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 19px;
+            font-weight: 700;
+            background: rgba(2, 6, 23, 0.95);
+            opacity: 0;
+        }
+
+        /* ── Vowels removed display ── */
+        .extracted-row {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity .5s, transform .5s;
+        }
+
+        .extracted-row.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .ext-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+            color: var(--mu);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ext-label span {
+            color: var(--red);
+        }
+
+        .ext-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(148, 163, 184, 0.1);
+        }
+
+        .ext-chips {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ext-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: var(--si);
+            border: 1px solid rgba(255, 95, 109, 0.2);
+            font-family: "SF Mono", "Fira Code", monospace;
+        }
+
+        .ext-from {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--red);
+        }
+
+        .ext-arr {
+            font-size: 11px;
+            color: rgba(148, 163, 184, 0.3);
+        }
+
+        .ext-to {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--aw);
+        }
+
+        .ext-pos {
+            font-size: 9px;
+            color: var(--mu);
+            margin-left: 2px;
+        }
+
+        /* ── Output ── */
+        .output-section {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity .5s, transform .5s;
+        }
+
+        .output-section.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .out-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .18em;
+            color: var(--mu);
+            margin-bottom: 10px;
+        }
+
+        .out-pill {
+            font-size: 10px;
+            padding: 2px 9px;
+            border-radius: 999px;
+            border: 1px solid;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+        }
+
+        .out-pill.pv {
+            color: rgba(255, 95, 109, .8);
+            border-color: rgba(255, 95, 109, .3);
+            background: rgba(255, 95, 109, .06);
+        }
+
+        .out-pill.pc {
+            color: rgba(89, 242, 255, .8);
+            border-color: rgba(89, 242, 255, .3);
+            background: rgba(89, 242, 255, .06);
+        }
+
+        .out-pill.pf {
+            color: rgba(34, 197, 94, .85);
+            border-color: rgba(34, 197, 94, .35);
+            background: rgba(34, 197, 94, .06);
+        }
+
+        .out-word {
+            display: flex;
+            gap: 3px;
+            align-items: baseline;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .out-letter {
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 32px;
+            font-weight: 700;
+            opacity: 0;
+            transform: scale(.7);
+            transition: opacity .35s, transform .35s;
+        }
+
+        .out-letter.show.is-consonant {
+            opacity: 1;
+            transform: scale(1);
+            color: var(--ap);
+        }
+
+        .out-letter.show.is-symbol {
+            opacity: 1;
+            transform: scale(1);
+            color: var(--aw);
+        }
+
+        /* ── Info panel ── */
+        .info-panel {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            background: var(--si);
+            border: 1px solid var(--bs);
+            border-radius: 12px;
+            padding: 14px 18px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity .5s, transform .5s;
+        }
+
+        .info-panel.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .info-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+            color: var(--red);
+            margin-bottom: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .irow {
+            background: rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+        .irow-lbl {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            color: var(--mu);
+            margin-bottom: 4px;
+        }
+
+        .irow-val {
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .formula {
+            grid-column: 1/-1;
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 11px;
+            color: var(--mu);
+            line-height: 1.85;
+            background: rgba(2, 6, 23, 0.75);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+
+        .fr {
+            color: var(--red);
+        }
+
+        .fy {
+            color: var(--aw);
+        }
+
+        .fc {
+            color: var(--ap);
+        }
+
+        .fg {
+            color: var(--ag);
+        }
+
+        .fm {
+            color: var(--tm);
+        }
+
+        /* ── Footer ── */
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 22px;
+            background: var(--si);
+            border-top: 1px solid var(--bs);
+        }
+
+        .foot-btn {
+            font-family: var(--font);
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            padding: 7px 16px;
+            border-radius: 999px;
+            border: 1px solid var(--bs);
+            background: transparent;
+            color: var(--mu);
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .foot-btn:hover {
+            border-color: var(--bb);
+            color: var(--tm);
+        }
+
+        .foot-btn.primary {
+            color: var(--ap);
+            border-color: rgba(89, 242, 255, .4);
+            background: rgba(89, 242, 255, .05);
+        }
+
+        .foot-btn.primary:hover {
+            background: rgba(89, 242, 255, .1);
+            box-shadow: 0 0 14px rgba(89, 242, 255, .25);
+        }
+
+        .replay-tag {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            color: var(--mu);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rtick {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: rgba(148, 163, 184, .3);
+            animation: rtick 1s step-end infinite;
+        }
+
+        @keyframes rtick {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .2
+            }
+        }
+    </style>
+    <script src="global_controls.js"></script>
+</head>
+
+<body>
+    <div class="card">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <span class="badge">CH 02</span>
+                <div>
+                    <div class="topbar-title">Vowel Scrambler</div>
+                    <div class="topbar-sub">Level 4 - Vowels → Numbers & Symbols</div>
+                </div>
+            </div>
+            <div class="live-tag">Auto Demo</div>
+        </div>
+
+        <!-- STAGE -->
+        <div class="stage">
+            <div class="status" id="status"><span id="statusTxt">Initializing scanner…</span><span class="blink">
+                    ▌</span></div>
+
+            <!-- Vowel mapping table -->
+            <div class="map-table" id="mapTable">
+                <div class="map-table-label">Vowel substitution codebook</div>
+                <div class="map-pills" id="mapPills"></div>
+            </div>
+
+            <!-- Main word area with scanner -->
+            <div class="word-section">
+                <div class="scanner-wrap" id="scannerWrap">
+                    <div class="scanner-line" id="scannerLine"></div>
+                    <div class="word-row" id="wordRow"></div>
+                </div>
+            </div>
+
+            <!-- Extracted vowels display -->
+            <div class="extracted-row" id="extractedRow">
+                <div class="ext-label"><span>Vowels extracted</span></div>
+                <div class="ext-chips" id="extChips"></div>
+            </div>
+
+            <!-- Output -->
+            <div class="output-section" id="outputSection">
+                <div class="out-header">
+                    <span>Output</span>
+                    <span class="out-pill pv">vowels → symbols</span>
+                    <span style="color:var(--mu);font-size:11px">·</span>
+                    <span class="out-pill pc">consonants → unchanged</span>
+                    <span style="color:var(--mu);font-size:11px">=</span>
+                    <span class="out-pill pf">scrambled</span>
+                </div>
+                <div class="out-word" id="outWord"></div>
+            </div>
+
+            <!-- Info panel -->
+            <div class="info-panel" id="infoPanel">
+                <div class="info-title">↳ Scramble Breakdown</div>
+                <div class="info-grid" id="infoGrid"></div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+
+        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
+      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
+      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    </div>
+            <button class="foot-btn" id="btn-play">Pause</button>
+            <button class="foot-btn" id="btn-step">Step</button>
+            <div class="replay-tag">
+                <div class="rtick"></div><span id="rcd"></span>
+            </div>
+            <button class="foot-btn primary" id="replayNow">▶ Replay Now</button>
+        </div>
+    </div>
+
+    <!-- Particle flyer (vowel extraction) -->
+    <div class="particle" id="particle1"></div>
+    <!-- Symbol dropper -->
+    <div class="particle" id="particle2"></div>
+
+    <script>
+let speedMultiplier = 1.0;
+        const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const WORD = 'CIPHER';
+
+        /* Vowel → symbol mapping */
+        const VOWEL_MAP = { A: '1', E: '2', I: '3', O: '4', U: '5' };
+        const VOWELS = new Set(Object.keys(VOWEL_MAP));
+
+        /* Colors per vowel for variety */
+        const VOWEL_COLOR = { A: '#ff9f43', E: '#ffdd57', I: '#ff5f6d', O: '#b97fff', U: '#59f2ff' };
+
+        let running = false, ct = { cancelled: false }, replayTimer = null, countdown = 2;
+        let isPlaying = true, stepRequested = false;
+
+        const $ = id => document.getElementById(id);
+        const sleep = ms => new Promise(r => { ct._t = setTimeout(r, ms / speedMultiplier); });
+        const vis = (el, on = true) => el.classList.toggle('vis', on);
+        const setStatus = (t, danger = false) => {
+            $('statusTxt').textContent = t;
+            $('status').classList.toggle('danger', danger);
+        };
+
+        async function waitForPlaybackStep() {
+            if (ct.cancelled) return;
+            if (isPlaying) {
+                await sleep(2000);
+                return;
+            }
+            setStatus('Paused - press Step to continue.', true);
+            while (!ct.cancelled && !isPlaying && !stepRequested) {
+                await sleep(80);
+            }
+            if (stepRequested) stepRequested = false;
+        }
+
+        /* ── Build vowel map pills ── */
+        function buildMapPills() {
+            const pills = $('mapPills');
+            pills.innerHTML = '';
+            Object.entries(VOWEL_MAP).forEach(([v, s]) => {
+                const p = document.createElement('div');
+                p.className = 'mpill'; p.id = `pill-${v === ' ' ? 'SP' : v}`;
+                p.innerHTML = `<span class="from">${v === ' ' ? '␣' : v}</span><span class="marr">→</span><span class="to">${s}</span>`;
+                pills.appendChild(p);
+            });
+        }
+
+        /* ── Build word chips ── */
+        function buildWordChips() {
+            const row = $('wordRow');
+            row.innerHTML = '';
+            WORD.split('').forEach((ch, i) => {
+                const isVowel = VOWELS.has(ch);
+                const slot = document.createElement('div');
+                slot.className = 'letter-slot';
+                slot.innerHTML = `
+      <div class="letter-chip" id="chip-${i}">
+        <span class="lchip-char" id="char-${i}">${ch}</span>
+        <span class="lchip-idx">[${i}]</span>
+        <span class="lchip-type">${isVowel ? 'vowel' : 'const'}</span>
+      </div>
+      <div class="chip-role" id="role-${i}">${isVowel ? 'vowel' : 'consonant'}</div>
+    `;
+                row.appendChild(slot);
+            });
+        }
+
+        /* ── Build output letters ── */
+        function buildOutput() {
+            const out = $('outWord');
+            out.innerHTML = '';
+            WORD.split('').forEach((ch, i) => {
+                const isVowel = VOWELS.has(ch);
+                const encoded = isVowel ? VOWEL_MAP[ch] : ch;
+                const el = document.createElement('span');
+                el.className = `out-letter ${isVowel ? 'is-symbol' : 'is-consonant'}`;
+                el.id = `outl-${i}`;
+                el.textContent = encoded;
+                out.appendChild(el);
+            });
+        }
+
+        /* ── Fly particle from srcEl to dstEl ── */
+        async function flyParticle(pid, srcEl, dstEl, text, col, glow) {
+            const p = $(pid);
+            if (!srcEl || !dstEl || !p) return;
+            const sr = srcEl.getBoundingClientRect(), dr = dstEl.getBoundingClientRect();
+            p.textContent = text; p.style.color = col;
+            p.style.border = `2px solid ${col}`; p.style.boxShadow = `0 0 18px ${glow}`;
+            p.style.transition = 'none'; p.style.opacity = '1';
+            p.style.left = (sr.left + sr.width / 2 - 22) + 'px';
+            p.style.top = (sr.top + sr.height / 2 - 22) + 'px';
+            await sleep(40); if (ct.cancelled) { p.style.opacity = '0'; return; }
+            const tx = dr.left + dr.width / 2 - 22, ty = dr.top + dr.height / 2 - 22;
+            const dist = Math.hypot(tx - (sr.left + sr.width / 2 - 22), ty - (sr.top + sr.height / 2 - 22));
+            const ms = 250 + dist * 0.55;
+            p.style.transition = `left ${ms}ms cubic-bezier(0.4,0,0.2,1),top ${ms}ms cubic-bezier(0.4,0,0.2,1)`;
+            p.style.left = tx + 'px'; p.style.top = ty + 'px';
+            await sleep(ms);
+            p.style.opacity = '0';
+        }
+
+        /* ── Animate scanner laser sweeping across ── */
+        async function sweepScanner() {
+            const wrap = $('scannerWrap');
+            const laser = $('scannerLine');
+            const row = $('wordRow');
+            const n = WORD.length;
+
+            const rowRect = row.getBoundingClientRect();
+            const wrapRect = wrap.getBoundingClientRect();
+
+            laser.style.opacity = '1';
+
+            const startX = 0;
+            const endX = wrapRect.width;
+
+            laser.style.left = '0px';
+            laser.style.transition = 'none';
+            await sleep(40);
+
+            laser.style.transition = `left ${n * 260}ms linear`;
+            laser.style.left = endX + 'px';
+
+            /* As laser sweeps, flash each chip */
+            for (let i = 0; i < n; i++) {
+                if (ct.cancelled) { laser.style.opacity = '0'; return; }
+                await sleep(240);
+                const chip = $(`chip-${i}`);
+                chip?.classList.add('scanning');
+                await sleep(80);
+                chip?.classList.remove('scanning');
+            }
+            await sleep(200);
+            laser.style.opacity = '0';
+        }
+
+        /* ── Replay countdown ── */
+        function startReplayCountdown() {
+            countdown = 2; $('rcd').textContent = `Replaying in ${countdown}s…`;
+            replayTimer = setInterval(() => {
+                countdown--;
+                if (countdown > 0) { $('rcd').textContent = `Replaying in ${countdown}s…`; }
+                else { clearInterval(replayTimer); $('rcd').textContent = 'Replaying…'; kickDemo(); }
+            }, 1000 / speedMultiplier);
+        }
+        function cancelReplay() { if (replayTimer) { clearInterval(replayTimer); replayTimer = null; } $('rcd').textContent = ''; }
+
+        /* ══ MAIN ANIMATION ══ */
+        async function runDemo() {
+            if (running) { ct.cancelled = true; await sleep(130); }
+            ct = { cancelled: false }; running = true;
+
+            const n = WORD.length;
+            const result = WORD.split('').map((ch, i) => {
+                const isVowel = VOWELS.has(ch);
+                return { ch, i, isVowel, symbol: isVowel ? VOWEL_MAP[ch] : ch, col: isVowel ? (VOWEL_COLOR[ch] || '#ff5f6d') : null };
+            });
+            const encoded = result.map(r => r.symbol).join('');
+            const vowelResults = result.filter(r => r.isVowel);
+
+            /* ── Reset ── */
+            vis($('infoPanel'), false); vis($('outputSection'), false);
+            vis($('extractedRow'), false); vis($('mapTable'), false);
+            $('infoGrid').innerHTML = ''; $('extChips').innerHTML = '';
+            $('particle1').style.opacity = '0'; $('particle2').style.opacity = '0';
+            $('scannerLine').style.opacity = '0';
+
+            buildMapPills();
+            buildWordChips();
+            buildOutput();
+            document.querySelectorAll('.mpill').forEach(p => p.classList.remove('active-pill'));
+
+            setStatus('Loading word into scanner…', false);
+            await sleep(500); if (ct.cancelled) { running = false; return; }
+
+            /* ── Stagger chips in ── */
+            for (let i = 0; i < n; i++) {
+                if (ct.cancelled) { running = false; return; }
+                const chip = $(`chip-${i}`);
+                chip.style.opacity = '0'; chip.style.transform = 'translateY(14px)';
+                chip.style.transition = 'opacity .4s,transform .4s';
+                await sleep(20); chip.style.opacity = '1'; chip.style.transform = 'translateY(0)';
+                await sleep(130);
+            }
+            await sleep(400); if (ct.cancelled) { running = false; return; }
+            await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
+
+            /* ── Show map table ── */
+            vis($('mapTable'), true);
+            await sleep(600); if (ct.cancelled) { running = false; return; }
+
+            /* ── SWEEP SCANNER ── */
+            setStatus('Scanning for vowels…', true);
+            await sweepScanner();
+            if (ct.cancelled) { running = false; return; }
+            await sleep(300);
+
+            /* ── Identify vowels vs consonants ── */
+            setStatus('Identifying vowels…', true);
+            for (let i = 0; i < n; i++) {
+                if (ct.cancelled) { running = false; return; }
+                const r = result[i];
+                const chip = $(`chip-${i}`);
+                const role = $(`role-${i}`);
+                if (r.isVowel) {
+                    chip.classList.add('targeted');
+                    role.classList.add('vowel');
+                } else {
+                    chip.classList.add('safe');
+                    role.classList.add('consonant');
+                }
+                await sleep(160);
+            }
+            await sleep(700); if (ct.cancelled) { running = false; return; }
+            await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
+
+            /* ── Extract + replace vowels one by one ── */
+            setStatus('Extracting vowels · injecting symbols…', true);
+
+            for (let idx = 0; idx < vowelResults.length; idx++) {
+                if (ct.cancelled) { running = false; return; }
+                const r = vowelResults[idx];
+                const chip = $(`chip-${r.i}`);
+                const charEl = $(`char-${r.i}`);
+                const role = $(`role-${r.i}`);
+                const pillId = `pill-${r.ch === '  ' ? 'SP' : r.ch}`;
+                const col = r.col || '#ff5f6d';
+
+                /* Flash matching codebook pill */
+                document.querySelectorAll('.mpill').forEach(p => p.classList.remove('active-pill'));
+                $(pillId)?.classList.add('active-pill');
+
+                setStatus(`Extracting "${r.ch}" at [${r.i}] → injecting "${r.symbol}"`, true);
+                await sleep(350); if (ct.cancelled) { running = false; return; }
+
+                /* Target shake intensifies */
+                chip.classList.add('targeted');
+                await sleep(300); if (ct.cancelled) { running = false; return; }
+
+                /* Fly vowel UP & out */
+                const dummyAbove = document.createElement('div');
+                dummyAbove.style.cssText = 'position:fixed;left:0;top:-60px;width:44px;height:44px;';
+                document.body.appendChild(dummyAbove);
+                const chipRect = chip.getBoundingClientRect();
+                dummyAbove.style.left = (chipRect.left + chipRect.width / 2 - 22) + 'px';
+
+                await flyParticle('particle1', chip, dummyAbove, r.ch, col, `${col}bb`);
+                document.body.removeChild(dummyAbove);
+                if (ct.cancelled) { running = false; return; }
+
+                /* Chip now empty */
+                chip.classList.remove('targeted', 'safe');
+                chip.classList.add('extracted');
+                if (charEl) charEl.textContent = '·';
+                await sleep(180); if (ct.cancelled) { running = false; return; }
+
+                /* Add to extracted row */
+                const extChip = document.createElement('div');
+                extChip.className = 'ext-chip';
+                extChip.innerHTML = `<span class="ext-from">${r.ch}</span><span class="ext-arr">→</span><span class="ext-to">${r.symbol}</span><span class="ext-pos">[${r.i}]</span>`;
+                $('extChips').appendChild(extChip);
+                vis($('extractedRow'), true);
+                await sleep(200); if (ct.cancelled) { running = false; return; }
+
+                /* Create drop-in point above chip */
+                const dropAbove = document.createElement('div');
+                dropAbove.style.cssText = `position:fixed;top:${chipRect.top - 80}px;left:${chipRect.left}px;width:${chipRect.width}px;height:44px;`;
+                document.body.appendChild(dropAbove);
+
+                /* Fly symbol DOWN into chip */
+                await flyParticle('particle2', dropAbove, chip, r.symbol, '#ffdd57', 'rgba(255,221,87,0.8)');
+                document.body.removeChild(dropAbove);
+                if (ct.cancelled) { running = false; return; }
+
+                /* Land the symbol */
+                if (charEl) charEl.textContent = r.symbol;
+                chip.classList.remove('extracted');
+                chip.classList.add('landed');
+                role.className = 'chip-role symbol';
+                role.textContent = 'symbol';
+                await sleep(450); if (ct.cancelled) { running = false; return; }
+                await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
+            }
+
+            document.querySelectorAll('.mpill').forEach(p => p.classList.remove('active-pill'));
+
+            /* ── Finale ── */
+            setStatus(`Scramble complete · CIPHER → ${encoded}`, false);
+            $('status').style.color = 'var(--ag)';
+            await sleep(400); if (ct.cancelled) { running = false; return; }
+
+            /* Pulse all chips */
+            for (let i = 0; i < n; i++) {
+                const chip = $(`chip-${i}`);
+                if (chip) {
+                    const isV = result[i].isVowel;
+                    chip.style.boxShadow = isV ? '0 0 28px rgba(255,221,87,.85)' : '0 0 16px rgba(89,242,255,.5)';
+                }
+            }
+            await sleep(400);
+            for (let i = 0; i < n; i++) {
+                const chip = $(`chip-${i}`);
+                if (chip) { chip.style.boxShadow = result[i].isVowel ? '0 0 10px rgba(255,221,87,.22)' : '0 0 8px rgba(89,242,255,.15)'; }
+            }
+
+            /* Output word */
+            vis($('outputSection'), true);
+            await sleep(200); if (ct.cancelled) { running = false; return; }
+            for (let i = 0; i < n; i++) {
+                $(`outl-${i}`)?.classList.add('show');
+                await sleep(100);
+            }
+            await sleep(350); if (ct.cancelled) { running = false; return; }
+
+            /* Info panel */
+            $('infoGrid').innerHTML = `
+    <div class="irow">
+      <div class="irow-lbl">Input</div>
+      <div class="irow-val fm">CIPHER</div>
+    </div>
+    <div class="irow">
+      <div class="irow-lbl">Output</div>
+      <div class="irow-val fy">${encoded}</div>
+    </div>
+    <div class="irow">
+      <div class="irow-lbl">Vowels found</div>
+      <div class="irow-val fr">${vowelResults.map(r => r.ch).join(', ')} (${vowelResults.length} of ${n})</div>
+    </div>
+    <div class="irow">
+      <div class="irow-lbl">Symbols injected</div>
+      <div class="irow-val fy">${vowelResults.map(r => `${r.ch}→${r.symbol}`).join('  ')}</div>
+    </div>
+    <div class="formula">
+<span class="fm">Codebook :</span>
+  <span class="fr">A</span>→<span class="fy">@</span>  <span class="fr">E</span>→<span class="fy">3</span>  <span class="fr">I</span>→<span class="fy">1</span>  <span class="fr">O</span>→<span class="fy">0</span>  <span class="fr">U</span>→<span class="fy">^</span>  <span class="fr">␣</span>→<span class="fy">_</span>
+
+<span class="fm">CIPHER has 2 vowels at positions [1] and [4].</span>
+  <span class="fr">I</span> → <span class="fy">1</span>   and   <span class="fr">E</span> → <span class="fy">3</span>
+  Consonants C, P, H, R are <span class="fc">untouched</span>.
+
+<span class="fg">Result :</span>  <span class="fm">C</span><span class="fy">1</span><span class="fm">PH</span><span class="fy">3</span><span class="fm">R</span>
+
+<span class="fg">Why harder?</span> <span class="fm">Looks like leet-speak — harder to read quickly,
+and vowels carry the most information in any word.</span></div>
+  `;
+            vis($('infoPanel'), true);
+
+            await sleep(800);
+            running = false;
+            startReplayCountdown();
+        }
+
+        function kickDemo() { cancelReplay(); runDemo(); }
+        $('replayNow').addEventListener('click', kickDemo);
+        $('btn-play').addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            $('btn-play').textContent = isPlaying ? 'Pause' : 'Resume';
+        });
+        $('btn-step').addEventListener('click', () => {
+            if (isPlaying) {
+                isPlaying = false;
+                $('btn-play').textContent = 'Resume';
+            }
+            stepRequested = true;
+        });
+
+        buildMapPills(); buildWordChips(); buildOutput();
+        runDemo();
+    
+        const sDisplay = document.getElementById("speedDisplay");
+  if (document.getElementById("speedUp")) {
+    document.getElementById("speedUp").addEventListener("click", () => {
+      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+    document.getElementById("speedDown").addEventListener("click", () => {
+      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+  }
+
+  const nextBtn = document.getElementById("nextBtn");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
+      if (match) {
+        let ch = parseInt(match[1]);
+        let lvl = parseInt(match[2]);
+        lvl++;
+        if (lvl > 5) { lvl = 1; ch++; }
+        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
+      }
+    });
+  }
+</script>
+</body>
+
+</html>

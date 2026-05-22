@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CipherQuest | Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --current-theme-color: #00e5ff;
+            --theme-color-rgb: 0, 229, 255;
+            --bg-base: #050505;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .font-display { font-family: 'Orbitron', sans-serif; }
+        .font-mono { font-family: 'Fira Code', monospace; }
+
+        /* Background Effects */
+        .bg-texture {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url('background.jpg'); /* Gracefully fallback to dark color if missing */
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            mix-blend-mode: luminosity;
+            z-index: -3;
+            pointer-events: none;
+        }
+        
+        .bg-nebula {
+            position: fixed;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            background-color: var(--current-theme-color);
+            filter: blur(150px);
+            mix-blend-mode: screen;
+            opacity: 0.2;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            z-index: -1;
+            pointer-events: none;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle, transparent 50%, #050505 150%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Node Map Layout */
+        .node-map-container {
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .sector-title {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .sector-bg-number {
+            position: absolute;
+            top: -2rem;
+            left: -1rem;
+            font-size: 8rem;
+            color: rgba(255,255,255,0.03);
+            z-index: -1;
+            pointer-events: none;
+            line-height: 1;
+        }
+
+        /* Card Styles */
+        .mission-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .mission-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--current-theme-color);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 10px 30px rgba(0, 229, 255, 0.2);
+        }
+
+        .mission-accent-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background-color: var(--current-theme-color);
+            width: 0;
+            transition: width 0.4s ease;
+        }
+
+        .mission-card:hover .mission-accent-line {
+            width: 100%;
+        }
+
+        /* Iframe Overlay */
+        #iframe-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        #iframe-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Screen Flash */
+        #screen-flash {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--current-theme-color);
+            mix-blend-mode: overlay;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.1s;
+        }
+        
+        #screen-flash.flash {
+            animation: flashAnim 0.6s ease-out;
+        }
+        
+        @keyframes flashAnim {
+            0% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--current-theme-color);
+            color: var(--current-theme-color);
+            padding: 10px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10001;
+        }
+
+        .close-btn:hover {
+            background: var(--current-theme-color);
+            color: #050505;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            border-top: 1px solid rgba(0, 229, 255, 0.3);
+            margin-top: 70px;
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Environment -->
+    <div class="bg-texture"></div>
+    <div class="bg-nebula" style="top: -100px; left: -100px;"></div>
+    <div class="bg-nebula" style="bottom: -100px; right: -100px;"></div>
+    <div class="grid-overlay"></div>
+    <div class="vignette"></div>
+
+    <div class="max-w-7xl mx-auto node-map-container" id="sectors-container">
+        <!-- Content injected by JS -->
+    </div>
+
+    <!-- Iframe Overlay -->
+    <div id="iframe-overlay">
+        <button class="close-btn font-mono uppercase tracking-[0.2em] text-sm font-bold" id="close-btn">
+            [ Terminate Link ]
+        </button>
+        <iframe id="level-frame" src=""></iframe>
+    </div>
+
+    <!-- Screen Flash -->
+    <div id="screen-flash"></div>
+
+    <script>
+        const sectorsContainer = document.getElementById('sectors-container');
+        const overlay = document.getElementById('iframe-overlay');
+        const levelFrame = document.getElementById('level-frame');
+        const closeBtn = document.getElementById('close-btn');
+        const screenFlash = document.getElementById('screen-flash');
+        const cipherNames = {
+            '1.1': 'Reverse Cipher',
+            '1.2': 'Caesar Cipher',
+            '1.3': 'Atbash Cipher',
+            '1.4': 'Monoalphabetic Substitution',
+            '1.5': 'Fixed Number Encoding',
+            '2.1': 'Reverse + Caesar',
+            '2.2': 'Alternating Cipher',
+            '2.3': 'Positional Cipher',
+            '2.4': 'Vowel Scrambler',
+            '2.5': 'Keyed Substitution Cipher',
+            '3.1': 'Modular Shift Cipher',
+            '3.2': 'Vignere Cipher',
+            '3.3': 'Affined Scrambler',
+            '3.4': 'Permutation Cipher',
+            '3.5': 'Blocked Rotate and keying',
+            '4.1': 'Pairing and +*',
+            '4.2': 'Rotate and Add',
+            '4.3': 'Encrypt additively then flip the block',
+            '4.4': 'Mini RSA',
+            '4.5': 'Mini Merkle Tree'
+        };
+
+        function createNodeMap() {
+            let html = `
+                <a href="/dashboard" class="absolute top-6 left-6 px-6 py-2 border border-[#00e5ff] text-[#00e5ff] font-mono uppercase tracking-[0.2em] text-sm font-bold hover:bg-[#00e5ff] hover:text-[#050505] transition-all rounded shadow-[0_0_15px_rgba(0,229,255,0.2)] hover:shadow-[0_0_20px_rgba(0,229,255,0.5)]" style="background: rgba(15, 23, 42, 0.8); z-index: 100;">
+                    [ Return to Base ]
+                </a>
+                <h1 class="font-display text-5xl md:text-6xl text-center mb-16 tracking-wider shadow-cyan drop-shadow-[0_0_15px_rgba(0,229,255,0.5)]">CIPHER QUEST</h1>
+            `;
+
+            for (let s = 1; s <= 4; s++) {
+                html += `
+                    <div class="mb-20">
+                        <div class="sector-title">
+                            <div class="sector-bg-number font-display">0${s}</div>
+                            <h2 class="font-mono text-2xl uppercase tracking-[0.2em] text-[var(--current-theme-color)] mb-2">Chapter ${s}</h2>
+                            <div class="h-[1px] w-full bg-gradient-to-r from-[var(--current-theme-color)] to-transparent opacity-30 mb-8"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                `;
+
+                for (let m = 1; m <= 5; m++) {
+                    const levelId = `level${s}.${m}`;
+                    const levelKey = `${s}.${m}`;
+                    const cipherName = cipherNames[levelKey] || `Cipher ${s}-${m}`;
+                    html += `
+                        <div class="mission-card" onclick="openLevel('${levelId}')">
+                            <div class="font-mono text-xs uppercase tracking-widest text-slate-400 mb-4">Level ${s}.${m}</div>
+                            <h3 class="font-sans font-semibold text-lg mb-2">${cipherName}</h3>
+                            <div class="font-mono text-[10px] text-slate-500 uppercase tracking-wider">Status: Online</div>
+                            <div class="mission-accent-line"></div>
+                        </div>
+                    `;
+                }
+                
+                html += `</div></div>`;
+            }
+            sectorsContainer.innerHTML = html;
+        }
+
+        function openLevel(levelId) {
+            // Flash effect
+            screenFlash.classList.remove('flash');
+            void screenFlash.offsetWidth; // trigger reflow
+            screenFlash.classList.add('flash');
+
+            // Load iframe and show overlay
+            setTimeout(() => {
+                levelFrame.src = levelId + '.html';
+                overlay.classList.add('active');
+            }, 150);
+        }
+
+        closeBtn.addEventListener('click', () => {
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                levelFrame.src = '';
+            }, 400); // Wait for transition
+        });
+
+        // Initialize
+        createNodeMap();
+    </script>
+</body>
+</html>

@@ -27,6 +27,10 @@ export default defineConfig(({mode}) => {
           target: 'http://localhost:5000',
           changeOrigin: true,
         },
+        '/training': {
+          target: 'http://localhost:5000',
+          changeOrigin: true,
+        },
       },
     },
   };

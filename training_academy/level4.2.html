@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CipherQuest | Level 4.2 | Rotate and Add</title>
+<style>
+:root{
+  --cyan:#59f2ff;--yellow:#ffdd57;--green:#22c55e;--purple:#b97fff;--orange:#ff9f43;--red:#ff5f6d;
+  --ink:#f4f7ff;--muted:#94a3b8;--panel:rgba(15,23,42,.80);--inner:rgba(2,6,23,.74);
+  --border:rgba(148,163,184,.34);--cell:clamp(44px,8vw,70px);--gap:clamp(6px,1.3vw,12px);
+  --font:system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;color:var(--ink);
+  font-family:var(--font);overflow-x:hidden;
+  background:
+    radial-gradient(circle at 18% 0%,rgba(89,242,255,.13),transparent 32%),
+    radial-gradient(circle at 82% 16%,rgba(255,221,87,.12),transparent 30%),
+    radial-gradient(circle at 50% 100%,rgba(34,197,94,.09),transparent 38%),
+    #020617;
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background:
+    linear-gradient(rgba(89,242,255,.024) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(89,242,255,.018) 1px,transparent 1px),
+    repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(255,255,255,.016) 3px,rgba(255,255,255,.016) 4px);
+  background-size:40px 40px,40px 40px,100% 4px;
+  mask-image:radial-gradient(circle,black 30%,transparent 84%);
+}
+.shell{
+  position:relative;z-index:1;width:100%;max-width:990px;border:1px solid var(--border);border-radius:18px;
+  overflow:hidden;background:var(--panel);box-shadow:0 34px 94px rgba(0,0,0,.86),0 0 70px rgba(89,242,255,.08);
+  backdrop-filter:blur(16px);
+}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 22px;
+  background:var(--inner);border-bottom:1px solid var(--border);
+}
+.badge{
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--yellow);
+  border:1px solid rgba(255,221,87,.48);background:rgba(255,221,87,.06);border-radius:999px;padding:4px 10px;
+}
+.title{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.14em}
+.sub{margin-top:2px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
+.live{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.16em}
+.live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 1.3s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.stage{position:relative;min-height:730px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.status{
+  min-height:42px;display:flex;align-items:center;justify-content:center;text-align:center;
+  border:1px solid rgba(89,242,255,.22);border-radius:12px;background:rgba(2,6,23,.64);color:var(--cyan);
+  font-family:"SF Mono","Fira Code",Consolas,monospace;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.paper-lab{
+  position:relative;border:1px solid rgba(148,163,184,.16);border-radius:16px;padding:16px;
+  background:radial-gradient(circle at 50% 26%,rgba(89,242,255,.055),transparent 45%),rgba(2,6,23,.54);
+  overflow:visible;
+}
+.row-label{
+  display:flex;align-items:center;gap:10px;margin-bottom:9px;color:var(--muted);
+  font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;
+}
+.row-label::after{content:"";height:1px;flex:1;background:rgba(148,163,184,.14)}
+.strip-zone{
+  position:relative;min-height:168px;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(148,163,184,.13);border-radius:14px;background:rgba(2,6,23,.56);overflow:visible;
+}
+.fold-line{
+  position:absolute;left:50%;top:18px;bottom:18px;width:2px;background:linear-gradient(transparent,var(--yellow),transparent);
+  box-shadow:0 0 18px rgba(255,221,87,.5);opacity:.22;
+}
+.paper-strip{
+  position:relative;display:grid;grid-template-columns:repeat(6,var(--cell));gap:var(--gap);
+  padding:14px;border:1px solid rgba(89,242,255,.24);border-radius:16px;
+  background:linear-gradient(135deg,rgba(89,242,255,.11),rgba(2,6,23,.72) 58%),rgba(2,6,23,.84);
+  box-shadow:0 0 24px rgba(89,242,255,.13),inset 0 1px 0 rgba(255,255,255,.1);
+  transform-style:preserve-3d;transform-origin:center;transition:transform 1.1s cubic-bezier(.22,1,.36,1),box-shadow .35s,border-color .35s;
+}
+.paper-strip.fold{
+  transform:perspective(850px) rotateX(64deg) scale(.92);
+  border-color:rgba(255,221,87,.5);box-shadow:0 0 28px rgba(255,221,87,.24),inset 0 1px 0 rgba(255,255,255,.12);
+}
+.paper-strip.unfold{transform:perspective(850px) rotateX(0) scale(1)}
+.cell{
+  width:var(--cell);height:calc(var(--cell) * 1.05);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  border:1px solid rgba(89,242,255,.24);border-radius:11px;background:rgba(2,6,23,.76);
+  font-family:"SF Mono","Fira Code",Consolas,monospace;opacity:0;transform:translateY(8px);transition:all .35s;
+}
+.cell.show{opacity:1;transform:translateY(0)}
+.cell.active{border-color:var(--cyan);box-shadow:0 0 22px rgba(89,242,255,.42),inset 0 0 18px rgba(89,242,255,.08);transform:translateY(-5px)}
+.cell.reverse.active{border-color:var(--yellow);box-shadow:0 0 22px rgba(255,221,87,.36),inset 0 0 18px rgba(255,221,87,.08)}
+.letter{font-size:clamp(22px,4vw,34px);font-weight:900;line-height:1}
+.idx{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.grid-zone{
+  margin-top:14px;position:relative;border:1px solid rgba(148,163,184,.13);border-radius:14px;background:rgba(2,6,23,.56);
+  padding:14px;overflow:visible;
+}
+.matrix{
+  display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;
+}
+.matrix-label{
+  min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:10px;
+  border:1px solid rgba(148,163,184,.14);background:rgba(2,6,23,.62);color:var(--muted);
+  font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+}
+.matrix-row{
+  display:grid;grid-template-columns:repeat(6,var(--cell));gap:var(--gap);justify-content:center;
+}
+.reverse-row{opacity:0;transform:translateY(-10px);transition:all .45s}
+.reverse-row.show{opacity:1;transform:translateY(0)}
+.plus-mark{
+  position:absolute;left:50%;top:calc(50% - 2px);transform:translate(-50%,-50%);
+  width:42px;height:42px;display:grid;place-items:center;border-radius:50%;
+  border:1px solid rgba(255,221,87,.42);background:rgba(2,6,23,.94);color:var(--yellow);
+  font-family:"SF Mono","Fira Code",Consolas,monospace;font-size:26px;font-weight:900;
+  box-shadow:0 0 18px rgba(255,221,87,.22);opacity:0;transition:all .35s;
+}
+.plus-mark.show{opacity:1}
+.scanner{
+  position:absolute;top:14px;bottom:14px;width:calc(var(--cell) + 10px);border:1px solid rgba(89,242,255,.58);
+  border-radius:12px;background:rgba(89,242,255,.07);box-shadow:0 0 24px rgba(89,242,255,.32),inset 0 0 16px rgba(89,242,255,.08);
+  opacity:0;pointer-events:none;transition:left .62s cubic-bezier(.22,1,.36,1),opacity .3s;
+}
+.scanner.show{opacity:1}
+.calc-strip{
+  margin-top:14px;
+  min-height:86px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  border:1px solid rgba(255,221,87,.18);
+  border-radius:14px;
+  background:rgba(2,6,23,.66);
+}
+.calc-card{
+  min-width:96px;
+  min-height:58px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  border:1px solid rgba(148,163,184,.16);
+  border-radius:12px;
+  background:rgba(15,23,42,.78);
+  font-family:"SF Mono","Fira Code",Consolas,monospace;
+  transition:all .3s;
+}
+.calc-card.hot{
+  border-color:rgba(255,221,87,.55);
+  box-shadow:0 0 18px rgba(255,221,87,.18);
+}
+.calc-label{font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.calc-value{font-size:18px;font-weight:900;color:var(--ink)}
+.calc-card.result .calc-value{color:var(--green);text-shadow:0 0 12px rgba(34,197,94,.55)}
+.calc-op{
+  font-family:"SF Mono","Fira Code",Consolas,monospace;
+  font-size:24px;
+  font-weight:900;
+  color:var(--yellow);
+}
+.math-panel{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px;
+}
+.box{
+  min-height:76px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(2,6,23,.64);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;padding:10px;
+}
+.box-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
+.box-val{font-family:"SF Mono","Fira Code",Consolas,monospace;font-size:18px;font-weight:900}
+.box.active{border-color:rgba(255,221,87,.48);box-shadow:0 0 18px rgba(255,221,87,.18)}
+.box.active .box-val{color:var(--yellow)}
+.out-cell{
+  width:var(--cell);height:calc(var(--cell) * 1.05);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  border:1px dashed rgba(34,197,94,.2);border-radius:11px;background:rgba(2,6,23,.72);
+  color:transparent;font-family:"SF Mono","Fira Code",Consolas,monospace;transition:all .35s;
+}
+.out-cell.filled{border-style:solid;border-color:rgba(34,197,94,.56);color:var(--green);box-shadow:0 0 18px rgba(34,197,94,.24);animation:land .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes land{from{transform:scale(.72);opacity:.35}to{transform:scale(1);opacity:1}}
+.out-cell.filled .letter{text-shadow:0 0 14px rgba(34,197,94,.76)}
+.note{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid rgba(89,242,255,.20);
+  border-radius:12px;background:rgba(2,6,23,.66);padding:12px 16px;
+}
+.note-main{font-family:"SF Mono","Fira Code",Consolas,monospace;font-size:16px;font-weight:900;color:var(--cyan)}
+.note-sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.13em}
+.footer{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 22px;background:var(--inner);border-top:1px solid var(--border);
+}
+.timer{font-size:10px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase}
+.btn{
+  border:1px solid rgba(89,242,255,.4);border-radius:999px;background:rgba(89,242,255,.06);color:var(--cyan);
+  padding:7px 16px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;cursor:pointer;
+}
+.btn:hover{background:rgba(89,242,255,.12);box-shadow:0 0 16px rgba(89,242,255,.25)}
+@media(max-width:820px){
+  body{padding:12px}.topbar{align-items:flex-start;flex-direction:column;padding:14px}.stage{padding:14px}
+  .matrix{grid-template-columns:1fr}.matrix-label{min-height:32px}.math-panel{grid-template-columns:1fr 1fr}
+  .scanner{display:none}.plus-mark{display:none}
+}
+@media(max-width:560px){
+  :root{--cell:38px;--gap:5px}
+  .paper-strip{padding:8px}.letter{font-size:22px}.idx{font-size:7px}.math-panel{grid-template-columns:1fr}
+  .note{align-items:flex-start;flex-direction:column}
+  .calc-card{min-width:76px}
+  .calc-value{font-size:15px}
+}
+</style>
+    <script src="global_controls.js"></script>
+</head>
+<body>
+<main class="shell">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="badge">CH 04</span>
+      <div>
+        <div class="title">Rotate and Add</div>
+        <div class="sub">I_Original + I_Reverse</div>
+      </div>
+    </div>
+    <div class="live">Auto Demo</div>
+  </header>
+
+  <section class="stage">
+    <div class="status" id="status">Start with CIPHER</div>
+
+    <div class="paper-lab">
+      <div class="row-label">Paper strip</div>
+      <div class="strip-zone">
+        <div class="fold-line"></div>
+        <div class="paper-strip" id="paperStrip"></div>
+      </div>
+
+      <div class="grid-zone" id="gridZone">
+        <div class="plus-mark" id="plusMark">+</div>
+        <div class="scanner" id="scanner"></div>
+        <div class="matrix">
+          <div class="matrix-label">Original</div>
+          <div class="matrix-row" id="originalRow"></div>
+          <div class="matrix-label">Reverse</div>
+          <div class="matrix-row reverse-row" id="reverseRow"></div>
+          <div class="matrix-label">Output</div>
+          <div class="matrix-row" id="outputRow"></div>
+        </div>
+        <div class="calc-strip">
+          <div class="calc-card" id="calcOriginal">
+            <div class="calc-label">Original</div>
+            <div class="calc-value">-</div>
+          </div>
+          <div class="calc-op">+</div>
+          <div class="calc-card" id="calcReverse">
+            <div class="calc-label">Reverse</div>
+            <div class="calc-value">-</div>
+          </div>
+          <div class="calc-op">=</div>
+          <div class="calc-card" id="calcSum">
+            <div class="calc-label">Sum</div>
+            <div class="calc-value">-</div>
+          </div>
+          <div class="calc-op">-&gt;</div>
+          <div class="calc-card result" id="calcResult">
+            <div class="calc-label">Letter</div>
+            <div class="calc-value">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="math-panel">
+      <div class="box" id="b1"><div class="box-lbl">Original</div><div class="box-val" id="v1">CIPHER</div></div>
+      <div class="box" id="b2"><div class="box-lbl">Reverse</div><div class="box-val" id="v2">------</div></div>
+      <div class="box" id="b3"><div class="box-lbl">Column math</div><div class="box-val" id="v3">-</div></div>
+      <div class="box" id="b4"><div class="box-lbl">Result</div><div class="box-val" id="v4">------</div></div>
+    </div>
+
+    <div class="note">
+      <div>
+        <div class="note-sub">Rule</div>
+        <div class="note-main">CIPHER + REHPIC = TMWWMT</div>
+      </div>
+      <div class="note-sub">A=0, add each original letter with its reversed partner</div>
+    </div>
+  </section>
+
+  <footer class="footer">
+
+        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
+      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
+      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    </div>
+    <div class="timer" id="timer">Looping demo</div>
+    <button class="btn" id="replay">Replay Now</button>
+  </footer>
+</main>
+
+<script>
+const WORD = "CIPHER";
+const REVERSE = [...WORD].reverse().join("");
+const ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const RESULT = [...WORD].map((ch, i) => ABC[(ABC.indexOf(ch) + ABC.indexOf(REVERSE[i])) % 26]).join("");
+let running = false;
+let loopTimer = null;
+let token = { stop: false };
+
+const $ = (id) => document.getElementById(id);
+let speedMultiplier = 1.0;
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms / speedMultiplier));
+const indexOf = (ch) => ABC.indexOf(ch);
+
+function setActive(id) {
+  ["b1", "b2", "b3", "b4"].forEach((box) => $(box).classList.toggle("active", box === id));
+}
+
+function cell(ch, i, className = "cell") {
+  const el = document.createElement("div");
+  el.className = className;
+  el.innerHTML = `<div class="letter">${ch}</div><div class="idx">${ch}=${indexOf(ch)}</div>`;
+  return el;
+}
+
+function outCell(i) {
+  const el = document.createElement("div");
+  el.className = "out-cell";
+  el.innerHTML = `<div class="letter"></div><div class="idx">-</div>`;
+  return el;
+}
+
+function build() {
+  $("paperStrip").innerHTML = "";
+  $("originalRow").innerHTML = "";
+  $("reverseRow").innerHTML = "";
+  $("outputRow").innerHTML = "";
+  [...WORD].forEach((ch, i) => {
+    $("paperStrip").appendChild(cell(ch, i + 1));
+    $("originalRow").appendChild(cell(ch, i + 1));
+  });
+  [...REVERSE].forEach((ch, i) => $("reverseRow").appendChild(cell(ch, i + 1, "cell reverse")));
+  [...WORD].forEach((_, i) => $("outputRow").appendChild(outCell(i + 1)));
+}
+
+function clearHighlights() {
+  document.querySelectorAll(".cell").forEach((el) => el.classList.remove("active"));
+}
+
+function reset() {
+  token.stop = true;
+  token = { stop: false };
+  clearInterval(loopTimer);
+  build();
+  $("paperStrip").classList.remove("fold", "unfold");
+  $("reverseRow").classList.remove("show");
+  $("plusMark").classList.remove("show");
+  $("scanner").classList.remove("show");
+  $("scanner").style.left = "0px";
+  $("status").textContent = "Start with CIPHER";
+  $("v1").textContent = "CIPHER";
+  $("v2").textContent = "------";
+  $("v3").textContent = "-";
+  $("v4").textContent = "------";
+  ["calcOriginal", "calcReverse", "calcSum", "calcResult"].forEach((id) => {
+    $(id).classList.remove("hot");
+    $(id).querySelector(".calc-value").textContent = "-";
+  });
+  $("timer").textContent = "Looping demo";
+  setActive("b1");
+}
+
+async function revealWord(runToken) {
+  const stripCells = [...$("paperStrip").querySelectorAll(".cell")];
+  const originalCells = [...$("originalRow").querySelectorAll(".cell")];
+  for (let i = 0; i < stripCells.length; i += 1) {
+    if (runToken.stop) return;
+    stripCells[i].classList.add("show");
+    originalCells[i].classList.add("show");
+    await wait(120);
+  }
+}
+
+function scannerToColumn(index) {
+  const grid = $("gridZone").getBoundingClientRect();
+  const target = $("originalRow").children[index].getBoundingClientRect();
+  $("scanner").style.left = `${target.left - grid.left - 5}px`;
+}
+
+async function foldPaper(runToken) {
+  $("status").textContent = "Fold the strip to create the reverse copy";
+  setActive("b2");
+  $("paperStrip").classList.add("fold");
+  await wait(750);
+  if (runToken.stop) return;
+  $("reverseRow").classList.add("show");
+  [...$("reverseRow").querySelectorAll(".cell")].forEach((el) => el.classList.add("show"));
+  $("paperStrip").classList.remove("fold");
+  $("paperStrip").classList.add("unfold");
+  $("v2").textContent = REVERSE;
+  await wait(750);
+}
+
+async function scanColumn(i, runToken) {
+  const original = WORD[i];
+  const reversed = REVERSE[i];
+  const sum = indexOf(original) + indexOf(reversed);
+  const out = ABC[sum % 26];
+  const originalCell = $("originalRow").children[i];
+  const reverseCell = $("reverseRow").children[i];
+  const outputCell = $("outputRow").children[i];
+  const leftValue = indexOf(original);
+  const rightValue = indexOf(reversed);
+  const wrapped = sum % 26;
+
+  clearHighlights();
+  scannerToColumn(i);
+  $("scanner").classList.add("show");
+  originalCell.classList.add("active");
+  reverseCell.classList.add("active");
+  $("plusMark").classList.add("show");
+  setActive("b3");
+  $("status").textContent = `${original}=${leftValue} plus ${reversed}=${rightValue}: ${leftValue}+${rightValue}=${sum}, so ${wrapped} becomes ${out}`;
+  $("v3").textContent = `${leftValue}+${rightValue}=${sum} -> ${wrapped}=${out}`;
+  $("calcOriginal").querySelector(".calc-value").textContent = `${original}=${leftValue}`;
+  $("calcReverse").querySelector(".calc-value").textContent = `${reversed}=${rightValue}`;
+  $("calcSum").querySelector(".calc-value").textContent = sum > 25 ? `${sum} mod 26 = ${wrapped}` : `${sum}`;
+  $("calcResult").querySelector(".calc-value").textContent = out;
+  ["calcOriginal", "calcReverse", "calcSum", "calcResult"].forEach((id) => $(id).classList.add("hot"));
+  await wait(750);
+  if (runToken.stop) return;
+
+  outputCell.querySelector(".letter").textContent = out;
+  outputCell.querySelector(".idx").textContent = wrapped;
+  outputCell.classList.add("filled");
+  const partial = [...$("outputRow").children].map((el) => el.querySelector(".letter").textContent || "-").join("");
+  $("v4").textContent = partial;
+  setActive("b4");
+  await wait(500);
+}
+
+async function run() {
+  if (running) return;
+  running = true;
+  reset();
+  const runToken = token;
+
+  await wait(300);
+  await revealWord(runToken);
+  if (runToken.stop) { running = false; return; }
+
+  await wait(500);
+  await foldPaper(runToken);
+  if (runToken.stop) { running = false; return; }
+
+  $("status").textContent = "Now add each original letter with the reversed letter under it";
+  await wait(750);
+
+  for (let i = 0; i < WORD.length; i += 1) {
+    if (runToken.stop) { running = false; return; }
+    await scanColumn(i, runToken);
+  }
+
+  clearHighlights();
+  $("scanner").classList.remove("show");
+  $("plusMark").classList.remove("show");
+  $("status").textContent = `Complete: ${WORD} + ${REVERSE} = ${RESULT}`;
+  $("v4").textContent = RESULT;
+  startLoop(runToken);
+  running = false;
+}
+
+function startLoop(runToken) {
+  let left = 2;
+  $("timer").textContent = `Replay in ${left}s`;
+  loopTimer = setInterval(() => {
+    if (runToken.stop) {
+      clearInterval(loopTimer);
+      return;
+    }
+    left -= 1;
+    $("timer").textContent = left > 0 ? `Replay in ${left}s` : "Looping demo";
+    if (left <= 0) {
+      clearInterval(loopTimer);
+      run();
+    }
+  }, 1000 / speedMultiplier);
+}
+
+$("replay").addEventListener("click", () => {
+  running = false;
+  run();
+});
+
+window.addEventListener("load", run);
+window.addEventListener("resize", () => {
+  const scannerVisible = $("scanner").classList.contains("show");
+  if (scannerVisible) $("scanner").classList.remove("show");
+});
+
+        const sDisplay = document.getElementById("speedDisplay");
+  if (document.getElementById("speedUp")) {
+    document.getElementById("speedUp").addEventListener("click", () => {
+      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+    document.getElementById("speedDown").addEventListener("click", () => {
+      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+  }
+
+  const nextBtn = document.getElementById("nextBtn");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
+      if (match) {
+        let ch = parseInt(match[1]);
+        let lvl = parseInt(match[2]);
+        lvl++;
+        if (lvl > 5) { lvl = 1; ch++; }
+        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
+      }
+    });
+  }
+</script>
+</body>
+</html>
