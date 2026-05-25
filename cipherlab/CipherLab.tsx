@@ -12,8 +12,7 @@ import { useAuth } from '../src/context/AuthContext';
 // --- Types ---
 interface UserData {
   uid: string;
-  callsign: string;
-  theme: 'cyan' | 'green' | 'purple' | 'orange' | 'magenta';
+  username: string;
   totalPoints: number;
   completedLevelIds: string[];
   usedWords?: string[];
@@ -24,14 +23,6 @@ interface LeaderboardEntry {
   callsign: string;
   points: number;
 }
-
-const THEMES: Record<string, string> = {
-  cyan: '#00e5ff',
-  green: '#00ff88',
-  purple: '#b200ff',
-  orange: '#ff8800',
-  magenta: '#ff00aa'
-};
 
 // --- API helpers ---
 async function fetchProfile(): Promise<UserData | null> {
@@ -63,17 +54,6 @@ async function submitScore(points: number, missionId: string) {
     if (!res.ok) return null;
     return await res.json();
   } catch { return null; }
-}
-
-async function updateThemeAPI(theme: string) {
-  try {
-    await fetch('/api/cipherlab/profile', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ theme }),
-    });
-  } catch {}
 }
 
 async function fetchGlobalXp(): Promise<{xp: number, level: number}> {
@@ -113,12 +93,20 @@ export default function App() {
       if (!authUser) return;
       const profile = await fetchProfile();
       if (!profile) { window.location.href = '/account?mode=login'; return; }
-      setUser(profile);
+      setUser({
+        uid: profile.uid,
+        username: profile.username || (authUser.username ?? 'OP_RECRUIT'),
+        totalPoints: profile.totalPoints || 0,
+        completedLevelIds: profile.completedLevelIds || [],
+        usedWords: profile.usedWords || [],
+      });
       setLoading(false);
       setLeaderboard(await fetchLeaderboard());
       setGlobalXp(authUser.xp);
     })();
   }, [authUser]);
+
+  const storyCompleted = (authUser?.storyData?.completedMissions?.length || 0) >= 20;
 
   useEffect(() => {
     const id = setInterval(async () => setLeaderboard(await fetchLeaderboard()), 30000); // 30 seconds
@@ -138,39 +126,23 @@ export default function App() {
     }
   };
 
-  const handleThemeChange = async (theme: UserData['theme']) => {
-    if (!user) return;
-    setUser(prev => prev ? ({ ...prev, theme }) : null);
-    await updateThemeAPI(theme);
-  };
-
-  if (loading) return (
-    <div className="h-screen w-full flex items-center justify-center bg-black">
-      <motion.div 
-        animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.05, 1] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className="text-[#00e5ff] font-mono text-xl tracking-[0.3em]"
-      >
-        BOOTING_SYSTEM...
-      </motion.div>
-    </div>
-  );
+  if (loading) return null;
 
   return (
     <div 
       className="relative min-h-screen terminal-grid selection:bg-white selection:text-black"
-      style={{ '--current-theme-color': THEMES[user?.theme || 'cyan'] } as any}
     >
       <div className="scanline" />
-      <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
-        <div className="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] opacity-20 blur-[120px]" style={{ backgroundColor: THEMES[user?.theme || 'cyan'] }} />
-        <div className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] opacity-20 blur-[120px]" style={{ backgroundColor: THEMES[user?.theme || 'cyan'] }} />
+      {/* Standardized Background */}
+      <div className="fixed inset-0 z-0 bg-[#050505] overflow-hidden pointer-events-none">
+        <div className="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
+        <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
       </div>
 
       <main className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-12">
         <AnimatePresence mode="wait">
           {view === 'dash' && user && (
-            <Dashboard user={user} leaderboard={leaderboard} onStartLab={() => setView('lab')} onViewLeaderboard={() => setView('leaderboard')} onThemeChange={handleThemeChange} />
+            <Dashboard user={user} leaderboard={leaderboard} onStartLab={() => setView('lab')} storyCompleted={storyCompleted} authUser={authUser} globalXp={globalXp} />
           )}
           {view === 'lab' && user && (
             <CipherLab user={user} globalXp={globalXp} onComplete={handleComplete} onExit={() => setView('dash')} onXpChange={setGlobalXp} />
@@ -182,27 +154,19 @@ export default function App() {
       </main>
 
       {user && (
-        <nav className="fixed top-0 left-0 w-full z-40 px-6 py-4 flex justify-between items-center glass-panel">
-          <div className="flex items-center gap-4">
-            <a href="/dashboard" className="w-10 h-10 flex items-center justify-center border border-white/20 rounded-sm hover:bg-white/10 transition-colors" title="Back to CipherQuest">
-              <ArrowLeft className="w-5 h-5 text-white/70" />
-            </a>
-            <div className="w-10 h-10 flex items-center justify-center border border-white/20 rounded-sm" style={{ borderColor: THEMES[user.theme] }}>
-              <Shield className="w-5 h-5" style={{ color: THEMES[user.theme] }} />
-            </div>
-            <div>
-              <div className="text-xs font-mono uppercase opacity-50 tracking-widest">Operative</div>
-              <div className="font-mono font-bold tracking-tight">{user.callsign}</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-8">
-            <div className="text-right">
-              <div className="text-xs font-mono uppercase opacity-50 tracking-widest">TOTAL_XP</div>
-              <div className="font-display text-xl font-bold" style={{ color: THEMES[user.theme] }}>{globalXp.toLocaleString()}</div>
-            </div>
-            <button onClick={() => setView('dash')} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-              <Terminal className="w-5 h-5 text-white/50" />
-            </button>
+        <nav className="fixed top-0 left-0 w-full z-40 pointer-events-none">
+          {/* Left corner back arrow */}
+          <button onClick={() => view === 'dash' ? window.location.href = '/dashboard' : setView('dash')} className="fixed top-0 left-0 w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
+             <div className="w-8 h-8 flex items-center justify-center">
+               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
+                 <path d="m15 18-6-6 6-6"/>
+               </svg>
+             </div>
+          </button>
+
+          {/* Right side module name */}
+          <div className="absolute top-6 right-10 flex flex-col items-end">
+            <h1 className="cq-title tracking-widest uppercase text-right">Cipher_Lab</h1>
           </div>
         </nav>
       )}
@@ -211,86 +175,80 @@ export default function App() {
 }
 
 // --- Dashboard ---
-function Dashboard({ user, leaderboard, onStartLab, onViewLeaderboard, onThemeChange }: { 
-  user: UserData, leaderboard: LeaderboardEntry[], onStartLab: () => void, onViewLeaderboard: () => void, onThemeChange: (t: UserData['theme']) => void
+function Dashboard({ user, leaderboard, onStartLab, storyCompleted, authUser, globalXp }: { 
+  user: UserData, leaderboard: LeaderboardEntry[], onStartLab: () => void, storyCompleted: boolean, authUser: any, globalXp: number
 }) {
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-12">
       <div className="lg:col-span-8 space-y-8">
-        <header className="space-y-2">
-          <div className="text-xs font-mono uppercase opacity-50 tracking-[0.4em]">Sector_01 // Missions</div>
-          <h1 className="text-5xl font-display font-bold uppercase tracking-tighter">Cipher_Lab</h1>
-        </header>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div onClick={onStartLab} className="glass-panel p-8 rounded-sm group cursor-pointer hover:border-current-theme transition-all duration-500" style={{ '--current-theme-color': THEMES[user.theme] } as any}>
-            <div className="flex justify-between items-start mb-12">
-              <Terminal className="w-10 h-10 opacity-50 group-hover:opacity-100 transition-opacity" style={{ color: THEMES[user.theme] }} />
+          <div onClick={onStartLab} className="glass-panel p-8 rounded-sm group cursor-pointer hover:border-[var(--current-theme-color)] transition-all duration-500">
+            <div className="flex justify-end items-start mb-12">
               <div className="text-xs font-mono px-3 py-1 bg-white/10 rounded-full">ACTIVE_LAB</div>
             </div>
             <div>
-              <h3 className="text-2xl font-display font-bold mb-2 uppercase">Neural Lab</h3>
+              <h3 className="cq-subheading mb-2">Neural Lab</h3>
               <p className="text-white/40 text-sm font-mono leading-relaxed group-hover:text-white/60 transition-colors mb-6">
                 EXECUTE DECRYPTION SEQUENCES. CHALLENGE YOUR NEURAL CAPACITY IN REAL-TIME.
               </p>
-              <button onClick={(e) => { e.stopPropagation(); onStartLab(); }} className="cyber-button text-xs py-3 w-full group-hover:scale-[1.02] transition-transform shadow-[0_0_15px_rgba(0,229,255,0.3)]" style={{ backgroundColor: THEMES[user.theme] }}>
+              <button onClick={(e) => { e.stopPropagation(); onStartLab(); }} className="cyber-button text-xs py-3 w-full group-hover:scale-[1.02] transition-transform shadow-[0_0_15px_rgba(0,242,255,0.3)] bg-[#00f2ff] !text-black border-[#00f2ff]" style={{ backgroundColor: '#00f2ff', color: 'black', borderColor: '#00f2ff' }}>
                 ENTER_LAB
               </button>
             </div>
             <div className="mt-8 h-1 w-0 bg-[var(--current-theme-color)] group-hover:w-full transition-all duration-700" />
           </div>
 
-          <div onClick={onViewLeaderboard} className="glass-panel p-8 rounded-sm overflow-hidden cursor-pointer hover:border-white/40 transition-all">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xs font-mono uppercase opacity-50 tracking-widest">Global Rankings</h3>
-              <Globe className="w-4 h-4 opacity-30" />
-            </div>
-            <div className="space-y-4">
-              {leaderboard.slice(0, 5).map((entry, i) => (
-                <div key={i} className="flex justify-between items-center text-sm font-mono border-b border-white/5 pb-2">
-                  <div className="flex items-center gap-4">
-                    <span className="opacity-20 w-4">{i+1}</span>
-                    <span className="truncate max-w-[120px]">{entry.callsign}</span>
-                  </div>
-                  <span className="font-bold tracking-wider" style={{ color: THEMES[user.theme] }}>{entry.points.toLocaleString()} XP</span>
-                </div>
-              ))}
-              {leaderboard.length === 0 && <div className="text-[10px] opacity-30 text-center py-4">FETCHING_RANKINGS...</div>}
-            </div>
-          </div>
+          {/* Global Rankings moved to Multiplayer — removed from CipherLab dashboard */}
+        </div>
+        {/* Operational Directives / Rules */}
+        <div className="glass-panel p-8 border border-white/10 hover:border-[var(--current-theme-color)]/30 transition-colors mt-8">
+          <h3 className="text-[12px] font-mono font-bold tracking-[0.3em] uppercase text-[var(--current-theme-color)] mb-6 flex items-center gap-3">
+            <Terminal className="w-5 h-5" /> Operational Directives
+          </h3>
+          <ul className="space-y-4 font-sans text-[14px] leading-relaxed text-white/70 list-none">
+            <li className="flex items-start gap-3">
+              <span className="text-[var(--current-theme-color)] font-mono font-bold mt-0.5">&gt;</span>
+              <p>You will be given an encrypted word and provided encryption technique and appropriate pattern.</p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[var(--current-theme-color)] font-mono font-bold mt-0.5">&gt;</span>
+              <p>You have to decode the word using given information within time limit.</p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[var(--current-theme-color)] font-mono font-bold mt-0.5">&gt;</span>
+              <p>You can use hints but it will cost you xp points.</p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[var(--current-theme-color)] font-mono font-bold mt-0.5">&gt;</span>
+              <p>Each hint will reveal one alphabet of the answer word.</p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[var(--current-theme-color)] font-mono font-bold mt-0.5">&gt;</span>
+              <p>Reward will be given on basis on time taken, hints used and incorrect attempts.</p>
+            </li>
+          </ul>
         </div>
       </div>
 
       <div className="lg:col-span-4 space-y-8">
         <div className="glass-panel p-6 rounded-sm">
-          <h4 className="text-xs font-mono uppercase opacity-50 mb-4 tracking-widest">Operative Logs</h4>
+          <h4 className="cq-subtitle mb-4">Operator Stats</h4>
           <div className="space-y-4">
-            <div className="flex items-center justify-between text-sm py-2 border-b border-white/5">
+            <div className="flex items-center gap-4 py-2 border-b border-white/5">
+              <div className="w-12 h-12 tactical-panel bg-white/5 p-1 flex-shrink-0">
+                <img src={`/assets/badge${authUser?.level || 1}.png`} alt="Badge" className="w-full h-full object-contain" />
+              </div>
+              <div className="flex flex-col">
+                <span className={`text-sm font-bold uppercase tracking-widest ${storyCompleted ? 'rainbow-text' : 'text-white/90'}`}>{user.username.toUpperCase()}</span>
+                <span className="font-mono text-xs text-[var(--current-theme-color)] mt-1">{globalXp.toLocaleString()} XP</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between text-sm py-2">
               <span className="text-white/40">COMPLETED_CIPHERS</span>
               <span className="font-mono">{user.completedLevelIds.length}</span>
             </div>
-            <div className="flex items-center justify-between text-sm py-2">
-              <span className="text-white/40">SYSTEM_STATUS</span>
-              <span className="font-mono text-green-500">ONLINE</span>
-            </div>
           </div>
         </div>
-
-        <div className="glass-panel p-6 rounded-sm">
-          <h4 className="text-xs font-mono uppercase opacity-50 mb-4 tracking-widest">UI_Aesthetic</h4>
-          <div className="flex gap-3">
-            {(Object.keys(THEMES) as UserData['theme'][]).map(t => (
-              <button key={t} onClick={() => onThemeChange(t)}
-                className={`w-9 h-9 rounded-sm border-2 transition-all ${user.theme === t ? 'scale-110' : 'opacity-40 hover:opacity-100'}`}
-                style={{ backgroundColor: THEMES[t], borderColor: user.theme === t ? 'white' : 'transparent' }}
-              />
-            ))}
-          </div>
-        </div>
-
-        <a href="/dashboard" className="w-full flex items-center justify-center gap-2 p-4 text-xs font-mono uppercase text-white/40 hover:text-[#00e5ff] hover:bg-[#00e5ff]/10 transition-all border border-transparent hover:border-[#00e5ff]/20">
-          <ArrowLeft className="w-4 h-4" /> Back to CipherQuest
-        </a>
       </div>
     </motion.div>
   );
@@ -307,7 +265,8 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
   const [feedback, setFeedback] = useState<'none' | 'success' | 'error'>('none');
 
   const startNewMission = useCallback(() => {
-    const level = user.completedLevelIds.length < 5 ? 1 : user.completedLevelIds.length < 12 ? 2 : 3;
+    if (!user) return;
+    const level = user.completedLevelIds.length;
     const mission = generateMission(level, user.usedWords || []);
     setSessionMission(mission);
     setUserInput('');
@@ -316,9 +275,12 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
     setIsActive(true);
     setStartTime(Date.now());
     setFeedback('none');
-  }, [user.completedLevelIds]);
+  }, [user]);
 
-  useEffect(() => { startNewMission(); }, [startNewMission]);
+  useEffect(() => {
+    if (!user) return;
+    startNewMission();
+  }, [user, startNewMission]);
 
   useEffect(() => {
     let interval: any;
@@ -342,7 +304,7 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
       setFeedback('success');
       setIsActive(false);
       onComplete(points, sessionMission.id);
-      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: [THEMES[user.theme], '#ffffff'] });
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: [localStorage.getItem('cq_theme') || 'var(--current-theme-color)', '#ffffff'] });
     } else {
       setFeedback('error');
       setUserInput('');
@@ -366,56 +328,44 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
   };
 
   return (
-    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 w-full max-w-[1400px] mx-auto px-4 lg:px-8 py-8 flex flex-col items-center">
-      <div className="w-full flex justify-between items-center mb-8 border-b border-white/10 pb-4">
-        <h1 className="text-3xl font-display font-bold uppercase tracking-[0.2em] text-[color:var(--current-theme-color)]">
-          CipherLab
-        </h1>
-        <button onClick={onExit} className="text-white/40 hover:text-white flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Return to Dashboard
-        </button>
-      </div>
+    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 w-full max-w-[1400px] mx-auto px-2 lg:px-4 py-4 flex flex-col items-center text-lg" style={{ maxHeight: 'calc(100vh - 56px)', overflow: 'hidden' }}>
+      <div className="w-full flex justify-between items-center mb-8 border-b border-white/10 pb-4 mt-12 opacity-0 h-0 pointer-events-none"></div>
 
-      <div className="w-full flex flex-col xl:flex-row gap-12 items-stretch min-h-full">
+      <div className="w-full flex flex-col xl:flex-row gap-6 items-stretch min-h-full">
         {/* Left Column */}
-        <div className="flex-1 flex flex-col w-full max-w-[400px] xl:max-w-none relative z-10">
-          <div className="glass-panel p-8 flex-1 flex flex-col border border-[color:var(--current-theme-color)]/20 shadow-2xl relative overflow-hidden rounded-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-[color:var(--current-theme-color)]/5 to-transparent pointer-events-none"></div>
+        <div className="flex-1 flex flex-col w-full max-w-[340px] xl:max-w-none relative z-10">
+          <div className="glass-panel p-4 flex-1 flex flex-col border border-[var(--current-theme-color)]/10 shadow relative overflow-hidden rounded-lg">
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--current-theme-color)]/5 to-transparent pointer-events-none"></div>
             
             <div className="flex items-center gap-4 mb-10 border-b border-white/5 pb-6">
-              <Zap className="text-[color:var(--current-theme-color)] animate-[pulse_2s_infinite]" />
-              <h2 className="font-sans text-xs tracking-[0.4em] uppercase text-[color:var(--current-theme-color)] font-bold">CipherLab Protocol</h2>
+              <Zap className="text-[var(--current-theme-color)] animate-[pulse_2s_infinite]" />
+              <h2 className="font-sans text-xs tracking-[0.4em] uppercase text-[var(--current-theme-color)] font-bold">CipherLab Protocol</h2>
             </div>
-            
-            <div className="flex flex-col gap-8 mb-6 flex-1">
-              <p className="font-mono text-sm leading-relaxed text-white/80 border-l-2 border-[color:var(--current-theme-color)] pl-4">
-                Welcome to the Syndicate Core simulation. Each sequence demands focus.
-              </p>
-              
+            <div className="flex flex-col gap-4 mb-2 flex-1">
               {sessionMission ? (
                 <>
-                  <div className="mt-2 border border-[color:var(--current-theme-color)]/20 bg-[color:var(--current-theme-color)]/5 p-3 rounded">
-                    <span className="text-[color:var(--current-theme-color)] font-bold tracking-[0.2em] uppercase text-[9px]">&gt; Target Algorithm:</span>
-                    <div className="text-white mt-1 font-mono text-[11px]">{sessionMission.type.replace(/_/g, ' ')}</div>
+                  <div className="mt-2 border border-[var(--current-theme-color)]/10 bg-[var(--current-theme-color)]/5 p-2 rounded">
+                    <span className="text-[var(--current-theme-color)] font-bold tracking-[0.12em] uppercase text-sm">&gt; Target Algorithm:</span>
+                      <div className="text-white mt-1 font-mono text-xl">{sessionMission.type.replace(/_/g, ' ')}</div>
                   </div>
-                  <div className="mt-2 border border-[color:var(--current-theme-color)]/20 bg-[color:var(--current-theme-color)]/5 p-3 rounded">
-                    <span className="text-[color:var(--current-theme-color)] font-bold tracking-[0.2em] uppercase text-[9px]">&gt; Known Pattern:</span>
-                    <div className="text-white mt-1 font-mono text-[11px] italic">{sessionMission.schemeHint}</div>
+                  <div className="mt-2 border border-[var(--current-theme-color)]/20 bg-[var(--current-theme-color)]/5 p-3 rounded">
+                      <span className="text-[var(--current-theme-color)] font-bold tracking-[0.12em] uppercase text-sm">&gt; Known Pattern:</span>
+                      <div className="text-white mt-1 font-mono text-xl italic">{sessionMission.schemeHint}</div>
                   </div>
-                  <div className="mt-4 flex flex-col gap-3">
+                  <div className="mt-3 flex flex-col gap-2">
                     <button onClick={revealHint} disabled={hintsCount >= sessionMission.originalText.length || !isActive || globalXp <= 0}
-                            className="w-full py-3 border border-[color:var(--current-theme-color)]/20 text-[color:var(--current-theme-color)] hover:bg-[color:var(--current-theme-color)]/10 transition-colors text-[10px] tracking-[0.2em] font-bold disabled:opacity-30 disabled:pointer-events-none rounded flex items-center justify-center gap-2">
+                              className="w-full py-2 border border-[var(--current-theme-color)]/10 text-[var(--current-theme-color)] hover:bg-[var(--current-theme-color)]/10 transition-colors text-sm tracking-[0.12em] font-bold disabled:opacity-30 disabled:pointer-events-none rounded flex items-center justify-center gap-2">
                       <Lightbulb className="w-4 h-4" /> REVEAL INTEL (-20 XP)
                     </button>
                     <button onClick={handleSkip} disabled={!isActive}
-                            className="w-full py-3 border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-black transition-colors text-[10px] tracking-[0.2em] font-bold disabled:opacity-30 disabled:pointer-events-none rounded">
+                              className="w-full py-2 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-black transition-colors text-sm tracking-[0.12em] font-bold disabled:opacity-30 disabled:pointer-events-none rounded">
                       SKIP SEQUENCE
                     </button>
                   </div>
                 </>
               ) : (
                 <div className="flex justify-center py-10">
-                  <button onClick={startNewMission} className="bg-[color:var(--current-theme-color)] text-black font-bold uppercase tracking-[0.2em] text-[12px] px-8 py-4 rounded hover:shadow-[0_0_20px_var(--current-theme-color)] transition-all">
+                  <button onClick={startNewMission} className="bg-[var(--current-theme-color)] text-black font-bold uppercase tracking-[0.2em] text-[12px] px-8 py-4 rounded hover:shadow-[0_0_20px_var(--current-theme-color)] transition-all">
                     Initialize Sequence
                   </button>
                 </div>
@@ -425,15 +375,15 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
         </div>
 
         {/* Right Column */}
-        <div className="flex-[1.5] flex flex-col gap-6 w-full">
-          <div className={`bg-[#0a0a0c]/80 border border-white/10 backdrop-blur-xl rounded-xl p-10 relative overflow-hidden shadow-xl ${!sessionMission ? 'opacity-50 pointer-events-none' : ''}`}>
-            <div className="font-sans font-bold text-[10px] text-white/30 uppercase tracking-[0.3em] mb-6 flex justify-between">
+          <div className="flex-[1.6] flex flex-col gap-4 w-full">
+            <div className={`bg-[#0a0a0c]/80 border border-white/6 backdrop-blur rounded-lg p-4 relative overflow-hidden shadow ${!sessionMission ? 'opacity-50 pointer-events-none' : ''}`}>
+                    <div className="font-sans font-bold text-sm text-white/30 uppercase tracking-[0.3em] mb-6 flex justify-between">
               <span>Intercepted Ciphertext</span>
-              <Shield className="w-4 h-4 text-[color:var(--current-theme-color)]" />
+              <Shield className="w-4 h-4 text-[var(--current-theme-color)]" />
             </div>
             
-            <div className="font-mono text-[36px] leading-[1.2] text-[color:var(--current-theme-color)] tracking-[0.1em] break-all">
-              <span className="text-white/10 select-none mr-4">&gt;</span>{sessionMission?.encryptedText || 'AWAITING_INPUT...'}
+              <div className="font-mono text-6xl lg:text-[72px] leading-[1] text-[var(--current-theme-color)] tracking-[0em] break-all">
+              <span className="text-white/10 select-none mr-2">&gt;</span>{sessionMission?.encryptedText || 'AWAITING_INPUT...'}
             </div>
             
             {hintsCount >= 1 && (
@@ -444,27 +394,27 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
             )}
           </div>
 
-          <div className={`glass-panel p-10 relative shadow-[0_40px_80px_rgba(0,0,0,0.5)] transition-all duration-500 rounded-xl ${!sessionMission && feedback !== 'success' ? 'opacity-50 pointer-events-none' : ''}`}>
-            <div className="font-sans font-bold text-[10px] uppercase tracking-[0.3em] mb-8 flex justify-between text-[color:var(--current-theme-color)]">
+              <div className={`glass-panel p-4 relative shadow-[0_20px_40px_rgba(0,0,0,0.35)] transition-all duration-500 rounded-lg ${!sessionMission && feedback !== 'success' ? 'opacity-50 pointer-events-none' : ''}`}>
+                <div className="font-sans font-bold text-sm uppercase tracking-[0.25em] mb-4 flex justify-between text-[var(--current-theme-color)]">
               <span>Decryption Input</span>
               {feedback === 'success' ? <span>[DECRYPTED]</span> : sessionMission ? <span className="animate-pulse">[AWAITING ANSWER]</span> : null}
             </div>
 
             <form onSubmit={handleSubmit}>
-              <div className="relative flex items-center bg-[#050505]/80 rounded-lg p-6 border border-white/5 focus-within:border-white/20 transition-colors">
-                <span className="font-mono text-[32px] text-white/20 select-none mr-4">&gt;</span>
+               <div className="relative flex items-center bg-[#050505]/80 rounded-lg p-4 border border-white/6 focus-within:border-white/20 transition-colors">
+                 <span className="font-mono text-[28px] text-white/20 select-none mr-3">&gt;</span>
                 <input 
                   type="text"
                   value={userInput}
                   onChange={e => setUserInput(e.target.value.toUpperCase())}
                   disabled={feedback === 'success' || !sessionMission}
-                  className="w-full bg-transparent text-white font-mono text-[40px] tracking-[0.1em] outline-none uppercase placeholder:text-white/10"
+                  className="w-full bg-transparent text-white font-mono text-5xl tracking-[0em] outline-none uppercase placeholder:text-white/40"
                   placeholder="ENTER PLAINTEXT..."
                   spellCheck={false}
                 />
               </div>
 
-              <div className="h-8 mt-6 flex items-center">
+              <div className="h-8 mt-3 flex items-center">
                  {feedback === 'error' && (
                    <p className="font-mono text-[12px] font-bold text-red-500 tracking-[0.2em] flex items-center gap-2 px-3 py-1 bg-red-500/10 rounded border border-red-500/20">
                      <AlertTriangle className="w-4 h-4" /> INTEGRITY FAILURE: MISMATCH DETECTED.
@@ -477,17 +427,18 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
                  )}
               </div>
 
-              <div className="mt-8 flex justify-between items-center">
-                <div className="font-mono text-[10px] text-white/50 tracking-widest uppercase">
+              <div className="mt-4 flex justify-between items-center">
+                <div className="font-mono text-sm text-white/60 tracking-widest uppercase">
                   {sessionMission && `Time Stability: ${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`}
                 </div>
                 
                 {feedback !== 'success' ? (
-                  <button type="submit" disabled={!sessionMission} className="bg-[color:var(--current-theme-color)] text-black font-sans font-bold uppercase tracking-[0.2em] text-[14px] py-4 px-12 rounded transition-all duration-300 hover:shadow-[0_0_30px_color-mix(in srgb, var(--current-theme-color) 40%, transparent)] hover:-translate-y-1 active:translate-y-0 active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
-                    SUBMIT
+                  <button type="submit" disabled={!sessionMission} className="relative group overflow-hidden bg-transparent border-2 border-[var(--current-theme-color)] text-[var(--current-theme-color)] font-mono font-bold uppercase tracking-[0.2em] text-[18px] py-3 px-10 rounded-sm transition-all duration-300 hover:bg-[var(--current-theme-color)] hover:text-black hover:shadow-[0_0_25px_var(--current-theme-color)] hover:-translate-y-1 active:translate-y-0 active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
+                    <span className="relative z-10">SUBMIT</span>
+                    <div className="absolute inset-0 h-full w-full bg-[var(--current-theme-color)]/20 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out"></div>
                   </button>
                 ) : (
-                  <button type="button" onClick={startNewMission} className="relative overflow-hidden text-black font-sans font-bold uppercase tracking-[0.2em] text-[14px] py-4 px-12 rounded hover:bg-white transition-all duration-300" style={{ backgroundColor: THEMES[user.theme], boxShadow: '0 0 30px color-mix(in srgb, var(--current-theme-color) 40%, transparent)' }}>
+                  <button type="button" onClick={startNewMission} className="relative overflow-hidden text-black font-sans font-bold uppercase tracking-[0.12em] text-[16px] py-3 px-8 rounded hover:bg-white transition-all duration-300 bg-[var(--current-theme-color)] shadow-[0_0_20px_color-mix(in_srgb,var(--current-theme-color)_40%,transparent)]">
                     CONTINUE
                   </button>
                 )}
@@ -495,6 +446,9 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
             </form>
           </div>
         </div>
+
+        {/* Removed rules from here */}
+
       </div>
     </motion.div>
   );
@@ -507,8 +461,8 @@ function Leaderboard({ user, entries, onExit }: { user: UserData, entries: Leade
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-3xl mx-auto">
       <header className="flex justify-between items-center mb-12">
         <div>
-          <h2 className="text-xs font-mono uppercase opacity-50 tracking-[0.4em] mb-2">Global Operational Standings</h2>
-          <h1 className="text-4xl font-display font-bold uppercase tracking-tight">Leaderboard</h1>
+          <h2 className="cq-subtitle mb-2">Global Operational Standings</h2>
+          <h1 className="cq-title">Leaderboard</h1>
         </div>
         <button onClick={onExit} className="cyber-button text-xs py-2">Back to Dash</button>
       </header>
@@ -526,7 +480,7 @@ function Leaderboard({ user, entries, onExit }: { user: UserData, entries: Leade
             {entries.map((entry, idx) => (
               <tr key={entry.uid} className={`border-b border-white/5 transition-colors hover:bg-white/5 ${entry.uid === user.uid ? 'bg-white/10' : ''}`}>
                 <td className="p-6">
-                  <span className={`text-xl font-display ${idx < 3 ? 'font-bold' : 'opacity-40'}`} style={idx < 3 ? { color: THEMES[user.theme] } : {}}>
+                  <span className={`text-xl font-display ${idx < 3 ? 'font-bold text-[var(--current-theme-color)]' : 'opacity-40'}`}>
                     {idx + 1 < 10 ? '0' : ''}{idx + 1}
                   </span>
                 </td>
@@ -537,7 +491,7 @@ function Leaderboard({ user, entries, onExit }: { user: UserData, entries: Leade
                     {entry.uid === user.uid && <span className="text-[9px] px-1 bg-white/20 rounded">YOU</span>}
                   </div>
                 </td>
-                <td className="p-6 text-right font-display text-lg" style={idx < 3 ? { color: THEMES[user.theme] } : {}}>
+                <td className={`p-6 text-right font-display text-lg ${idx < 3 ? 'text-[var(--current-theme-color)]' : ''}`}>
                   {entry.points.toLocaleString()}
                 </td>
               </tr>

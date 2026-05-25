@@ -37,6 +37,16 @@
       padding: 24px;
       background: radial-gradient(circle at top, #1b243b 0%, #020617 55%);
       overflow-x: hidden;
+      cursor: url('/assets/mouse.png') 4 4, auto;
+    }
+
+    /* Global cursor enforcement */
+    * {
+      cursor: inherit !important;
+    }
+
+    a, button, [role="button"], input, textarea, select {
+      cursor: url('/assets/mouse.png') 4 4, pointer !important;
     }
 
     body::before {
@@ -100,12 +110,7 @@
       color: var(--aw);
     }
 
-    .topbar-title {
-      font-size: 14px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-    }
+    .topbar-title{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;}
 
     .topbar-sub {
       font-size: 11px;
@@ -985,6 +990,25 @@
         opacity: .2
       }
     }
+    .go-btn {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid rgba(89, 242, 255, 0.4);
+      background: rgba(89, 242, 255, 0.1);
+      color: var(--ap);
+      cursor: pointer;
+      margin-left: 12px;
+      transition: all 0.2s;
+    }
+    .go-btn:hover {
+      background: rgba(89, 242, 255, 0.2);
+      box-shadow: 0 0 10px rgba(89, 242, 255, 0.3);
+    }
   </style>
     <script src="global_controls.js"></script>
 </head>
@@ -1003,20 +1027,19 @@
     </div>
     <div class="controls">
       <div class="ctrl-group">
-        <span class="ctrl-lbl">Shift X</span>
+        <span class="ctrl-lbl">Shift Even Pos</span>
         <button class="shift-btn sx" id="xDown">−</button>
         <div class="shift-num sx" id="xVal">+3</div>
         <button class="shift-btn sx" id="xUp">+</button>
-        <span class="ctrl-lbl" style="margin-left:4px;font-size:10px;color:rgba(89,242,255,0.45)">even pos</span>
       </div>
       <div class="divider-dot">·</div>
       <div class="ctrl-group">
-        <span class="ctrl-lbl">Shift Y</span>
+        <span class="ctrl-lbl">Shift Odd Pos</span>
         <button class="shift-btn sy" id="yDown">−</button>
         <div class="shift-num sy" id="yVal">−2</div>
         <button class="shift-btn sy" id="yUp">+</button>
-        <span class="ctrl-lbl" style="margin-left:4px;font-size:10px;color:rgba(255,221,87,0.45)">odd pos</span>
       </div>
+      <button class="go-btn" id="goBtn" style="margin-left:12px;">Start</button>
     </div>
     <div class="stage">
       <div class="status"><span id="statusTxt">Initializing…</span><span class="blink"> ▌</span></div>
@@ -1068,18 +1091,16 @@
       </div>
     </div>
     <div class="footer">
-
-        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
-      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
-      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
-    </div>
-      <button class="foot-btn" id="btn-play">Pause</button>
-      <button class="foot-btn" id="btn-step">Step</button>
-      <div class="replay-tag">
-        <div class="rtick"></div><span id="rcd">Replaying in 2s…</span>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="foot-btn" id="pauseResumeBtn">Pause</button>
+        <button class="foot-btn" id="replayBtn">↩ Restart</button>
       </div>
-      <button class="foot-btn primary" id="replayNow">▶ Replay Now</button>
+      <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+        <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
+        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
+        <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
+      </div>
+      <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
     </div>
   </div>
   <div id="flyer"
@@ -1097,23 +1118,25 @@ let speedMultiplier = 1.0;
     const toX = $('toX'), toY = $('toY'), tiX = $('tiX'), tiY = $('tiY');
     const wordRow = $('wordRow'), outChips = $('outChips'), mapRow = $('mapRow');
     const infoPanel = $('infoPanel'), infoGrid = $('infoGrid'), statusTxt = $('statusTxt');
-    const flyer = $('flyer'), replayNow = $('replayNow'), rcd = $('rcd');
+    const flyer = $('flyer'), replayBtn = $('replayBtn'), goBtn = $('goBtn');
 
-    const sleep = ms => new Promise(r => { ct._t = setTimeout(r, ms / speedMultiplier); });
+    let isPaused = false;
+    async function sleep(ms) {
+        let elapsed = 0;
+        while (elapsed < (ms / speedMultiplier)) {
+            if (ct.cancelled) return;
+            if (!isPaused) {
+                elapsed += 20;
+            }
+            await new Promise(r => setTimeout(r, 20));
+        }
+    }
     const vis = (el, on = true) => el.classList.toggle('vis', on);
     const setStatus = t => statusTxt.textContent = t;
 
     async function waitForPlaybackStep() {
       if (ct.cancelled) return;
-      if (isPlaying) {
-        await sleep(2000);
-        return;
-      }
-      setStatus('Paused - press Step to continue.');
-      while (!ct.cancelled && !isPlaying && !stepRequested) {
-        await sleep(80);
-      }
-      if (stepRequested) stepRequested = false;
+      await sleep(1000);
     }
 
     function updateDisplays() {
@@ -1124,9 +1147,10 @@ let speedMultiplier = 1.0;
     }
     function mkShift(axis, dir) {
       return () => {
+        if (running) return;
         if (axis === 'x') { if (dir > 0 && shiftX < 25) shiftX++; else if (dir < 0 && shiftX > -25) shiftX--; }
         else { if (dir > 0 && shiftY < 25) shiftY++; else if (dir < 0 && shiftY > -25) shiftY--; }
-        updateDisplays(); cancelReplay(); kickDemo();
+        updateDisplays(); cancelReplay();
       };
     }
     xDown.addEventListener('click', mkShift('x', -1)); xUp.addEventListener('click', mkShift('x', 1));
@@ -1195,8 +1219,11 @@ let speedMultiplier = 1.0;
     function cancelReplay() { if (replayTimer) { clearInterval(replayTimer); replayTimer = null; } rcd.textContent = ''; }
 
     async function runDemo() {
-      if (running) { ct.cancelled = true; await sleep(130); }
+      if (running) { ct.cancelled = true; await new Promise(r => setTimeout(r, 130)); }
       ct = { cancelled: false }; running = true;
+      isPaused = false;
+      if (document.getElementById('pauseResumeBtn')) document.getElementById('pauseResumeBtn').textContent = 'Pause';
+      if (goBtn) goBtn.disabled = true;
       const n = WORD.length;
       const result = WORD.split('').map((ch, i) => {
         const s = i % 2 === 0 ? shiftX : shiftY, src = ALPHA.indexOf(ch), dst = ((src + s) % 26 + 26) % 26;
@@ -1328,53 +1355,47 @@ won't crack it — you need both X and Y to decode.</span></div>`;
       vis(infoPanel, true);
 
       await sleep(800);
+      if (goBtn) goBtn.disabled = false;
       running = false;
-      startReplayCountdown();
     }
 
     function kickDemo() { cancelReplay(); runDemo(); }
-    replayNow.addEventListener('click', kickDemo);
-    $('btn-play').addEventListener('click', () => {
-      isPlaying = !isPlaying;
-      $('btn-play').textContent = isPlaying ? 'Pause' : 'Resume';
-    });
-    $('btn-step').addEventListener('click', () => {
-      if (isPlaying) {
-        isPlaying = false;
-        $('btn-play').textContent = 'Resume';
-      }
-      stepRequested = true;
-    });
+    if (goBtn) goBtn.addEventListener('click', runDemo);
+    if (replayBtn) replayBtn.addEventListener('click', runDemo);
+
+    const pauseResumeBtn = document.getElementById('pauseResumeBtn');
+    if (pauseResumeBtn) {
+        pauseResumeBtn.addEventListener('click', () => {
+            if (!running) return;
+            isPaused = !isPaused;
+            pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+        });
+    }
+
+    const speedUp = document.getElementById('speedUp');
+    const speedDown = document.getElementById('speedDown');
+    const sDisplay = document.getElementById('speedDisplay');
+
+    if (speedUp && speedDown && sDisplay) {
+        speedUp.addEventListener("click", () => {
+            if (speedMultiplier < 2.0) speedMultiplier += 0.25;
+            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+        });
+        speedDown.addEventListener("click", () => {
+            if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
+            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+        });
+    }
+
+    const nextBtn = document.getElementById('nextBtn');
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            window.location.href = "level2.3.html";
+        });
+    }
 
     buildTape(tiX); buildTape(tiY);
     buildWordChips(); buildOutChips();
-    runDemo();
-  
-        const sDisplay = document.getElementById("speedDisplay");
-  if (document.getElementById("speedUp")) {
-    document.getElementById("speedUp").addEventListener("click", () => {
-      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-    document.getElementById("speedDown").addEventListener("click", () => {
-      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-  }
-
-  const nextBtn = document.getElementById("nextBtn");
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
-      if (match) {
-        let ch = parseInt(match[1]);
-        let lvl = parseInt(match[2]);
-        lvl++;
-        if (lvl > 5) { lvl = 1; ch++; }
-        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
-      }
-    });
-  }
 </script>
 </body>
 

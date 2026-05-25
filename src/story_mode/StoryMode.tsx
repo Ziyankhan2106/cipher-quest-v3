@@ -61,46 +61,38 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="h-screen w-screen relative overflow-hidden bg-[#020205] text-white font-sans selection:bg-[color:var(--current-theme-color)]/30">
-      {/* Dynamic Background with Noise and Tactical Glows */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 grid-bg opacity-[0.1] pointer-events-none"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#020205_90%)] pointer-events-none"></div>
-        <div className="absolute top-[-10%] left-[-5%] w-[40vw] h-[40vw] rounded-full opacity-30 pointer-events-none blur-[120px] bg-[color:var(--current-theme-color)]"></div>
-        <div className="absolute bottom-0 right-0 w-full h-full bg-[url('data:image/svg+xml,%3Csvg viewBox=%270 0 200 200%27 xmlns=%27http://www.w3.org/2000/svg%27%3BaseFilter id=%27noiseFilter%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.65%27 numOctaves=%273%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23noiseFilter)%27/%3E%3C/svg%3E')] opacity-[0.03] pointer-events-none"></div>
+    <div className="h-screen w-screen relative overflow-hidden bg-[#020205] text-white font-sans selection:bg-[var(--current-theme-color)]/30">
+      {/* Standardized Background */}
+      <div className="absolute inset-0 z-0 bg-[#050505] overflow-hidden pointer-events-none">
+        <div className="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
+        <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
       </div>
 
       {/* Top Navigation */}
-      <div className="absolute top-0 left-0 w-full p-8 flex justify-between items-start z-50 pointer-events-none">
-        <div className="flex items-center gap-6 pointer-events-auto">
-          <button onClick={() => navigate('/dashboard')} className="flex items-center gap-3 tactical-panel px-4 py-2 text-white/50 hover:text-white transition-all hover:border-[color:var(--current-theme-color)] group">
-             <ChevronRight className="rotate-180 group-hover:-translate-x-1 transition-transform" size={16} /> 
-             <span className="font-mono uppercase tracking-widest text-[10px]">Return_to_HQ</span>
-          </button>
-          
-          <div className="tactical-panel px-6 py-2 flex flex-col items-start border-white/5">
-              <span className="text-[9px] font-mono opacity-40 uppercase tracking-widest">Neural_XP</span>
-              <span className="text-xl font-display font-bold text-white glow-text-theme">{xp.toLocaleString()}</span>
-          </div>
+      <div className="absolute top-0 left-0 w-full z-50 pointer-events-none">
+        {/* Left corner back arrow */}
+        <button onClick={() => navigate('/dashboard')} className="fixed top-0 left-0 w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
+           <div className="w-8 h-8 flex items-center justify-center">
+             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
+               <path d="m15 18-6-6 6-6"/>
+             </svg>
+           </div>
+        </button>
 
+        {/* Certificate button beside arrow */}
+        <div className="absolute top-8 left-32 flex items-center gap-6 pointer-events-auto">
           <button 
             onClick={(e) => { e.stopPropagation(); setShowCertificates(true); }}
-            className="flex items-center gap-3 tactical-panel px-6 py-2 text-[color:var(--current-theme-color)] border-[color:var(--current-theme-color)]/30 hover:bg-[color:var(--current-theme-color)]/10 transition-all group pointer-events-auto"
+            className="flex items-center gap-3 tactical-panel px-6 py-2 text-[var(--current-theme-color)] border-[var(--current-theme-color)]/30 hover:bg-[var(--current-theme-color)]/10 transition-all group"
           >
-             <FileText size={16} /> 
-             <span className="font-mono uppercase tracking-widest text-[10px]">Show_Certificates</span>
+            <Shield className="w-4 h-4" />
+            <span className="font-mono uppercase tracking-widest text-[10px]">Show_Certificates</span>
           </button>
-
         </div>
-        
-        <div className="pointer-events-auto flex items-center gap-4">
-           <div className="tactical-panel px-6 py-2 flex flex-col items-end">
-              <span className="text-[9px] font-mono opacity-40 uppercase tracking-widest">Global_Progression</span>
-              <span className="text-xl font-display font-bold text-[color:var(--current-theme-color)] glow-text-theme">{progress}%</span>
-           </div>
-           <button onClick={cycleAvatar} className="w-12 h-12 tactical-panel flex items-center justify-center hover:bg-white/5 transition-colors">
-            <Settings className="h-5 w-5 text-[color:var(--current-theme-color)]" />
-          </button>
+
+        {/* Right side module name */}
+        <div className="absolute top-6 right-10 flex flex-col items-end pointer-events-auto">
+          <h1 className="cq-title tracking-widest uppercase text-right">Story Mode</h1>
         </div>
       </div>
 
@@ -114,7 +106,7 @@ const Dashboard = () => {
         onWheel={onWheel}
         className="absolute inset-0 flex items-center overflow-x-auto overflow-y-hidden gap-x-24 px-[10vw] hide-scrollbar z-10 pt-12 pb-24 cursor-grab active:cursor-grabbing"
       >
-        <div className="absolute top-[50%] left-0 right-0 min-w-max h-[1px] bg-gradient-to-r from-transparent via-[color:var(--current-theme-color)]/20 to-transparent -translate-y-1/2 z-0 pointer-events-none"></div>
+        <div className="absolute top-[50%] left-0 right-0 min-w-max h-[1px] bg-gradient-to-r from-transparent via-[var(--current-theme-color)]/20 to-transparent -translate-y-1/2 z-0 pointer-events-none"></div>
 
         {CHAPTERS.map((chapter) => {
           const locked = isChapterLocked(chapter.id);
@@ -125,7 +117,7 @@ const Dashboard = () => {
                 
                 {/* Chapter Header Module */}
                 <div className="relative z-20 flex flex-col justify-center h-[500px] w-[340px]">
-                  <div className="absolute -top-12 -left-12 font-display text-[220px] font-bold text-[color:var(--current-theme-color)] opacity-[0.03] leading-none select-none z-0 pointer-events-none">
+                  <div className="absolute -top-12 -left-12 font-display text-[220px] font-bold text-[var(--current-theme-color)] opacity-[0.03] leading-none select-none z-0 pointer-events-none">
                      0{chapter.id}
                   </div>
                   <div className="tactical-panel p-10 relative overflow-hidden group transition-all duration-700 z-10 w-full h-[360px] flex flex-col justify-between border-white/5 shadow-2xl">
@@ -133,25 +125,25 @@ const Dashboard = () => {
                       <div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center rounded-sm">
                         {locked ? <Lock className="text-white/20" size={24} /> : <Shield className={getChapterProgress(chapter.id) === 100 ? 'text-[var(--current-theme-color)]' : 'text-white/20'} size={24} />}
                       </div>
-                      <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-[color:var(--current-theme-color)]/60">
+                      <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-[var(--current-theme-color)]/60">
                         {locked ? 'SEC_LOCKED' : `SEC_ID: 0${chapter.id}`}
                       </span>
                     </div>
                     <div>
-                      <h2 className="font-display text-5xl font-bold tracking-tighter text-white mb-2 leading-[0.85] uppercase">
+                      <h2 className="cq-heading mb-2 leading-[0.85]">
                         {chapter.title.split(':')[0]}<br/>
-                        <span className="text-[color:var(--current-theme-color)]/40 text-3xl">{chapter.title.split(':')[1]}</span>
+                        <span className="text-[var(--current-theme-color)]/40 text-3xl">{chapter.title.split(':')[1]}</span>
                       </h2>
                       <div className="mt-8">
                         <div className="flex justify-between text-[9px] font-mono uppercase tracking-[0.2em] mb-3 text-white/30">
                            <span>Neutralization_Rate</span>
-                           <span className="text-[color:var(--current-theme-color)]">{getChapterProgress(chapter.id)}%</span>
+                           <span className="text-[var(--current-theme-color)]">{getChapterProgress(chapter.id)}%</span>
                         </div>
                         <div className="w-full h-[2px] bg-white/5 overflow-hidden rounded-full mb-4">
                            <motion.div 
                             initial={{ width: 0 }}
                             animate={{ width: `${getChapterProgress(chapter.id)}%` }}
-                            className="h-full bg-[color:var(--current-theme-color)] shadow-[0_0_15px_var(--current-theme-color)]"
+                            className="h-full bg-[var(--current-theme-color)] shadow-[0_0_15px_var(--current-theme-color)]"
                            />
                         </div>
                         {getChapterProgress(chapter.id) === 100 && (
@@ -163,7 +155,7 @@ const Dashboard = () => {
                               link.download = `cipherquest-clearance-phase${chapter.id}.png`;
                               link.click();
                             }}
-                            className="w-full mt-2 font-mono text-[10px] uppercase tracking-widest hover:bg-white/10 px-4 py-2 flex items-center justify-center gap-2 rounded transition-all outline-none border text-[color:var(--current-theme-color)] bg-[color:var(--current-theme-color)]/10 cursor-pointer"
+                            className="w-full mt-2 font-mono text-[10px] uppercase tracking-widest hover:bg-white/10 px-4 py-2 flex items-center justify-center gap-2 rounded transition-all outline-none border text-[var(--current-theme-color)] bg-[var(--current-theme-color)]/10 cursor-pointer"
                             style={{
                               borderColor: 'var(--current-theme-color)',
                             }}
@@ -173,7 +165,7 @@ const Dashboard = () => {
                         )}
                       </div>
                     </div>
-                    <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[color:var(--current-theme-color)]/30 to-transparent" />
+                    <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[var(--current-theme-color)]/30 to-transparent" />
                   </div>
                 </div>
 
@@ -182,37 +174,37 @@ const Dashboard = () => {
                   {chapter.missions.map((mission, i) => (
                     <Link key={mission.id} to={locked ? '#' : `mission/${mission.id}`} onClick={(e) => locked && e.preventDefault()}>
                       <div className={`relative group cursor-pointer outline-none w-[280px] h-[380px] flex-shrink-0 transition-transform duration-500 hover:scale-[1.02] ${['translate-y-4', 'translate-y-[-8px]', 'translate-y-12', 'translate-y-0', 'translate-y-[-4px]'][i % 5]}`}>
-                        <div className={`absolute inset-0 tactical-panel bg-[#0a0a0f]/95 border-white/5 flex flex-col group-hover:border-[color:var(--current-theme-color)]/40 group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)] transition-all ${completedMissions.has(mission.id) ? 'border-[color:var(--current-theme-color)]/20' : ''}`}>
+                        <div className={`absolute inset-0 tactical-panel bg-[#0a0a0f]/95 border-white/5 flex flex-col group-hover:border-[var(--current-theme-color)]/40 group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)] transition-all ${completedMissions.has(mission.id) ? 'border-[var(--current-theme-color)]/20' : ''}`}>
                           <div className="h-40 bg-white/5 relative overflow-hidden flex items-center justify-center p-8 border-b border-white/5">
                              {completedMissions.has(mission.id) && (
-                               <div className="absolute top-4 right-4 text-[color:var(--current-theme-color)] z-20 flex items-center gap-2">
+                               <div className="absolute top-4 right-4 text-[var(--current-theme-color)] z-20 flex items-center gap-2">
                                   <span className="text-[9px] font-mono font-bold tracking-widest uppercase">Verified</span>
                                   <CheckCircle2 size={14} />
                                </div>
                              )}
-                             <Radar className={`h-20 w-20 text-white/5 group-hover:text-[color:var(--current-theme-color)]/20 transition-all duration-700 ${completedMissions.has(mission.id) ? 'text-[color:var(--current-theme-color)]/20' : ''}`} />
+                             <Radar className={`h-20 w-20 text-white/5 group-hover:text-[var(--current-theme-color)]/20 transition-all duration-700 ${completedMissions.has(mission.id) ? 'text-[var(--current-theme-color)]/20' : ''}`} />
                           </div>
                           <div className="flex-1 p-8 flex flex-col justify-between">
                             <div className="space-y-3">
                                <div className="flex items-center gap-2">
-                                 <div className="w-1 h-1 bg-[color:var(--current-theme-color)] rounded-full animate-pulse" />
-                                 <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-[color:var(--current-theme-color)]">
+                                 <div className="w-1 h-1 bg-[var(--current-theme-color)] rounded-full animate-pulse" />
+                                 <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-[var(--current-theme-color)]">
                                    Mission_Protocol
                                  </span>
                                </div>
-                               <h3 className="font-display text-2xl font-bold uppercase leading-[0.9] text-white/90 group-hover:text-white group-hover:glow-text-theme transition-all">{mission.name}</h3>
+                               <h3 className="cq-subheading leading-[0.9] group-hover:text-white group-hover:glow-text-theme transition-all">{mission.name}</h3>
                                <p className="text-[10px] font-mono text-white/30 uppercase tracking-widest line-clamp-2">{mission.description}</p>
                             </div>
                             <div className="pt-6 flex items-center justify-between border-t border-white/5">
                                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 group-hover:text-white transition-colors">
                                  {completedMissions.has(mission.id) ? 'Re-Intercept' : 'Begin_Breach'}
                                </span>
-                               <ChevronRight className="text-white/20 group-hover:text-[color:var(--current-theme-color)] group-hover:translate-x-1 transition-all" size={16} />
+                               <ChevronRight className="text-white/20 group-hover:text-[var(--current-theme-color)] group-hover:translate-x-1 transition-all" size={16} />
                             </div>
                           </div>
                           {/* Dynamic Scanning Border */}
-                          <div className="absolute top-0 left-0 w-0 h-[1px] bg-[color:var(--current-theme-color)] group-hover:w-full transition-all duration-500" />
-                          <div className="absolute bottom-0 right-0 w-0 h-[1px] bg-[color:var(--current-theme-color)] group-hover:w-full transition-all duration-500" />
+                          <div className="absolute top-0 left-0 w-0 h-[1px] bg-[var(--current-theme-color)] group-hover:w-full transition-all duration-500" />
+                          <div className="absolute bottom-0 right-0 w-0 h-[1px] bg-[var(--current-theme-color)] group-hover:w-full transition-all duration-500" />
                         </div>
                       </div>
                     </Link>
@@ -228,18 +220,18 @@ const Dashboard = () => {
         <div className="flex-shrink-0 ml-12 pr-40 z-20 flex items-center h-[500px]">
           <div 
             onClick={() => progress === 100 && navigate('quantum-ascent')}
-            className={`tactical-panel w-[420px] h-[360px] flex flex-col justify-center items-center relative overflow-hidden group transition-all duration-1000 ${progress === 100 ? 'cursor-pointer hover:border-[color:var(--current-theme-color)] shadow-2xl' : 'opacity-40 grayscale'}`}
+            className={`tactical-panel w-[420px] h-[360px] flex flex-col justify-center items-center relative overflow-hidden group transition-all duration-1000 ${progress === 100 ? 'cursor-pointer hover:border-[var(--current-theme-color)] shadow-2xl' : 'opacity-40 grayscale'}`}
           >
-             <div className="absolute w-[300px] h-[300px] border border-white/5 rounded-full group-hover:animate-spin-slow group-hover:border-[color:var(--current-theme-color)]/20"></div>
+             <div className="absolute w-[300px] h-[300px] border border-white/5 rounded-full group-hover:animate-spin-slow group-hover:border-[var(--current-theme-color)]/20"></div>
              <div className="z-10 flex flex-col items-center text-center p-12">
-                {progress === 100 ? <Unlock className="mb-6 text-[color:var(--current-theme-color)] glow-theme" size={72} /> : <Lock className="mb-6 text-white/10" size={72} />}
-                <h3 className="font-display text-5xl font-bold uppercase leading-none text-white tracking-widest mb-3">Quantum<br/><span className="text-[color:var(--current-theme-color)]">Ascent</span></h3>
-                <p className={`font-mono text-[10px] tracking-[0.3em] uppercase ${progress === 100 ? 'text-[color:var(--current-theme-color)] animate-pulse' : 'text-white/20'}`}>
+                {progress === 100 ? <Unlock className="mb-6 text-[var(--current-theme-color)] glow-theme" size={72} /> : <Lock className="mb-6 text-white/10" size={72} />}
+                <h3 className="cq-title tracking-widest mb-3">Quantum<br/><span className="text-[var(--current-theme-color)]">Ascent</span></h3>
+                <p className={`font-mono text-[10px] tracking-[0.3em] uppercase ${progress === 100 ? 'text-[var(--current-theme-color)] animate-pulse' : 'text-white/20'}`}>
                   {progress === 100 ? 'Protocol_Authorized' : 'Sector_Clearance_Required'}
                 </p>
              </div>
-             <div className="absolute top-0 right-0 w-16 h-16 border-t border-r border-white/10 group-hover:border-[color:var(--current-theme-color)] transition-colors" />
-             <div className="absolute bottom-0 left-0 w-16 h-16 border-b border-l border-white/10 group-hover:border-[color:var(--current-theme-color)] transition-colors" />
+             <div className="absolute top-0 right-0 w-16 h-16 border-t border-r border-white/10 group-hover:border-[var(--current-theme-color)] transition-colors" />
+             <div className="absolute bottom-0 left-0 w-16 h-16 border-b border-l border-white/10 group-hover:border-[var(--current-theme-color)] transition-colors" />
           </div>
         </div>
       </div>
@@ -283,7 +275,7 @@ const Dashboard = () => {
               <div className="flex justify-between items-center mb-12">
                 <div>
                   <h2 className="text-4xl font-display font-black uppercase tracking-tighter text-white">Neural_Clearance_Archive</h2>
-                  <p className="font-mono text-[10px] text-white/30 uppercase tracking-[0.4em] mt-2">Authenticated_As: {operatorName}</p>
+                  <p className="font-mono text-[10px] text-white/30 uppercase tracking-[0.4em] mt-2">CALLSIGN: {operatorName.toUpperCase()}</p>
                 </div>
                 <button onClick={() => setShowCertificates(false)} className="w-12 h-12 tactical-panel flex items-center justify-center hover:bg-white/5 transition-colors">
                   <XIcon size={24} />
@@ -292,8 +284,8 @@ const Dashboard = () => {
 
               <div className="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pr-4 custom-scrollbar">
                 {progress === 100 && (
-                  <div className="tactical-panel p-6 bg-[#0a0a0f] border-[#59f2ff]/30 group hover:border-[#59f2ff] transition-all flex flex-col gap-6">
-                    <div className="aspect-[10/7] bg-black/40 border border-[#59f2ff]/20 flex items-center justify-center overflow-hidden relative">
+                  <div className="tactical-panel p-6 bg-[#0a0a0f] border-[var(--current-theme-color)]/30 group hover:border-[var(--current-theme-color)] transition-all flex flex-col gap-6">
+                    <div className="aspect-[10/7] bg-black/40 border border-[var(--current-theme-color)]/20 flex items-center justify-center overflow-hidden relative">
                        <img 
                          src={generateCertificate(null, operatorName, '#ffffff')} 
                          alt="Master Certificate"
@@ -303,8 +295,8 @@ const Dashboard = () => {
                     <a 
                       href={generateCertificate(null, operatorName, '#ffffff')}
                       download={`CipherQuest_Master_Certificate.png`}
-                      className="w-full h-12 tactical-panel flex items-center justify-center gap-3 text-[10px] font-mono uppercase tracking-widest text-[#59f2ff] hover:bg-[#59f2ff]/10 transition-all cursor-pointer"
-                      style={{ borderColor: '#59f2ff', borderWidth: '1px' }}
+                      className="w-full h-12 tactical-panel flex items-center justify-center gap-3 text-[10px] font-mono uppercase tracking-widest text-[var(--current-theme-color)] hover:bg-[var(--current-theme-color)]/10 transition-all cursor-pointer"
+                      style={{ borderColor: 'var(--current-theme-color)', borderWidth: '1px' }}
                     >
                       <Download size={16} /> Download Master Certificate
                     </a>
@@ -314,7 +306,7 @@ const Dashboard = () => {
                   CHAPTERS.filter(c => completedChapters.includes(c.id)).map(chap => (
                     <div 
                       key={chap.id} 
-                      className="tactical-panel p-6 bg-[#0a0a0f] border-white/5 group hover:border-[color:var(--current-theme-color)] transition-all flex flex-col gap-6"
+                      className="tactical-panel p-6 bg-[#0a0a0f] border-white/5 group hover:border-[var(--current-theme-color)] transition-all flex flex-col gap-6"
                     >
                       <div className="aspect-[10/7] bg-black/40 border border-white/5 flex items-center justify-center overflow-hidden relative">
                          <img 
@@ -326,7 +318,7 @@ const Dashboard = () => {
                       <a 
                         href={generateCertificate(chap, operatorName, selectedAvatar.colorHex)}
                         download={`CipherQuest_Certificate_Sector_${chap.id}.png`}
-                        className="w-full h-12 tactical-panel flex items-center justify-center gap-3 text-[10px] font-mono uppercase tracking-widest text-[color:var(--current-theme-color)] hover:bg-[color:var(--current-theme-color)]/10 transition-all cursor-pointer"
+                        className="w-full h-12 tactical-panel flex items-center justify-center gap-3 text-[10px] font-mono uppercase tracking-widest text-[var(--current-theme-color)] hover:bg-[var(--current-theme-color)]/10 transition-all cursor-pointer"
                         style={{ borderColor: 'var(--current-theme-color)', borderWidth: '1px' }}
                       >
                         <Download size={16} /> Download Sector clearance
@@ -420,7 +412,7 @@ const MissionView = () => {
     if (!mission) return;
     if (input.toUpperCase() === mission.expectedCiphertext.toUpperCase()) {
       setIsSuccess(true);
-      confetti({ particleCount: 150, spread: 70, colors: ['#00e5ff', '#ff00ff', '#ffffff'] });
+      confetti({ particleCount: 150, spread: 70, colors: ['var(--current-theme-color)', '#ff00ff', '#ffffff'] });
       
       const result = await completeMission(id!);
       if (result?.chapterComplete) {
@@ -466,43 +458,24 @@ const MissionView = () => {
     }
   };
 
-  if (loading) return <div className="h-screen bg-[#050505] flex items-center justify-center font-mono text-[color:var(--current-theme-color)] animate-pulse tracking-widest uppercase">Initializing_Secure_Link...</div>;
+  if (loading) return null;
 
   return (
     <div className="h-screen w-screen bg-[#020205] flex flex-col font-sans text-white relative overflow-hidden">
-      {/* High End Background */}
-      <div className="absolute inset-0 z-0 bg-[#050505]">
-        <div className="absolute inset-0 z-0 bg-[url('/background.jpg')] bg-cover bg-center opacity-15 mix-blend-luminosity"></div>
-        <div className="absolute top-0 right-0 w-[50vw] h-[100vh] rounded-full pointer-events-none" style={{ backgroundColor: 'color-mix(in srgb, var(--current-theme-color) 5%, transparent)', filter: 'blur(200px)' }}></div>
-        <div className="absolute bottom-0 left-0 w-[50vw] h-[50vh] rounded-full pointer-events-none" style={{ backgroundColor: 'color-mix(in srgb, var(--current-theme-color) 3%, transparent)', filter: 'blur(200px)' }}></div>
-        <div className="absolute inset-0 grid-bg opacity-10 pointer-events-none"></div>
-        <div className="absolute inset-0 bg-radial from-transparent to-black/95 pointer-events-none"></div>
+      {/* Standardized Background */}
+      <div className="absolute inset-0 z-0 bg-[#050505] overflow-hidden pointer-events-none">
+        <div className="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
+        <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
       </div>
       
-      {/* Top HUD */}
-      <header className="h-24 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-3xl flex justify-between items-center px-10 z-20 relative">
-        <div className="flex items-center gap-8">
-          <button onClick={() => navigate('/story')} className="text-white/40 hover:text-white transition-all duration-300 p-2 flex items-center justify-center group outline-none">
-            <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[color:var(--current-theme-color)] group-hover:bg-[color:var(--current-theme-color)]/10 transition-colors shadow-lg">
-              <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            </div>
-            <span className="ml-4 font-sans font-bold tracking-[0.2em] text-[11px] uppercase group-hover:text-[color:var(--current-theme-color)] transition-colors">Abort & Retreat</span>
-          </button>
-        </div>
-
-        <div className="flex items-center gap-8">
-          <div className="flex flex-col items-end">
-            <span className={`font-mono text-[9px] uppercase tracking-[0.3em] transition-colors duration-500 ${missionState === 'failed' ? 'text-red-500' : 'text-[color:var(--current-theme-color)]'}`}>System Integrity //</span>
-            <div className="h-1.5 w-64 bg-white/5 overflow-hidden mt-2 flex rounded-full">
-              <div className={`h-full shadow-[0_0_15px_currentColor] transition-all duration-500 ease-out ${missionState === 'failed' ? 'bg-red-500' : 'bg-[color:var(--current-theme-color)]'}`} 
-                   style={{ width: `${integrity}%` }}></div>
-            </div>
-          </div>
-          <div className={`w-14 h-14 flex items-center justify-center glass-panel border rounded-lg transition-colors duration-500 ${missionState === 'failed' ? 'border-red-500/50' : 'border-[color:var(--current-theme-color)]/30'}`}>
-            <Shield size={32} className={`transition-colors duration-500 ${missionState === 'failed' ? 'text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]' : 'text-[color:var(--current-theme-color)] drop-shadow-[0_0_20px_color-mix(in_srgb,var(--current-theme-color)_80%,transparent)]'} ${integrity < 50 ? 'animate-pulse' : ''}`} />
-          </div>
-        </div>
-      </header>
+      {/* Left corner back arrow */}
+      <button onClick={() => navigate('/story')} className="fixed top-0 left-0 w-28 h-28 hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-6 pt-6 outline-none bg-[#00f2ff]" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
+         <div className="w-8 h-8 flex items-center justify-center">
+           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
+             <path d="m15 18-6-6 6-6"/>
+           </svg>
+         </div>
+      </button>
 
       {mission && (
         <div className="flex-1 overflow-y-auto overflow-x-hidden z-10 flex flex-col items-center py-12 relative hide-scrollbar">
@@ -516,8 +489,8 @@ const MissionView = () => {
                        {missionState === 'intercept' && (
                            <div className="flex flex-col items-center justify-center py-20 text-center">
                               <Radar size={64} className="text-white/20 animate-spin mb-6" />
-                              <h2 className="font-display font-bold uppercase tracking-[0.3em] text-white/50 text-2xl">Intercepting Comms...</h2>
-                              <p className="font-mono text-xs text-[color:var(--current-theme-color)] mt-4 animate-pulse">&gt; Routing through proxy...</p>
+                              <h2 className="cq-subheading text-white/50 tracking-[0.3em]">Intercepting Comms...</h2>
+                              <p className="font-mono text-xs text-[var(--current-theme-color)] mt-4 animate-pulse">&gt; Routing through proxy...</p>
                            </div>
                        )}
                    </div>
@@ -527,7 +500,7 @@ const MissionView = () => {
             {missionState === 'failed' && (
                 <div className="flex-1 flex flex-col justify-center items-center text-center max-w-2xl mx-auto w-full animate-in zoom-in fade-in duration-500">
                     <ShieldX size={120} className="text-red-500 drop-shadow-[0_0_50px_rgba(239,68,68,0.6)] mb-8" />
-                    <h1 className="font-display text-6xl uppercase font-bold text-white tracking-widest mb-4">Integrity Compromised</h1>
+                    <h1 className="cq-title tracking-widest mb-4">Integrity Compromised</h1>
                     <p className="font-mono text-white/50 tracking-wider mb-12 leading-relaxed">The Syndicate breached our defenses. Data package stolen. We must fortify and try again.</p>
                     
                     <div className="flex gap-6">
@@ -543,41 +516,41 @@ const MissionView = () => {
                 <div className="flex-1 flex flex-col gap-8 max-w-[500px]">
                   
                   <div>
-                    <div className="font-mono text-[color:var(--current-theme-color)] text-[10px] tracking-[0.3em] mb-3 flex items-center gap-3 uppercase">
-                       <span className="w-2 h-2 bg-[color:var(--current-theme-color)] animate-pulse rounded-full shadow-[0_0_8px_var(--current-theme-color)]"></span>
+                    <div className="font-mono text-[var(--current-theme-color)] text-[10px] tracking-[0.3em] mb-3 flex items-center gap-3 uppercase">
+                       <span className="w-2 h-2 bg-[var(--current-theme-color)] animate-pulse rounded-full shadow-[0_0_8px_var(--current-theme-color)]"></span>
                        Active Operation_
                     </div>
-                    <h1 className="font-display text-[64px] font-bold uppercase tracking-wide leading-[0.9] text-white drop-shadow-2xl">{mission.name}</h1>
-                    <p className="text-white/40 font-sans text-sm mt-8 border-l-2 border-l-[color:var(--current-theme-color)]/50 pl-5 leading-relaxed tracking-wide">{mission.description}</p>
+                    <h1 className="cq-title tracking-wide leading-[0.9] drop-shadow-2xl">{mission.name}</h1>
+                    <p className="text-white/60 font-sans text-base mt-8 border-l-2 border-l-[var(--current-theme-color)]/50 pl-5 leading-relaxed tracking-wide">{mission.description}</p>
                   </div>
 
                   {/* Terminal Output (Helper Logs) */}
                   <div className="flex-1 min-h-[300px] glass-panel p-6 flex flex-col relative overflow-hidden group border border-white/5 shadow-2xl rounded-xl">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[color:var(--current-theme-color)]/5 to-transparent opacity-50 z-0 pointer-events-none"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--current-theme-color)]/5 to-transparent opacity-50 z-0 pointer-events-none"></div>
                     
                     <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-6 relative z-10">
                        <div className="flex items-center gap-3">
                          <Terminal size={18} className="text-white/50" />
-                         <span className="font-sans font-bold tracking-[0.2em] text-white/50 uppercase text-[10px]">Command Feed</span>
+                         <span className="font-sans font-bold tracking-[0.2em] text-white/50 uppercase text-[12px]">Command Feed</span>
                        </div>
                        <span className="font-mono text-white/20 text-[10px] tracking-widest">&gt;&gt;SYS:ROOT</span>
                     </div>
                     
                     <div className="relative z-10 space-y-3 font-mono text-[11px] leading-relaxed flex flex-col h-full">
-                      <p className="text-[color:var(--current-theme-color)]/40">&gt;&gt; Firewall online.</p>
+                      <p className="text-[var(--current-theme-color)]/40">&gt;&gt; Firewall online.</p>
                       
-                      <div className="mt-2 border border-[color:var(--current-theme-color)]/20 bg-[color:var(--current-theme-color)]/5 p-3 rounded mb-4">
-                         <span className="text-[color:var(--current-theme-color)] font-bold tracking-[0.2em] uppercase text-[9px]">&gt; Known Protocol Parameters:</span>
-                         <div className="text-white mt-1 font-mono text-[11px] whitespace-pre-wrap">{mission.rule}</div>
+                      <div className="mt-2 border border-[var(--current-theme-color)]/20 bg-[var(--current-theme-color)]/5 p-4 rounded mb-4">
+                         <span className="text-[var(--current-theme-color)] font-bold tracking-[0.2em] uppercase text-[12px]">&gt; Known Protocol Parameters:</span>
+                         <div className="text-white mt-2 font-mono text-[14px] whitespace-pre-wrap">{mission.rule}</div>
                          
                          {mission.fullMapping && (
-                           <div className="mt-4 border-t border-[color:var(--current-theme-color)]/20 pt-4">
-                             <span className="text-[color:var(--current-theme-color)] font-bold tracking-[0.2em] uppercase text-[9px] mb-2 block">&gt; Decryption Key:</span>
-                             <div className="grid grid-cols-6 gap-1">
+                           <div className="mt-4 border-t border-[var(--current-theme-color)]/20 pt-4">
+                             <span className="text-[var(--current-theme-color)] font-bold tracking-[0.2em] uppercase text-[11px] mb-3 block">&gt; Decryption Key:</span>
+                             <div className="grid grid-cols-6 gap-2">
                                 {Object.entries(mission.fullMapping).map(([k, v]: [any, any]) => (
-                                  <div key={k} className="flex gap-1 items-center bg-black/40 px-1 py-1 border border-[color:var(--current-theme-color)]/10 text-[8px]">
+                                  <div key={k} className="flex gap-1 items-center bg-black/40 px-2 py-1.5 border border-[var(--current-theme-color)]/10 text-[12px]">
                                      <span className="text-white/30">{k}</span>
-                                     <span className="font-bold text-[color:var(--current-theme-color)]">→{v}</span>
+                                     <span className="font-bold text-[var(--current-theme-color)]">→{v}</span>
                                   </div>
                                 ))}
                              </div>
@@ -587,18 +560,18 @@ const MissionView = () => {
                       
                       <div className="mt-auto pt-4 border-t border-white/5">
                          {hints.length > 0 && currentHintIndex >= 0 && (
-                             <div className="bg-[#0a0a0f] border border-[color:var(--current-theme-color)]/30 p-4 rounded mb-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] relative overflow-hidden">
-                                <div className="absolute inset-0 bg-[color:var(--current-theme-color)]/5 opacity-50"></div>
+                             <div className="bg-[#0a0a0f] border border-[var(--current-theme-color)]/30 p-4 rounded mb-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] relative overflow-hidden">
+                                <div className="absolute inset-0 bg-[var(--current-theme-color)]/5 opacity-50"></div>
                                 <div className="relative z-10 flex items-center justify-between mb-3 border-b border-white/10 pb-2">
-                                  <p className="text-[color:var(--current-theme-color)] uppercase tracking-widest font-bold flex items-center gap-2 text-[10px]"><Lightbulb size={14} /> Tactical Intel [{currentHintIndex + 1}/{hints.length}]</p>
-                                  <button onClick={requestHint} className="text-[9px] font-bold uppercase tracking-widest text-[color:var(--current-theme-color)] px-2 py-1 bg-[color:var(--current-theme-color)]/10 hover:bg-[color:var(--current-theme-color)]/20 border border-[color:var(--current-theme-color)]/30 rounded transition-colors shadow-[0_0_10px_var(--current-theme-color)] relative z-20 cursor-pointer">Follow Up Intel</button>
+                                  <p className="text-[var(--current-theme-color)] uppercase tracking-widest font-bold flex items-center gap-2 text-[12px]"><Lightbulb size={16} /> Tactical Intel [{currentHintIndex + 1}/{hints.length}]</p>
+                                  <button onClick={requestHint} className="text-[11px] font-bold uppercase tracking-widest text-[var(--current-theme-color)] px-3 py-1.5 bg-[var(--current-theme-color)]/10 hover:bg-[var(--current-theme-color)]/20 border border-[var(--current-theme-color)]/30 rounded transition-colors shadow-[0_0_10px_var(--current-theme-color)] relative z-20 cursor-pointer">Follow Up Intel</button>
                                 </div>
-                                <p className="text-white/80 font-mono text-[11px] leading-relaxed relative z-10">{hints[currentHintIndex]}</p>
+                                <p className="text-white/80 font-mono text-[14px] leading-relaxed relative z-10">{hints[currentHintIndex]}</p>
                              </div>
                          )}
                          
                          {!isSuccess && hints.length === 0 && (
-                             <button onClick={requestHint} className="text-xs uppercase tracking-widest text-white/50 hover:text-[color:var(--current-theme-color)] border border-white/10 hover:border-[color:var(--current-theme-color)] bg-[#0a0a0f] px-4 py-2 w-full text-left transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">&gt;&gt; Request Support Intel</button>
+                             <button onClick={requestHint} className="text-xs uppercase tracking-widest text-white/50 hover:text-[var(--current-theme-color)] border border-white/10 hover:border-[var(--current-theme-color)] bg-[#0a0a0f] px-4 py-2 w-full text-left transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">&gt;&gt; REQUEST FOR HINT</button>
                          )}
                       </div>
                     </div>
@@ -625,27 +598,27 @@ const MissionView = () => {
                   {/* Data Transfer Connector */}
                   <div className="flex flex-col items-center justify-center -my-6 z-20 h-20 relative">
                      {/* Data Stream Line */}
-                     <div className="w-[2px] h-full bg-gradient-to-b from-[color:var(--current-theme-color)]/0 via-[color:var(--current-theme-color)] to-[color:var(--current-theme-color)]/0 absolute opacity-50"></div>
+                     <div className="w-[2px] h-full bg-gradient-to-b from-[var(--current-theme-color)]/0 via-[var(--current-theme-color)] to-[var(--current-theme-color)]/0 absolute opacity-50"></div>
                      {/* Data Packet */}
-                     <div className="w-1.5 h-6 bg-[color:var(--current-theme-color)] absolute animate-[bounce_2s_infinite] shadow-[0_0_15px_var(--current-theme-color)] rounded-full z-10"></div>
+                     <div className="w-1.5 h-6 bg-[var(--current-theme-color)] absolute animate-[bounce_2s_infinite] shadow-[0_0_15px_var(--current-theme-color)] rounded-full z-10"></div>
                      
-                     <div className="px-6 py-2 bg-[#0a0a0f] border border-[color:var(--current-theme-color)]/50 rounded-full relative z-20 flex items-center gap-3 backdrop-blur-md shadow-[0_0_30px_rgba(0,0,0,0.8)]">
-                        <Settings size={16} className="text-[color:var(--current-theme-color)] animate-[spin_4s_linear_infinite]" />
+                     <div className="px-6 py-2 bg-[#0a0a0f] border border-[var(--current-theme-color)]/50 rounded-full relative z-20 flex items-center gap-3 backdrop-blur-md shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+                        <Settings size={16} className="text-[var(--current-theme-color)] animate-[spin_4s_linear_infinite]" />
                         <span className="font-mono text-[10px] text-white/70 uppercase tracking-[0.3em]">Processing Node</span>
-                        <ArrowRightLeft size={16} className="text-[color:var(--current-theme-color)]" />
+                        <ArrowRightLeft size={16} className="text-[var(--current-theme-color)]" />
                      </div>
                   </div>
 
                   {/* Ciphertext Input Area */}
-                  <div className={`glass-panel p-10 relative shadow-[0_40px_80px_rgba(0,0,0,0.5)] transition-all duration-500 rounded-xl ${isSuccess ? 'border shadow-none' : 'border border-[color:var(--current-theme-color)]/30'}`}
+                  <div className={`glass-panel p-10 relative shadow-[0_40px_80px_rgba(0,0,0,0.5)] transition-all duration-500 rounded-xl ${isSuccess ? 'border shadow-none' : 'border border-[var(--current-theme-color)]/30'}`}
                        style={{ 
                          borderColor: isSuccess ? 'color-mix(in srgb, var(--current-theme-color) 50%, transparent)' : '',
                          boxShadow: isSuccess ? '0 0 50px color-mix(in srgb, var(--current-theme-color) 10%, transparent)' : '' 
                        }}>
                     
-                    <div className={`absolute left-0 top-0 h-full w-1 transition-colors duration-500 ${isSuccess ? 'bg-[color:var(--current-theme-color)]' : 'bg-[color:var(--current-theme-color)]'}`}></div>
+                    <div className={`absolute left-0 top-0 h-full w-1 transition-colors duration-500 ${isSuccess ? 'bg-[var(--current-theme-color)]' : 'bg-[var(--current-theme-color)]'}`}></div>
 
-                    <div className={`font-sans font-bold text-[10px] uppercase tracking-[0.3em] mb-8 flex justify-between text-[color:var(--current-theme-color)]`}>
+                    <div className={`font-sans font-bold text-[10px] uppercase tracking-[0.3em] mb-8 flex justify-between text-[var(--current-theme-color)]`}>
                       <span>Encryption Protocol</span>
                       {isSuccess ? <span>[PROTOCOL SECURED]</span> : <span className="animate-pulse">[AWAITING ENCRYPTION]</span>}
                     </div>
@@ -677,8 +650,8 @@ const MissionView = () => {
                     {/* Action Button */}
                     <div className="mt-8 flex justify-end">
                       {!isSuccess ? (
-                        <button onClick={checkAnswer} className="bg-[color:var(--current-theme-color)] text-[#0a0a0f] font-sans font-bold uppercase tracking-[0.2em] text-[14px] py-5 px-14 rounded transition-all duration-300 hover:shadow-[0_0_30px_color-mix(in_srgb,var(--current-theme-color)_40%,transparent)] hover:-translate-y-1 active:translate-y-0 active:scale-95 outline-none">
-                          EXECUTE CIPHER
+                        <button onClick={checkAnswer} className="cyber-button !bg-[#00f2ff] hover:!bg-white !text-black hover:!text-[#00f2ff] text-[18px] py-3 px-10 hover:shadow-[0_0_25px_rgba(255,255,255,0.8)] border-none outline-none group transition-colors duration-300">
+                          <span className="relative z-10 font-bold group-hover:!text-[#00f2ff]">EXECUTE CIPHER</span>
                         </button>
                       ) : (
                         <button onClick={() => navigate('/story')} className="relative overflow-hidden text-[#0a0a0f] font-sans font-bold uppercase tracking-[0.2em] text-[14px] py-5 px-14 rounded hover:bg-white transition-all duration-300 outline-none group"
@@ -693,7 +666,7 @@ const MissionView = () => {
                     </div>
                     
                     {isSuccess && (
-                      <div className="absolute inset-0 bg-[color:var(--current-theme-color)]/5 mix-blend-screen pointer-events-none rounded-xl"></div>
+                      <div className="absolute inset-0 bg-[var(--current-theme-color)]/5 mix-blend-screen pointer-events-none rounded-xl"></div>
                     )}
                   </div>
 
@@ -719,8 +692,8 @@ const MissionView = () => {
               className="w-full max-w-5xl flex flex-col items-center gap-12"
             >
               <div className="text-center space-y-4">
-                <h2 className="text-6xl font-display font-black uppercase tracking-tighter text-white">Sector_Secured</h2>
-                <p className="font-mono text-sm text-[color:var(--current-theme-color)] uppercase tracking-[0.5em] animate-pulse">Authentication_Clearance_Generated</p>
+                <h2 className="cq-title">Sector_Secured</h2>
+                <p className="font-mono text-sm text-[var(--current-theme-color)] uppercase tracking-[0.5em] animate-pulse">Authentication_Clearance_Generated</p>
               </div>
 
               <div className="relative shadow-[0_0_100px_rgba(0,0,0,0.5)] border border-white/10">
@@ -838,7 +811,7 @@ const QuantumAscent = () => {
     if (grid.every(v => v)) {
       setQuantumSolved(true);
       setTimeout(() => {
-        confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: [selectedAvatar.colorHex, '#ffffff', '#00e5ff'] });
+        confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: [selectedAvatar.colorHex, '#ffffff', 'var(--current-theme-color)'] });
         setTimeout(() => setShowCompletion(true), 1000);
       }, 200);
     }
@@ -872,13 +845,13 @@ const QuantumAscent = () => {
       </div>
 
       <header className="h-20 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-2xl flex justify-between items-center px-10 z-20 relative">
-        <button onClick={() => navigate('/story')} className="flex items-center gap-4 group tactical-panel px-4 py-2 border-white/10 hover:border-[color:var(--current-theme-color)] transition-all">
+        <button onClick={() => navigate('/story')} className="flex items-center gap-4 group tactical-panel px-4 py-2 border-white/10 hover:border-[var(--current-theme-color)] transition-all">
           <ChevronRight className="rotate-180 group-hover:-translate-x-1 transition-transform" size={18} />
           <span className="font-bold tracking-[0.2em] text-[10px] uppercase text-white/50 group-hover:text-white">Return_to_HQ</span>
         </button>
         <div className="flex items-center gap-4">
-          <div className="w-3 h-3 bg-[color:var(--current-theme-color)] rounded-full animate-pulse" />
-          <span className="font-mono text-[10px] text-[color:var(--current-theme-color)] uppercase tracking-[0.4em] font-bold">Quantum_Protocol_Active</span>
+          <div className="w-3 h-3 bg-[var(--current-theme-color)] rounded-full animate-pulse" />
+          <span className="font-mono text-[10px] text-[var(--current-theme-color)] uppercase tracking-[0.4em] font-bold">Quantum_Protocol_Active</span>
         </div>
       </header>
 
@@ -886,15 +859,15 @@ const QuantumAscent = () => {
         <AnimatePresence mode="wait">
           {dialoguePhase ? (
             <motion.div key="dialogue" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full max-w-2xl px-8">
-              <div className="tactical-panel p-12 bg-[#0a0a0f]/95 border-[color:var(--current-theme-color)]/20">
+              <div className="tactical-panel p-12 bg-[#0a0a0f]/95 border-[var(--current-theme-color)]/20">
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="w-3 h-3 bg-[color:var(--current-theme-color)] rounded-full animate-ping" />
-                  <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[color:var(--current-theme-color)] font-bold">KNOX_SYSTEM_LINK</span>
+                  <div className="w-3 h-3 bg-[var(--current-theme-color)] rounded-full animate-ping" />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[var(--current-theme-color)] font-bold">KNOX_SYSTEM_LINK</span>
                 </div>
                 <div className="space-y-4 font-mono text-sm leading-relaxed">
                   {KNOX_DIALOGUES.map((line, i) => (
                     <motion.p key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: i <= dialogueIndex ? 1 : 0.1, x: 0 }} transition={{ delay: 0.1 }}
-                      className={`${i <= dialogueIndex ? 'text-[color:var(--current-theme-color)]' : 'text-white/10'}`}
+                      className={`${i <= dialogueIndex ? 'text-[var(--current-theme-color)]' : 'text-white/10'}`}
                     >{line}</motion.p>
                   ))}
                 </div>
@@ -903,8 +876,8 @@ const QuantumAscent = () => {
           ) : (
             <motion.div key="puzzle" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-10">
               <div className="text-center">
-                <h2 className="font-display text-5xl font-black uppercase tracking-tighter text-white mb-3">Qubit_Alignment</h2>
-                <p className="font-mono text-[10px] text-[color:var(--current-theme-color)] uppercase tracking-[0.4em]">Toggle all qubits to ON state</p>
+                <h2 className="cq-title mb-3">Qubit_Alignment</h2>
+                <p className="font-mono text-[10px] text-[var(--current-theme-color)] uppercase tracking-[0.4em]">Toggle all qubits to ON state</p>
               </div>
 
               <div className="grid grid-cols-3 gap-4">
@@ -912,7 +885,7 @@ const QuantumAscent = () => {
                   <motion.button key={idx} whileTap={{ scale: 0.9 }}
                     onClick={() => toggleNode(idx)}
                     className={`w-24 h-24 rounded-lg border-2 flex items-center justify-center font-mono text-lg font-bold transition-all duration-300 ${
-                      on ? 'bg-[color:var(--current-theme-color)] border-[color:var(--current-theme-color)] text-black shadow-[0_0_25px_var(--current-theme-color)]' : 'bg-white/5 border-white/10 text-white/30'
+                      on ? 'bg-[var(--current-theme-color)] border-[var(--current-theme-color)] text-black shadow-[0_0_25px_var(--current-theme-color)]' : 'bg-white/5 border-white/10 text-white/30'
                     }`}
                   >
                     {on ? '|1⟩' : '|0⟩'}
@@ -923,13 +896,13 @@ const QuantumAscent = () => {
               {!quantumSolved && (
                 <div className="flex flex-col items-center gap-4 w-full max-w-md">
                   <button onClick={requestHint} disabled={fetchingHint}
-                    className="tactical-panel px-8 py-3 text-[10px] font-mono uppercase tracking-widest text-white/40 hover:text-[color:var(--current-theme-color)] hover:border-[color:var(--current-theme-color)] transition-all"
+                    className="tactical-panel px-8 py-3 text-[10px] font-mono uppercase tracking-widest text-white/40 hover:text-[var(--current-theme-color)] hover:border-[var(--current-theme-color)] transition-all"
                   >{fetchingHint ? 'Analyzing...' : 'Request_KNOX_Intel'}</button>
                   {hintText && (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                      className="tactical-panel p-6 bg-[color:var(--current-theme-color)]/5 border-[color:var(--current-theme-color)]/20 w-full"
+                      className="tactical-panel p-6 bg-[var(--current-theme-color)]/5 border-[var(--current-theme-color)]/20 w-full"
                     >
-                      <span className="font-mono text-[9px] uppercase tracking-widest text-[color:var(--current-theme-color)] mb-2 block font-bold">KNOX_INTEL::</span>
+                      <span className="font-mono text-[9px] uppercase tracking-widest text-[var(--current-theme-color)] mb-2 block font-bold">KNOX_INTEL::</span>
                       <p className="font-mono text-xs text-white/70 leading-relaxed">{hintText}</p>
                     </motion.div>
                   )}
@@ -940,7 +913,7 @@ const QuantumAscent = () => {
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                   className="text-center"
                 >
-                  <p className="font-mono text-[color:var(--current-theme-color)] uppercase tracking-[0.4em] text-sm animate-pulse">
+                  <p className="font-mono text-[var(--current-theme-color)] uppercase tracking-[0.4em] text-sm animate-pulse">
                     Shor's Algorithm Executing...
                   </p>
                 </motion.div>
@@ -959,14 +932,14 @@ const QuantumAscent = () => {
             <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} className="w-full max-w-4xl flex flex-col items-center gap-10">
               <div className="text-center space-y-4">
                 <motion.h2 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                  className="text-7xl font-display font-black uppercase tracking-tighter text-white"
-                >STORY_MODE<br/><span className="text-[color:var(--current-theme-color)]">COMPLETE</span></motion.h2>
-                <p className="font-mono text-sm text-[color:var(--current-theme-color)] uppercase tracking-[0.5em] animate-pulse">
+                  className="cq-title"
+                >STORY_MODE<br/><span className="text-[var(--current-theme-color)]">COMPLETE</span></motion.h2>
+                <p className="font-mono text-sm text-[var(--current-theme-color)] uppercase tracking-[0.5em] animate-pulse">
                   All Sectors Neutralized • Quantum Ascent Achieved
                 </p>
               </div>
 
-              <div className="relative shadow-[0_0_100px_rgba(0,0,0,0.5)] border border-[color:var(--current-theme-color)]/30">
+              <div className="relative shadow-[0_0_100px_rgba(0,0,0,0.5)] border border-[var(--current-theme-color)]/30">
                 <img 
                   src={generateCertificate({ id: 5, title: 'FINAL: QUANTUM ASCENT', missions: [] }, operatorName, selectedAvatar.colorHex)}
                   alt="Story Mode Completion Certificate"

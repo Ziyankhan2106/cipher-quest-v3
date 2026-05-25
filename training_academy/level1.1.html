@@ -81,19 +81,19 @@
         }
 
         .char-box {
-            width: 50px;
-            height: 60px;
+            width:64px;
+            height:74px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: var(--surface-inset);
             border: 1px solid var(--border-subtle);
             border-radius: 10px;
-            font-size: 22px;
+            font-size:38px;
             font-weight: 700;
             position: relative;
             transition: all 0.3s ease;
-        }
+        font-family:'SF Mono','Fira Code',Consolas,monospace;}
 
         .char-box.source {
             opacity: 0.6;
@@ -200,7 +200,7 @@
             <div style="display:flex;align-items:center;gap:10px">
                 <span class="badge">CH 01</span>
                 <div>
-                    <div style="font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.14em">Reverse Cipher</div>
+                    <div class="topbar-title" style="font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;">Reverse Cipher</div>
                     <div class="micro-label" style="margin-bottom:0">Visual Logic 1.1</div>
                 </div>
             </div>
@@ -239,18 +239,21 @@
         </div>
 
         <footer class="footer">
-            <div class="timer" id="timer">Looping demo</div>
-                <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
-      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
-      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
-    </div>
-            <button class="btn" id="replay">Replay Now</button>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <button class="btn" id="pauseResume">Pause</button>
+                <button class="btn" id="replay">Restart</button>
+            </div>
+            <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+                <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
+                <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
+                <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+            </div>
+            <button class="btn" id="nextBtn">Next →</button>
         </footer>
     </div>
 
     <script>
-let speedMultiplier = 1.0;
+        let speedMultiplier = 1.0;
         const word = "CIPHER";
         const inputGrid = document.getElementById('inputGrid');
         const outputGrid = document.getElementById('outputGrid');
@@ -258,12 +261,30 @@ let speedMultiplier = 1.0;
         const robotTitle = document.getElementById('robotTitle');
         const robotText = document.getElementById('robotText');
         const replayBtn = document.getElementById('replay');
+        const pauseResumeBtn = document.getElementById('pauseResume');
+        const nextBtn = document.getElementById('nextBtn');
+        const speedUp = document.getElementById('speedUp');
+        const speedDown = document.getElementById('speedDown');
+        const sDisplay = document.getElementById('speedDisplay');
 
         let isAnimating = false;
+        let isPaused = false;
+        let isCancelled = false;
 
         function setRobot(title, text) {
             robotTitle.textContent = title;
             robotText.textContent = text;
+        }
+
+        async function mySleep(ms) {
+            let elapsed = 0;
+            while (elapsed < (ms / speedMultiplier)) {
+                if (isCancelled) throw new Error("cancelled");
+                if (!isPaused) {
+                    elapsed += 20;
+                }
+                await new Promise(r => setTimeout(r, 20));
+            }
         }
 
         function init() {
@@ -288,95 +309,100 @@ let speedMultiplier = 1.0;
         async function startProtocol() {
             if (isAnimating) return;
             isAnimating = true;
+            isCancelled = false;
+            isPaused = false;
+            pauseResumeBtn.textContent = "Pause";
             init();
+            
+            try {
+                setRobot("Analyzing Input", "Calculating the mirror axis. For length 6, Index 0 maps to 5.");
+                await mySleep(1200);
 
-            setRobot("Analyzing Input", "Calculating the mirror axis. For length 6, Index 0 maps to 5.");
-            await new Promise(r => setTimeout(r, 1200 / speedMultiplier));
+                const inputs = inputGrid.children;
+                const outputs = outputGrid.children;
+                const n = word.length;
 
-            const inputs = inputGrid.children;
-            const outputs = outputGrid.children;
-            const n = word.length;
+                for (let i = 0; i < n; i++) {
+                    const sourceBox = inputs[i];
+                    const targetIdx = (n - 1) - i;
+                    const targetBox = outputs[targetIdx];
 
-            for (let i = 0; i < n; i++) {
-                const sourceBox = inputs[i];
-                const targetIdx = (n - 1) - i;
-                const targetBox = outputs[targetIdx];
+                    sourceBox.classList.add('active');
+                    setRobot("Mapping Index " + i, `Transporting '${word[i]}' to position ${targetIdx}.`);
 
-                // Highlight active mapping
-                sourceBox.classList.add('active');
-                setRobot("Mapping Index " + i, `Transporting '${word[i]}' to position ${targetIdx}.`);
+                    const sRect = sourceBox.getBoundingClientRect();
+                    const tRect = targetBox.getBoundingClientRect();
+                    const layerRect = arrowLayer.getBoundingClientRect();
 
-                // Draw Arrow
-                const sRect = sourceBox.getBoundingClientRect();
-                const tRect = targetBox.getBoundingClientRect();
-                const layerRect = arrowLayer.getBoundingClientRect();
+                    const x1 = (sRect.left + sRect.width / 2) - layerRect.left;
+                    const y1 = (sRect.bottom) - layerRect.top;
+                    const x2 = (tRect.left + tRect.width / 2) - layerRect.left;
+                    const y2 = (tRect.top) - layerRect.top;
 
-                const x1 = (sRect.left + sRect.width / 2) - layerRect.left;
-                const y1 = (sRect.bottom) - layerRect.top;
-                const x2 = (tRect.left + tRect.width / 2) - layerRect.left;
-                const y2 = (tRect.top) - layerRect.top;
+                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    const cp1y = y1 + 40;
+                    const cp2y = y2 - 40;
+                    const d = `M ${x1} ${y1} C ${x1} ${cp1y}, ${x2} ${cp2y}, ${x2} ${y2}`;
 
-                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                // Create a Bezier curve for the arrow
-                const cp1y = y1 + 40;
-                const cp2y = y2 - 40;
-                const d = `M ${x1} ${y1} C ${x1} ${cp1y}, ${x2} ${cp2y}, ${x2} ${y2}`;
+                    path.setAttribute("d", d);
+                    path.setAttribute("class", "mapping-arrow");
+                    path.style.animation = `drawArrow ${0.8 / speedMultiplier}s forwards ease-out`;
+                    arrowLayer.appendChild(path);
 
-                path.setAttribute("d", d);
-                path.setAttribute("class", "mapping-arrow");
-                path.style.animation = "drawArrow 0.8s forwards ease-out";
-                arrowLayer.appendChild(path);
+                    await mySleep(400);
 
-                await new Promise(r => setTimeout(r, 400 / speedMultiplier));
+                    targetBox.textContent = word[i];
+                    targetBox.style.opacity = '1';
+                    targetBox.classList.add('active');
 
-                // Populate Target
-                targetBox.textContent = word[i];
-                targetBox.style.opacity = '1';
-                targetBox.classList.add('active');
+                    await mySleep(400);
+                    sourceBox.classList.remove('active');
+                    targetBox.classList.remove('active');
+                }
 
-                await new Promise(r => setTimeout(r, 400 / speedMultiplier));
-                sourceBox.classList.remove('active');
-                targetBox.classList.remove('active');
+                setRobot("Success", "Transformation complete. The original structure is preserved at the top for verification.");
+            } catch(e) {
+                // Cancelled
             }
-
-            setRobot("Success", "Transformation complete. The original structure is preserved at the top for verification.");
             isAnimating = false;
         }
 
         replayBtn.addEventListener('click', () => {
+            isCancelled = true;
             isAnimating = false;
-            startProtocol();
+            setTimeout(startProtocol, 50);
         });
+
+        pauseResumeBtn.addEventListener('click', () => {
+            if (!isAnimating) return;
+            isPaused = !isPaused;
+            pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+            
+            // pause css animation
+            const arrows = document.querySelectorAll('.mapping-arrow');
+            arrows.forEach(a => {
+                a.style.animationPlayState = isPaused ? 'paused' : 'running';
+            });
+        });
+
+        speedUp.addEventListener("click", () => {
+            if (speedMultiplier < 2.0) speedMultiplier += 0.25;
+            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+        });
+
+        speedDown.addEventListener("click", () => {
+            if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
+            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+        });
+
+        nextBtn.addEventListener("click", () => {
+            window.location.href = "level1.2.html";
+        });
+
         window.onload = () => {
             init();
-            setTimeout(startProtocol, 1000 / speedMultiplier);
+            setTimeout(startProtocol, 100);
         };
-    
-        const sDisplay = document.getElementById("speedDisplay");
-  if (document.getElementById("speedUp")) {
-    document.getElementById("speedUp").addEventListener("click", () => {
-      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-    document.getElementById("speedDown").addEventListener("click", () => {
-      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-  }
-
-  const nextBtn = document.getElementById("nextBtn");
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
-      if (match) {
-        let ch = parseInt(match[1]);
-        let lvl = parseInt(match[2]);
-        lvl++;
-        if (lvl > 5) { lvl = 1; ch++; }
-        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
-      }
-    });
-  }
 </script>
 </body>
 

@@ -1,7 +1,7 @@
 /* CipherQuest Multiplayer — theme from multiplayer/design.md */
 
 :root {
-  --current-theme-color: #00e5ff;
+  --current-theme-color: var(--current-theme-color);
   --void: #050505;
   --text-main: #f4f7ff;
   --text-muted: #94a3b8;
@@ -22,6 +22,10 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--text-main);
   background: var(--void);
+}
+
+* {
+  cursor: inherit !important;
 }
 
 body {
@@ -224,7 +228,7 @@ body {
   font-size: 0.68rem;
   padding: 12px 18px;
   border: none;
-  cursor: pointer;
+  cursor: url(\"/assets/mouse.png\") 6 6, pointer !important;
   color: #020617;
   background: var(--current-theme-color);
   box-shadow: 0 4px 20px color-mix(in srgb, var(--current-theme-color) 45%, transparent);
@@ -238,7 +242,7 @@ body {
 
 .mp-btn:disabled {
   opacity: 0.45;
-  cursor: not-allowed;
+  cursor: url(\"/assets/mouse.png\") 6 6, pointer !important;
   transform: none;
 }
 

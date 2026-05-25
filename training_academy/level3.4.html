@@ -75,7 +75,7 @@ body::after{
   border-radius:999px;
   padding:4px 10px;
 }
-.title{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.14em}
+.title{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;}
 .sub{margin-top:2px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
 .live{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.16em}
 .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 1.3s ease-in-out infinite}
@@ -178,13 +178,13 @@ body::after{
   font-size:10px;
   color:rgba(148,163,184,.74);
 }
-.letter,.out-letter{
+.letter, .out-letter {
   font-family:"SF Mono","Fira Code",Consolas,monospace;
-  font-size:34px;
+  font-size:46px;
   line-height:1;
   font-weight:900;
 }
-.letter{color:var(--ink)}
+.letter {font-size:46px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;color:var(--ink)}
 .small{
   font-size:9px;
   color:var(--muted);
@@ -228,8 +228,8 @@ body::after{
   box-shadow:0 0 22px rgba(34,197,94,.28);
   animation:land .42s cubic-bezier(.34,1.56,.64,1);
 }
-.out-letter{color:transparent}
-.out-card.filled .out-letter{color:var(--green);text-shadow:0 0 14px rgba(34,197,94,.8)}
+.out-letter{font-size:42px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;color:transparent}
+.out-card.filled .out-letter{font-size:42px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;color:var(--green);text-shadow:0 0 14px rgba(34,197,94,.8)}
 @keyframes land{from{transform:scale(.72);opacity:.3}to{transform:scale(1);opacity:1}}
 .workspace{
   position:relative;
@@ -353,7 +353,7 @@ body::after{
   .cards,.rule,.output{gap:6px}
   .example-note{font-size:8px;line-height:1.35}
   .input-card,.rule-card,.out-card{height:66px;border-radius:9px}
-  .letter,.out-letter{font-size:24px}
+  .letter, .out-letter {font-size:46px;font-family:'SF Mono','Fira Code',Consolas,monospace;}
   .rule-num{font-size:22px}
   .small{font-size:7px}
   .num{font-size:8px}
@@ -416,16 +416,16 @@ body::after{
   </section>
 
   <footer class="footer">
-
-        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
-      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
-      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <button class="btn" id="pauseResumeBtn">Pause</button>
+        <button class="btn" id="replayBtn">↩ Restart</button>
     </div>
-    <button class="btn" id="btn-play">Pause</button>
-    <button class="btn" id="btn-step">Step</button>
-    <div class="timer" id="timer">Looping demo</div>
-    <button class="btn" id="replay">Replay Now</button>
+    <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+        <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
+        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
+        <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
+    </div>
+    <button class="btn" style="color:var(--green); border-color:var(--green);" id="nextBtn">Next Cipher →</button>
   </footer>
 </main>
 
@@ -442,19 +442,20 @@ let stepRequested = false;
 
 const $ = (id) => document.getElementById(id);
 let speedMultiplier = 1.0;
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms / speedMultiplier));
+
+let isPaused = false;
+async function wait(ms) {
+    let elapsed = 0;
+    while (elapsed < (ms / speedMultiplier)) {
+        if (token.stop) return;
+        if (!isPaused) elapsed += 20;
+        await new Promise(r => setTimeout(r, 20));
+    }
+}
 
 async function waitForPlaybackStep(runToken) {
   if (runToken.stop) return;
-  if (isPlaying) {
-    await wait(2000);
-    return;
-  }
-  $("timer").textContent = "Paused";
-  while (!runToken.stop && !isPlaying && !stepRequested) {
-    await wait(80);
-  }
-  if (stepRequested) stepRequested = false;
+  await wait(1000);
 }
 
 function inputCard(letter, index) {
@@ -533,7 +534,7 @@ function reset() {
   $("fly").style.opacity = 0;
   $("status").textContent = "Number the cards first: CIPHER is position 1 to 6";
   $("finalText").textContent = "CIPHER -> ------";
-  $("timer").textContent = "Looping demo";
+  if ($("timer")) $("timer").textContent = "Looping demo";
 }
 
 async function revealCards(runToken) {
@@ -606,6 +607,8 @@ async function moveOne(step, runToken) {
 async function run() {
   if (running) return;
   running = true;
+  isPaused = false;
+  const pb = $('pauseResumeBtn'); if(pb) pb.textContent = 'Pause';
   reset();
   const runToken = token;
   await wait(300);
@@ -630,14 +633,14 @@ async function run() {
 
 function startLoop(runToken) {
   let left = 2;
-  $("timer").textContent = `Replay in ${left}s`;
+  if ($("timer")) $("timer").textContent = `Replay in ${left}s`;
   timer = setInterval(() => {
     if (runToken.stop) {
       clearInterval(timer);
       return;
     }
     left -= 1;
-    $("timer").textContent = left > 0 ? `Replay in ${left}s` : "Looping demo";
+    if ($("timer")) $("timer").textContent = left > 0 ? `Replay in ${left}s` : "Looping demo";
     if (left <= 0) {
       clearInterval(timer);
       run();
@@ -645,53 +648,44 @@ function startLoop(runToken) {
   }, 1000 / speedMultiplier);
 }
 
-$("replay").addEventListener("click", () => {
+const replayBtn = document.getElementById('replayBtn');
+if (replayBtn) replayBtn.addEventListener("click", () => {
   running = false;
   run();
 });
 
-$("btn-play").addEventListener("click", () => {
-  isPlaying = !isPlaying;
-  $("btn-play").textContent = isPlaying ? "Pause" : "Resume";
-  if (isPlaying) $("timer").textContent = "Looping demo";
-});
-
-$("btn-step").addEventListener("click", () => {
-  if (isPlaying) {
-    isPlaying = false;
-    $("btn-play").textContent = "Resume";
-  }
-  stepRequested = true;
-});
+const pauseResumeBtn = document.getElementById('pauseResumeBtn');
+if (pauseResumeBtn) {
+    pauseResumeBtn.addEventListener('click', () => {
+        isPaused = !isPaused;
+        pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+    });
+}
 
 window.addEventListener("resize", () => drawPath(-1, -1));
 window.addEventListener("load", run);
 
-        const sDisplay = document.getElementById("speedDisplay");
-  if (document.getElementById("speedUp")) {
-    document.getElementById("speedUp").addEventListener("click", () => {
-      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-    document.getElementById("speedDown").addEventListener("click", () => {
-      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-  }
+const speedUp = document.getElementById('speedUp');
+const speedDown = document.getElementById('speedDown');
+const sDisplay = document.getElementById('speedDisplay');
 
-  const nextBtn = document.getElementById("nextBtn");
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
-      if (match) {
-        let ch = parseInt(match[1]);
-        let lvl = parseInt(match[2]);
-        lvl++;
-        if (lvl > 5) { lvl = 1; ch++; }
-        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
-      }
+if (speedUp && speedDown && sDisplay) {
+    speedUp.addEventListener("click", () => {
+        if (speedMultiplier < 2.0) speedMultiplier += 0.25;
+        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
     });
-  }
+    speedDown.addEventListener("click", () => {
+        if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
+        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+    });
+}
+
+const nextBtn = document.getElementById('nextBtn');
+if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+        window.location.href = "level3.5.html";
+    });
+}
 </script>
 </body>
 </html>

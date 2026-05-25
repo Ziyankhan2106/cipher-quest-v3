@@ -97,12 +97,10 @@
     header.innerHTML = `
       <div class="cq-header-copy">
         <div class="cq-header-title-row">
-          <span class="cq-header-icon">${levelIcon(key)}</span>
           <h1 class="cq-header-title">${title}</h1>
         </div>
         <p class="cq-header-subtitle">${details.subtitle}</p>
       </div>
-      <div class="cq-header-chips">${chips}</div>
     `;
     return header;
   }
@@ -121,6 +119,15 @@
   function enhanceControls() {
     const style = document.createElement("style");
     style.textContent = `
+      * {
+        cursor: url("/assets/mouse.png") 4 4, auto !important;
+      }
+      body, html {
+        cursor: url("/assets/mouse.png") 4 4, auto !important;
+      }
+      a, button, [role="button"], input, select, textarea, .btn, .foot-btn, #speedDown, #speedUp, #btn-play, #btn-step, #btn-next, #replay, #replayBtn, #replayNow, #nextBtn {
+        cursor: url("/assets/mouse.png") 4 4, pointer !important;
+      }
       footer,
       .footer {
         gap: 12px !important;
@@ -174,24 +181,24 @@
       .cq-header-title {
         margin: 0 !important;
         color: #f8fafc !important;
-        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-        font-size: 20px !important;
-        font-weight: 800 !important;
+        font-family: "Orbitron", sans-serif !important;
+        font-size: 24px !important;
+        font-weight: 700 !important;
         line-height: 1.2 !important;
-        letter-spacing: 0 !important;
-        text-transform: none !important;
+        letter-spacing: 0.025em !important;
+        text-transform: uppercase !important;
         white-space: normal !important;
       }
 
       .cq-header-subtitle {
         margin: 8px 0 0 38px !important;
-        color: #94a3b8 !important;
-        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-        font-size: 14px !important;
-        font-weight: 400 !important;
+        color: rgba(255, 255, 255, 0.6) !important;
+        font-family: "Share Tech Mono", ui-monospace, SFMono-Regular, monospace !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
         line-height: 1.35 !important;
-        letter-spacing: 0 !important;
-        text-transform: none !important;
+        letter-spacing: 0.3em !important;
+        text-transform: uppercase !important;
       }
 
       .cq-header-chips {

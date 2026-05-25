@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 130" width="100%" height="100%">
+  <defs>
+    <linearGradient id="cyber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00ffff" />
+      <stop offset="50%" stop-color="#0088ff" />
+      <stop offset="100%" stop-color="#cc00ff" />
+    </linearGradient>
+  </defs>
+  
+  <g fill="none" stroke="url(#cyber)" stroke-width="14" stroke-linecap="square" stroke-linejoin="miter">
+    <!-- C -->
+    <path d="M 40 25 L 20 25 L 20 95 L 40 95" />
+    
+    <!-- Q -->
+    <rect x="65" y="25" width="35" height="70" />
+    
+    <!-- Q Tail -->
+    <path d="M 85 80 L 110 105" stroke-width="16" />
+  </g>
+</svg>

@@ -201,109 +201,98 @@ export function generateMission(level: number, usedWords: string[] = []): Cipher
     const id = `mission_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     
     let difficulty: 'easy' | 'medium' | 'hard' = 'easy';
-    if (level >= 3) difficulty = 'hard';
-    else if (level >= 2) difficulty = 'medium';
+    if (level >= 10) difficulty = 'hard';
+    else if (level >= 5) difficulty = 'medium';
 
     const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
-    let type = "";
+    
+    const orderedTypes = [
+        'reverse', 'caesar', 'atbash', 'monoalphabetic', 'fixed-number',
+        'reverse-caesar', 'alternating', 'positional', 'vowel-scrambler', 'keyed-substitution',
+        'modular-shift', 'vigenere', 'affine', 'permutation', 'blocked-rotate',
+        'pairing', 'rotate-add', 'encrypt-additively', 'mini-rsa', 'merkle'
+    ];
+    
+    const type = orderedTypes[level % orderedTypes.length];
+    
     let encryptedText = "";
     let schemeHint = "";
 
-    if (level <= 2) {
-        const types = ['reverse', 'caesar', 'atbash', 'monoalphabetic', 'fixed-number'];
-        type = types[Math.floor(Math.random() * types.length)];
-        
-        if (type === 'reverse') {
-            encryptedText = ciphers.reverse(word);
-            schemeHint = "REVERSE STRING";
-        } else if (type === 'caesar') {
-            const shift = rand(1, 25);
-            encryptedText = ciphers.caesar(word, shift);
-            schemeHint = `SHIFT +${shift}`;
-        } else if (type === 'atbash') {
-            encryptedText = ciphers.atbash(word);
-            schemeHint = "ATBASH (A=Z, B=Y, ...)";
-        } else if (type === 'monoalphabetic') {
-            const out = ciphers.monoalphabetic(word);
-            encryptedText = out.enc;
-            schemeHint = out.rule;
-        } else {
-            encryptedText = ciphers.fixedNumber(word);
-            schemeHint = "FIXED NUMBER ENCODING";
-        }
-    } else if (level <= 4) {
-        const types = ['reverse-caesar', 'alternating', 'positional', 'vowel-scrambler', 'keyed-substitution'];
-        type = types[Math.floor(Math.random() * types.length)];
-        
-        if (type === 'reverse-caesar') {
-            const shift = rand(1, 25);
-            encryptedText = ciphers.reverseCaesar(word, shift);
-            schemeHint = `REVERSE THEN SHIFT +${shift}`;
-        } else if (type === 'alternating') {
-            const s1 = rand(1, 10);
-            const s2 = -rand(1, 10);
-            encryptedText = ciphers.alternating(word, s1, s2);
-            schemeHint = `ALTERNATING SHIFTS: +${s1}, ${s2}`;
-        } else if (type === 'positional') {
-            encryptedText = ciphers.positional(word);
-            schemeHint = "POSITIONAL SHIFT";
-        } else if (type === 'vowel-scrambler') {
-            encryptedText = ciphers.vowelScrambler(word);
-            schemeHint = "VOWELS TO NUMBERS";
-        } else {
-            const keys = ["CIPHER", "NEXUS", "MATRIX", "STEALTH", "GHOST"];
-            const key = keys[Math.floor(Math.random() * keys.length)];
-            const out = ciphers.keyedSubstitution(word, key);
-            encryptedText = out.enc;
-            schemeHint = out.rule;
-        }
-    } else if (level <= 6) {
-        const types = ['modular-shift', 'vigenere', 'affine', 'permutation', 'blocked-rotate'];
-        type = types[Math.floor(Math.random() * types.length)];
-        
-        if (type === 'modular-shift') {
-            const shift = rand(1, 25);
-            encryptedText = ciphers.modularShift(word, shift);
-            schemeHint = `MODULAR SHIFT +${shift}`;
-        } else if (type === 'vigenere') {
-            const keys = ["NEO", "TRINITY", "MORPHEUS", "SMITH"];
-            const key = keys[Math.floor(Math.random() * keys.length)];
-            encryptedText = ciphers.vigenere(word, key);
-            schemeHint = `VIGENERE (KEY=${key})`;
-        } else if (type === 'affine') {
-            const asList = [3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25];
-            const a = asList[Math.floor(Math.random() * asList.length)];
-            const b = rand(1, 25);
-            encryptedText = ciphers.affine(word, a, b);
-            schemeHint = `AFFINE (a=${a}, b=${b})`;
-        } else if (type === 'permutation') {
-            encryptedText = ciphers.permutation(word);
-            schemeHint = "PERMUTATION (evens then odds)";
-        } else {
-            encryptedText = ciphers.blockedRotate(word, "CAT", 3);
-            schemeHint = "BLOCKED ROTATE";
-        }
-    } else {
-        const types = ['pairing', 'rotate-add', 'encrypt-additively', 'mini-rsa', 'merkle'];
-        type = types[Math.floor(Math.random() * types.length)];
-        
-        if (type === 'pairing') {
-            encryptedText = ciphers.pairing(word);
-            schemeHint = "PAIRING";
-        } else if (type === 'rotate-add') {
-            encryptedText = ciphers.rotateAdd(word);
-            schemeHint = "ROTATE ADD";
-        } else if (type === 'encrypt-additively') {
-            encryptedText = ciphers.encryptAdditively(word);
-            schemeHint = "ENCRYPT ADDITIVELY";
-        } else if (type === 'mini-rsa') {
-            const out = ciphers.miniRsa(word);
-            encryptedText = out.enc;
-            schemeHint = out.rule;
-        } else {
-            encryptedText = ciphers.merkle(word);
-            schemeHint = "MINI MERKLE TREE";
-        }
+    if (type === 'reverse') {
+        encryptedText = ciphers.reverse(word);
+        schemeHint = "REVERSE STRING";
+    } else if (type === 'caesar') {
+        const shift = rand(1, 25);
+        encryptedText = ciphers.caesar(word, shift);
+        schemeHint = `SHIFT +${shift}`;
+    } else if (type === 'atbash') {
+        encryptedText = ciphers.atbash(word);
+        schemeHint = "ATBASH (A=Z, B=Y, ...)";
+    } else if (type === 'monoalphabetic') {
+        const out = ciphers.monoalphabetic(word);
+        encryptedText = out.enc;
+        schemeHint = out.rule;
+    } else if (type === 'fixed-number') {
+        encryptedText = ciphers.fixedNumber(word);
+        schemeHint = "FIXED NUMBER ENCODING";
+    } else if (type === 'reverse-caesar') {
+        const shift = rand(1, 25);
+        encryptedText = ciphers.reverseCaesar(word, shift);
+        schemeHint = `REVERSE THEN SHIFT +${shift}`;
+    } else if (type === 'alternating') {
+        const s1 = rand(1, 10);
+        const s2 = -rand(1, 10);
+        encryptedText = ciphers.alternating(word, s1, s2);
+        schemeHint = `ALTERNATING SHIFTS: +${s1}, ${s2}`;
+    } else if (type === 'positional') {
+        encryptedText = ciphers.positional(word);
+        schemeHint = "POSITIONAL SHIFT";
+    } else if (type === 'vowel-scrambler') {
+        encryptedText = ciphers.vowelScrambler(word);
+        schemeHint = "VOWELS TO NUMBERS";
+    } else if (type === 'keyed-substitution') {
+        const keys = ["CIPHER", "NEXUS", "MATRIX", "STEALTH", "GHOST"];
+        const key = keys[Math.floor(Math.random() * keys.length)];
+        const out = ciphers.keyedSubstitution(word, key);
+        encryptedText = out.enc;
+        schemeHint = out.rule;
+    } else if (type === 'modular-shift') {
+        const shift = rand(1, 25);
+        encryptedText = ciphers.modularShift(word, shift);
+        schemeHint = `MODULAR SHIFT +${shift}`;
+    } else if (type === 'vigenere') {
+        const keys = ["NEO", "TRINITY", "MORPHEUS", "SMITH"];
+        const key = keys[Math.floor(Math.random() * keys.length)];
+        encryptedText = ciphers.vigenere(word, key);
+        schemeHint = `VIGENERE (KEY=${key})`;
+    } else if (type === 'affine') {
+        const asList = [3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25];
+        const a = asList[Math.floor(Math.random() * asList.length)];
+        const b = rand(1, 25);
+        encryptedText = ciphers.affine(word, a, b);
+        schemeHint = `AFFINE (a=${a}, b=${b})`;
+    } else if (type === 'permutation') {
+        encryptedText = ciphers.permutation(word);
+        schemeHint = "PERMUTATION (evens then odds)";
+    } else if (type === 'blocked-rotate') {
+        encryptedText = ciphers.blockedRotate(word, "CAT", 3);
+        schemeHint = "BLOCKED ROTATE";
+    } else if (type === 'pairing') {
+        encryptedText = ciphers.pairing(word);
+        schemeHint = "PAIRING";
+    } else if (type === 'rotate-add') {
+        encryptedText = ciphers.rotateAdd(word);
+        schemeHint = "ROTATE ADD";
+    } else if (type === 'encrypt-additively') {
+        encryptedText = ciphers.encryptAdditively(word);
+        schemeHint = "ENCRYPT ADDITIVELY";
+    } else if (type === 'mini-rsa') {
+        const out = ciphers.miniRsa(word);
+        encryptedText = out.enc;
+        schemeHint = out.rule;
+    } else if (type === 'merkle') {
+        encryptedText = ciphers.merkle(word);
+        schemeHint = "MINI MERKLE TREE";
     }
 
     return { id, level, type, encryptedText, originalText: word, schemeHint, difficulty };

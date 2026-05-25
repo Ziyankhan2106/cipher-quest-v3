@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CipherQuest | Level 1.2 | Caesar Cipher</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+        :root {
+            --bg: #05080f;
+            --surface: #0c1222;
+            --panel: rgba(12, 18, 34, 0.92);
+            --border: rgba(148, 163, 184, 0.34);
+            --cyan: #59f2ff;
+            --yellow: #ffdd57;
+            --green: #22c55e;
+            --purple: #b97fff;
+            --red: #ff5f6d;
+            --muted: #4a607a;
+            --text: #cde0f5;
+            --mono: 'Share Tech Mono', monospace;
+            --sans: 'Rajdhani', system-ui, sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            font-family: var(--sans);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Atmosphere */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 20% 10%, rgba(89, 242, 255, 0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 50% at 80% 90%, rgba(255, 229, 102, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Grid lines */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(89, 242, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(89, 242, 255, 0.025) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Card ── */
+        .card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 720px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 0 1px rgba(89, 242, 255, 0.04), 0 40px 100px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+        }
+
+        /* ── Top bar ── */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: rgba(5, 8, 15, 0.7);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .2em;
+            padding: 3px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 229, 102, 0.5);
+            color: var(--yellow);
+            background: rgba(255, 229, 102, 0.06);
+        }
+
+        .topbar-title {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .topbar-sub {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--muted);
+            margin-top: 2px;
+            letter-spacing: .15em;
+        }
+
+        .live {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--green);
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .live::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .4
+            }
+        }
+
+        /* ── Controls ── */
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(89, 242, 255, 0.08);
+            background: rgba(5, 8, 15, 0.4);
+        }
+
+        .ctrl-label {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--muted);
+            letter-spacing: .2em;
+            text-transform: uppercase;
+        }
+
+        .word-input {
+            font-family: var(--mono);
+            font-size: 14px;
+            font-weight: 700;
+            background: rgba(5, 8, 15, 0.8);
+            border: 1px solid rgba(89, 242, 255, 0.22);
+            border-radius: 8px;
+            padding: 6px 12px;
+            color: var(--cyan);
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            outline: none;
+            width: 150px;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .word-input:focus {
+            border-color: rgba(89, 242, 255, 0.6);
+            box-shadow: 0 0 12px rgba(89, 242, 255, 0.15);
+        }
+
+        .shift-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .shift-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid rgba(89, 242, 255, 0.25);
+            background: rgba(89, 242, 255, 0.06);
+            color: var(--cyan);
+            font-size: 16px;
+            font-family: var(--mono);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .15s;
+        }
+
+        .shift-btn:hover {
+            background: rgba(89, 242, 255, 0.15);
+            box-shadow: 0 0 8px rgba(89, 242, 255, 0.3);
+        }
+
+        .shift-display {
+            font-family: var(--mono);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--yellow);
+            width: 44px;
+            text-align: center;
+            letter-spacing: .04em;
+        }
+
+        .go-btn {
+            margin-left: auto;
+            padding: 7px 22px;
+            border-radius: 999px;
+            border: none;
+            background: var(--cyan);
+            color: #05080f;
+            font-family: var(--sans);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .go-btn:hover {
+            box-shadow: 0 0 20px rgba(89, 242, 255, 0.5);
+            background: #80f6ff;
+        }
+
+        .go-btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+
+        /* ── Main stage ── */
+        .stage {
+            padding: 24px 20px 20px;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            position: relative;
+        }
+
+        /* Scanlines */
+        .stage::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px,
+                    rgba(89, 242, 255, 0.01) 3px, rgba(89, 242, 255, 0.01) 4px);
+            pointer-events: none;
+        }
+
+        /* ── Status ── */
+        .status {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--cyan);
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            min-height: 18px;
+            align-self: flex-start;
+            position: relative;
+            z-index: 2;
+        }
+
+        .blink {
+            animation: blink .9s step-end infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0
+            }
+        }
+
+        /* ── Input word display ── */
+        .word-display {
+            display: flex;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .letter-chip {
+            width: 52px;
+            height: 58px;
+            border-radius: 10px;
+            border: 1px solid rgba(89, 242, 255, 0.2);
+            background: rgba(5, 8, 15, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            font-family: var(--mono);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            transition: all .35s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .letter-chip .ch-idx {
+            font-size: 8px;
+            color: var(--muted);
+            letter-spacing: .1em;
+        }
+
+        .letter-chip.active {
+            border-color: var(--yellow);
+            box-shadow: 0 0 24px rgba(255, 229, 102, 0.4), inset 0 0 12px rgba(255, 229, 102, 0.06);
+            color: var(--yellow);
+        }
+
+        .letter-chip.active .ch-idx {
+            color: rgba(255, 229, 102, 0.7);
+        }
+
+        .letter-chip.done {
+            border-color: rgba(89, 242, 255, 0.5);
+            box-shadow: 0 0 12px rgba(89, 242, 255, 0.25);
+        }
+
+        /* Shimmer on active */
+        .letter-chip.active::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(255, 229, 102, 0.12) 60%, transparent 80%);
+            animation: shimmer 1.2s linear infinite;
+        }
+
+        @keyframes shimmer {
+            from {
+                transform: translateX(-100%)
+            }
+
+            to {
+                transform: translateX(200%)
+            }
+        }
+
+        /* ── Alphabet Journey Track ── */
+        .journey-wrap {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            opacity: 0;
+            transition: opacity .4s;
+        }
+
+        .journey-wrap.vis {
+            opacity: 1;
+        }
+
+        .journey-label {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--muted);
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .journey-label span {
+            color: var(--yellow);
+        }
+
+        /* The sliding track */
+        .track-outer {
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid rgba(89, 242, 255, 0.15);
+            border-radius: 10px;
+            background: rgba(5, 8, 15, 0.8);
+            position: relative;
+            height: 72px;
+        }
+
+        /* Left/right fade masks */
+        .track-outer::before,
+        .track-outer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 80px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .track-outer::before {
+            left: 0;
+            background: linear-gradient(to right, rgba(5, 8, 15, 1), transparent);
+        }
+
+        .track-outer::after {
+            right: 0;
+            background: linear-gradient(to left, rgba(5, 8, 15, 1), transparent);
+        }
+
+        /* Center reticle */
+        .reticle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            border-left: 1px solid rgba(255, 229, 102, 0.6);
+            border-right: 1px solid rgba(255, 229, 102, 0.6);
+            background: rgba(255, 229, 102, 0.05);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .reticle::before,
+        .reticle::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--yellow);
+            box-shadow: 0 0 10px var(--yellow);
+        }
+
+        .reticle::before {
+            top: -3px;
+        }
+
+        .reticle::after {
+            bottom: -3px;
+        }
+
+        /* The scrolling tape */
+        .track-inner {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            will-change: transform;
+            /* JS controls translateX */
+        }
+
+        .alpha-cell {
+            width: 60px;
+            height: 72px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            font-family: var(--mono);
+            font-size: 22px;
+            color: var(--muted);
+            transition: color .2s;
+            position: relative;
+        }
+
+        .alpha-cell .alpha-pos {
+            font-size: 8px;
+            color: rgba(74, 96, 122, 0.6);
+            letter-spacing: .1em;
+        }
+
+        .alpha-cell.src-lit {
+            color: var(--yellow);
+            text-shadow: 0 0 16px rgba(255, 229, 102, 0.8);
+        }
+
+        .alpha-cell.dst-lit {
+            color: var(--cyan);
+            text-shadow: 0 0 16px rgba(89, 242, 255, 0.8);
+        }
+
+        /* Arrow connector */
+        .arrow-line {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            opacity: 0;
+            transition: opacity .4s;
+            width: 100%;
+        }
+
+        .arrow-line.vis {
+            opacity: 1;
+        }
+
+        .arrow-svg {
+            width: 100%;
+            height: 32px;
+            overflow: visible;
+        }
+
+        /* ── Output word ── */
+        .output-wrap {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .output-label {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--muted);
+            letter-spacing: .2em;
+            align-self: flex-start;
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .output-label.vis {
+            opacity: 1;
+        }
+
+        .output-chips {
+            display: flex;
+            gap: 8px;
+        }
+
+        .out-chip {
+            width: 52px;
+            height: 58px;
+            border-radius: 10px;
+            border: 1px solid rgba(89, 242, 255, 0.08);
+            background: rgba(5, 8, 15, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            font-family: var(--mono);
+            font-size: 22px;
+            color: transparent;
+            transition: all .4s;
+        }
+
+        .out-chip .ch-idx {
+            font-size: 8px;
+            color: var(--muted);
+        }
+
+        .out-chip.landed {
+            color: var(--cyan);
+            border-color: rgba(89, 242, 255, 0.5);
+            box-shadow: 0 0 20px rgba(89, 242, 255, 0.3);
+            animation: landIn .5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes landIn {
+            from {
+                transform: scale(.7) translateY(-10px);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ── Info panel ── */
+        .info-panel {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            background: rgba(5, 8, 15, 0.6);
+            border: 1px solid rgba(89, 242, 255, 0.12);
+            border-radius: 12px;
+            padding: 14px 18px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity .5s, transform .5s;
+        }
+
+        .info-panel.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .info-title {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--yellow);
+            letter-spacing: .22em;
+            margin-bottom: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .info-row {
+            background: rgba(5, 8, 15, 0.5);
+            border: 1px solid rgba(89, 242, 255, 0.08);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+        .info-row-label {
+            font-family: var(--mono);
+            font-size: 8px;
+            color: var(--muted);
+            letter-spacing: .18em;
+            margin-bottom: 4px;
+        }
+
+        .info-row-val {
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .1em;
+        }
+
+        .info-row-val.c {
+            color: var(--cyan);
+        }
+
+        .info-row-val.y {
+            color: var(--yellow);
+        }
+
+        .formula {
+            grid-column: 1/-1;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text);
+            line-height: 1.7;
+            background: rgba(5, 8, 15, 0.8);
+            border: 1px solid rgba(89, 242, 255, 0.12);
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+
+        .formula em {
+            color: var(--cyan);
+            font-style: normal;
+        }
+
+        .formula strong {
+            color: var(--yellow);
+        }
+
+        /* ── Footer ── */
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-top: 1px solid rgba(148, 163, 184, 0.34);
+            background: rgba(2, 6, 23, 0.74);
+        }
+
+        .foot-btn {
+            font-family: var(--sans);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            padding: 7px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(89, 242, 255, 0.25);
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .foot-btn:hover {
+            color: var(--text);
+            border-color: rgba(89, 242, 255, 0.5);
+        }
+
+        .foot-btn.primary {
+            color: var(--cyan);
+            background: rgba(89, 242, 255, 0.06);
+            border-color: rgba(89, 242, 255, 0.4);
+        }
+
+        .foot-btn.primary:hover {
+            background: rgba(89, 242, 255, 0.12);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.25);
+        }
+    </style>
+    <script src="global_controls.js"></script>
+</head>
+
+<body>
+
+    <div class="card">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <span class="badge">CH 01</span>
+                <div>
+                    <div class="topbar-title">Caesar Cipher</div>
+                    <div class="topbar-sub">Level 2 - SHIFT BY ± X</div>
+                </div>
+            </div>
+            <div class="live">Auto Demo</div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+            <span class="ctrl-label" style="display:none;">WORD</span>
+            <input class="word-input" id="wordInput" type="hidden" value="CIPHER" />
+
+            <span class="ctrl-label" style="margin-left:6px">Shift</span>
+            <div class="shift-wrap">
+                <button class="shift-btn" id="shiftDown">−</button>
+                <div class="shift-display" id="shiftDisplay">+3</div>
+                <button class="shift-btn" id="shiftUp">+</button>
+            </div>
+
+            <button class="go-btn" id="goBtn">▶ Encode</button>
+        </div>
+
+        <!-- STAGE -->
+        <div class="stage" id="stage">
+
+            <div class="status" id="status">
+                <span id="statusTxt">Ready to encode</span><span class="blink"> ▌</span>
+            </div>
+
+            <!-- Input chips -->
+            <div class="word-display" id="wordDisplay"></div>
+
+            <!-- Journey track -->
+            <div class="journey-wrap" id="journeyWrap">
+                <div class="journey-label">
+                    Shifting: <span id="journeyLetterLabel">–</span>
+                    &nbsp;→&nbsp; position slides <span id="journeyShiftLabel">+3</span> steps
+                </div>
+                <div class="track-outer" id="trackOuter">
+                    <div class="reticle"></div>
+                    <div class="track-inner" id="trackInner"></div>
+                </div>
+            </div>
+
+            <!-- Arrow -->
+            <div class="arrow-line" id="arrowLine">
+                <svg class="arrow-svg" id="arrowSvg" viewBox="0 0 600 32" preserveAspectRatio="none">
+                    <defs>
+                        <marker id="arrowHead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                            <path d="M0,0 L8,4 L0,8 L2,4 Z" fill="#59f2ff" opacity=".7" />
+                        </marker>
+                    </defs>
+                    <line id="arrowLineEl" x1="0" y1="16" x2="0" y2="16" stroke="#59f2ff" stroke-width="1.5"
+                        stroke-opacity=".7" marker-end="url(#arrowHead)" style="transition: x2 .6s ease-in-out" />
+                </svg>
+            </div>
+
+            <!-- Output chips -->
+            <div class="output-wrap">
+                <div class="output-label" id="outputLabel">Output · Encoded String</div>
+                <div class="output-chips" id="outputChips"></div>
+            </div>
+
+            <!-- Info panel -->
+            <div class="info-panel" id="infoPanel">
+                <div class="info-title">↳ CIPHER BREAKDOWN</div>
+                <div class="info-grid" id="infoGrid"></div>
+            </div>
+
+        </div><!-- /stage -->
+
+        <!-- FOOTER -->
+        <div class="footer">
+
+        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
+      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
+      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    </div>
+            <button class="foot-btn" id="replayBtn">↩ Replay</button>
+            <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
+        </div>
+
+    </div>
+
+    <script>
+let speedMultiplier = 1.0;
+        /* ── Config ──────────────────────────────────────── */
+        const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        // We build a 3x alphabet so the tape can scroll anywhere without gaps
+        const TAPE = ALPHA + ALPHA + ALPHA;
+        const CELL_W = 60;
+        let shift = 3;
+        let running = false;
+        let ct = { cancelled: false };
+
+        /* ── DOM ──────────────────────────────────────────── */
+        const wordInput = document.getElementById('wordInput');
+        const shiftDisplay = document.getElementById('shiftDisplay');
+        const shiftDown = document.getElementById('shiftDown');
+        const shiftUp = document.getElementById('shiftUp');
+        const goBtn = document.getElementById('goBtn');
+        const replayBtn = document.getElementById('replayBtn');
+        const statusTxt = document.getElementById('statusTxt');
+        const wordDisplay = document.getElementById('wordDisplay');
+        const journeyWrap = document.getElementById('journeyWrap');
+        const journeyLetter = document.getElementById('journeyLetterLabel');
+        const journeyShift = document.getElementById('journeyShiftLabel');
+        const trackInner = document.getElementById('trackInner');
+        const trackOuter = document.getElementById('trackOuter');
+        const arrowLine = document.getElementById('arrowLine');
+        const arrowLineEl = document.getElementById('arrowLineEl');
+        const outputLabel = document.getElementById('outputLabel');
+        const outputChips = document.getElementById('outputChips');
+        const infoPanel = document.getElementById('infoPanel');
+        const infoGrid = document.getElementById('infoGrid');
+
+        /* ── Helpers ──────────────────────────────────────── */
+        const sleep = (ms) => new Promise(r => {
+            const id = setTimeout(r, ms / speedMultiplier);
+            ct._id = id;
+        });
+        const vis = (el, on = true) => { if (on) el.classList.add('vis'); else el.classList.remove('vis'); }
+        const setStatus = t => { statusTxt.textContent = t; }
+
+        /* ── Shift controls ───────────────────────────────── */
+        function updateShiftDisplay() {
+            shiftDisplay.textContent = (shift >= 0 ? '+' : '') + shift;
+            journeyShift.textContent = (shift >= 0 ? '+' : '') + shift;
+        }
+        shiftDown.addEventListener('click', () => { if (shift > -25) { shift--; updateShiftDisplay(); } });
+        shiftUp.addEventListener('click', () => { if (shift < 25) { shift++; updateShiftDisplay(); } });
+
+        /* ── Build tape ───────────────────────────────────── */
+        function buildTape() {
+            trackInner.innerHTML = '';
+            for (let i = 0; i < TAPE.length; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'alpha-cell';
+                cell.id = 'tcell' + i;
+                // Position in alphabet (0-25)
+                const pos = i % 26;
+                cell.innerHTML = `<span>${TAPE[i]}</span><span class="alpha-pos">${pos}</span>`;
+                trackInner.appendChild(cell);
+            }
+            // Start tape so that ALPHA[0] is centered (tape begins at ALPHA, index 26 = second set)
+            // Center offset: trackOuter center = outerWidth/2, cell 0 should start at index 26 (second ALPHA)
+            const outerCenter = trackOuter.offsetWidth / 2;
+            trackInner.style.transform = `translateX(0px)`;
+        }
+
+        /* ── Position tape so letter at tapeIdx is centered ── */
+        function setTapePos(tapeIdx, animated) {
+            const outerCenter = trackOuter.offsetWidth / 2;
+            const target = outerCenter - (tapeIdx * CELL_W) - (CELL_W / 2);
+            trackInner.style.transition = animated
+                ? `transform ${0.9 + Math.abs(shift) * 0.04}s cubic-bezier(0.25,0.1,0.25,1)`
+                : 'none';
+            trackInner.style.transform = `translateX(${target}px)`;
+        }
+
+        function highlightCell(tapeIdx, cls) {
+            // Clear old
+            document.querySelectorAll('.alpha-cell').forEach(c => {
+                c.classList.remove('src-lit', 'dst-lit');
+            });
+            const cell = document.getElementById('tcell' + tapeIdx);
+            if (cell) cell.classList.add(cls);
+        }
+
+        /* ── Build word chips ─────────────────────────────── */
+        function buildWordChips(word) {
+            wordDisplay.innerHTML = '';
+            outputChips.innerHTML = '';
+            for (let i = 0; i < word.length; i++) {
+                // Input chip
+                const chip = document.createElement('div');
+                chip.className = 'letter-chip';
+                chip.id = 'wchip' + i;
+                chip.innerHTML = `<span>${word[i]}</span><span class="ch-idx">[${i}]</span>`;
+                chip.style.opacity = '0';
+                wordDisplay.appendChild(chip);
+
+                // Output chip
+                const oc = document.createElement('div');
+                oc.className = 'out-chip';
+                oc.id = 'ochip' + i;
+                oc.innerHTML = `<span id="ochr${i}"> </span><span class="ch-idx">[${i}]</span>`;
+                outputChips.appendChild(oc);
+            }
+        }
+
+        /* ── Main ─────────────────────────────────────────── */
+        async function runDemo() {
+            if (running) { ct.cancelled = true; await sleep(80); }
+            ct = { cancelled: false };
+            running = true;
+            goBtn.disabled = true;
+
+            const raw = 'CIPHER';
+            wordInput.value = raw;
+            const word = raw.split('');
+            const n = word.length;
+
+            // Reset
+            vis(journeyWrap, false);
+            vis(arrowLine, false);
+            vis(infoPanel, false);
+            outputLabel.classList.remove('vis');
+            infoGrid.innerHTML = '';
+            arrowLineEl.setAttribute('x2', '0');
+
+            buildTape();
+            buildWordChips(raw);
+
+            // ── Fade in input chips staggered
+            setStatus('Initializing encoder…');
+            for (let i = 0; i < n; i++) {
+                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+                await sleep(120);
+                const chip = document.getElementById('wchip' + i);
+                if (chip) {
+                    chip.style.transition = 'opacity .4s, transform .4s';
+                    chip.style.opacity = '1';
+                    chip.style.transform = 'translateY(0)';
+                }
+            }
+
+            await sleep(600);
+            if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+            // ── Process each letter
+            const results = [];
+            vis(journeyWrap, true);
+            vis(outputLabel, true);
+
+            for (let i = 0; i < n; i++) {
+                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+                const ch = word[i];
+                const srcIdx = ALPHA.indexOf(ch);           // 0-25
+                const dstIdx = ((srcIdx + shift) % 26 + 26) % 26;
+                const dstCh = ALPHA[dstIdx];
+                results.push({ ch, srcIdx, dstIdx, dstCh });
+
+                // Highlight active input chip
+                document.querySelectorAll('.letter-chip').forEach(c => c.classList.remove('active', 'done'));
+                const activeChip = document.getElementById('wchip' + i);
+                if (activeChip) activeChip.classList.add('active');
+
+                // Update journey label
+                journeyLetter.textContent = `"${ch}" (pos ${srcIdx})`;
+                setStatus(`Encoding "${ch}" → shifting ${shift >= 0 ? '+' : ''}${shift} positions…`);
+
+                // Snap tape to source letter (second ALPHA, so tape index = 26 + srcIdx)
+                const tapeSrcIdx = 26 + srcIdx;
+                setTapePos(tapeSrcIdx, false);
+
+                await sleep(60);
+                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+                // Light up source
+                highlightCell(tapeSrcIdx, 'src-lit');
+                await sleep(500);
+                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+                // Animate tape to destination (tapeDstIdx can go left or right naturally)
+                let tapeDstIdx = tapeSrcIdx + shift;
+                // Wrap within valid range
+                if (tapeDstIdx < 0) tapeDstIdx += 26;
+                if (tapeDstIdx >= TAPE.length) tapeDstIdx -= 26;
+
+                setTapePos(tapeDstIdx, true);
+
+                // Light destination after travel time
+                const travelMs = 900 + Math.min(Math.abs(shift), 13) * 50;
+                await sleep(travelMs);
+                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+                highlightCell(tapeDstIdx, 'dst-lit');
+                await sleep(300);
+                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+                // Draw arrow expanding across
+                vis(arrowLine, true);
+                await sleep(50);
+                const stageW = document.getElementById('stage').offsetWidth - 40;
+                arrowLineEl.setAttribute('x2', stageW);
+                await sleep(700);
+                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+                // Land output letter
+                const oc = document.getElementById('ochip' + i);
+                const ochr = document.getElementById('ochr' + i);
+                if (oc && ochr) {
+                    ochr.textContent = dstCh;
+                    oc.classList.add('landed');
+                }
+
+                await sleep(400);
+                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+
+                // Shrink arrow back, mark chip done
+                arrowLineEl.setAttribute('x2', '0');
+                vis(arrowLine, false);
+                if (activeChip) { activeChip.classList.remove('active'); activeChip.classList.add('done'); }
+
+                await sleep(300);
+                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+            }
+
+            /* ── Final summary ── */
+            setStatus(`Encoding complete · "${raw}" → "${results.map(r => r.dstCh).join('')}"`);
+            vis(journeyWrap, false);
+
+            // Pulse all output chips
+            for (let i = 0; i < n; i++) {
+                const oc = document.getElementById('ochip' + i);
+                if (oc) oc.style.boxShadow = '0 0 24px rgba(89,242,255,0.7)';
+            }
+            await sleep(300);
+            for (let i = 0; i < n; i++) {
+                const oc = document.getElementById('ochip' + i);
+                if (oc) oc.style.boxShadow = '0 0 10px rgba(89,242,255,0.25)';
+            }
+
+            // Build info panel
+            infoGrid.innerHTML = `
+    <div class="info-row">
+      <div class="info-row-label">INPUT</div>
+      <div class="info-row-val y">${raw}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-row-label">OUTPUT</div>
+      <div class="info-row-val c">${results.map(r => r.dstCh).join('')}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-row-label">SHIFT APPLIED</div>
+      <div class="info-row-val y">${shift >= 0 ? '+' : ''}${shift} positions</div>
+    </div>
+    <div class="info-row">
+      <div class="info-row-label">LETTER MAP</div>
+      <div class="info-row-val c" style="font-size:10px;letter-spacing:.06em">${results.map(r => `${r.ch}→${r.dstCh}`).join('  ')}</div>
+    </div>
+    <div class="formula">
+      <em>Formula:</em>&nbsp; encoded = (<strong>letter_pos</strong> + <em>shift</em>) mod 26<br>
+      <em>Example:</em>&nbsp; '${results[0].ch}' is pos ${results[0].srcIdx} &nbsp;→&nbsp; (${results[0].srcIdx} + ${shift < 0 ? '(' : ''}${shift}${shift < 0 ? ')' : ''}) mod 26 = ${results[0].dstIdx} &nbsp;→&nbsp; '<em>${results[0].dstCh}</em>'
+    </div>
+  `;
+            vis(infoPanel, true);
+
+            running = false;
+            goBtn.disabled = false;
+        }
+
+        /* ── Events ───────────────────────────────────────── */
+        goBtn.addEventListener('click', () => runDemo());
+        replayBtn.addEventListener('click', () => runDemo());
+        wordInput.addEventListener('keydown', e => { if (e.key === 'Enter') runDemo(); });
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            alert('Next cipher coming soon in the full game!');
+        });
+
+        /* ── Init ─────────────────────────────────────────── */
+        updateShiftDisplay();
+        runDemo();
+    
+        const sDisplay = document.getElementById("speedDisplay");
+  if (document.getElementById("speedUp")) {
+    document.getElementById("speedUp").addEventListener("click", () => {
+      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+    document.getElementById("speedDown").addEventListener("click", () => {
+      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+  }
+
+  const nextBtn = document.getElementById("nextBtn");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
+      if (match) {
+        let ch = parseInt(match[1]);
+        let lvl = parseInt(match[2]);
+        lvl++;
+        if (lvl > 5) { lvl = 1; ch++; }
+        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
+      }
+    });
+  }
+</script>
+</body>
+
+</html>

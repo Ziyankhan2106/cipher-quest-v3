@@ -355,7 +355,7 @@ def auth_register():
         return jsonify({"error": "Invalid token or username."}), 400
 
     try:
-        decoded = fb_auth.verify_id_token(id_token, clock_skew_seconds=10)
+        decoded = fb_auth.verify_id_token(id_token, clock_skew_seconds=60)
         uid = decoded["uid"]
         user_ref = get_db().collection("users").document(uid)
         existing = user_ref.get()
@@ -440,15 +440,32 @@ def auth_login():
         return jsonify({"error": "Missing idToken."}), 400
 
     try:
-        decoded = fb_auth.verify_id_token(id_token, clock_skew_seconds=10)
+        decoded = fb_auth.verify_id_token(id_token, clock_skew_seconds=60)
         uid = decoded["uid"]
         user_ref = get_db().collection("users").document(uid)
         existing = user_ref.get()
         if not existing.exists:
-            return (
-                jsonify({"error": "No account found. Please register first."}),
-                404,
-            )
+            email = decoded.get("email")
+            base_name = (decoded.get("name") or (email.split("@")[0] if email else uid[:8]) or uid[:8]).strip()
+            username = "".join(ch for ch in base_name if ch.isalnum() or ch in ["_", " "]).strip()
+            if len(username) < 3:
+                username = f"User_{uid[:8]}"
+
+            profile = {
+                "uid": uid,
+                "username": username[:24],
+                "usernameLower": username[:24].lower(),
+                "email": email,
+                "xp": 0,
+                "level": 1,
+                "gameData": {
+                    "tutorialStepIndex": 0,
+                    "tutorialFinished": False,
+                },
+                "createdAt": firestore.SERVER_TIMESTAMP,
+                "updatedAt": firestore.SERVER_TIMESTAMP,
+            }
+            user_ref.set(profile)
 
         token, expires_at = _create_session(uid)
         resp = make_response(jsonify({"ok": True}))
@@ -1189,6 +1206,9 @@ def mp_accept_invite(invite_id):
     from_uid = inv.get("fromUid")
     if not from_uid:
         return jsonify({"error": "Invalid invite."}), 400
+
+    from_doc = get_db().collection("users").document(from_uid).get()
+    my_doc = get_db().collection("users").document(my_uid).get()
 
     from_level = (from_doc.to_dict() or {}).get("level", 1) if from_doc.exists else 1
     my_level = (my_doc.to_dict() or {}).get("level", 1) if my_doc.exists else 1

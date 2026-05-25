@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CipherQuest | Level 2.2 | Alternating Cipher</title>
+  <style>
+    :root {
+      --ap: #59f2ff;
+      --aw: #ffdd57;
+      --ag: #22c55e;
+      --tm: #f4f7ff;
+      --mu: #94a3b8;
+      --sp: rgba(15, 23, 42, 0.78);
+      --si: rgba(2, 6, 23, 0.72);
+      --bs: rgba(148, 163, 184, 0.4);
+      --bb: rgba(148, 163, 184, 0.55);
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font);
+      color: var(--tm);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: radial-gradient(circle at top, #1b243b 0%, #020617 55%);
+      overflow-x: hidden;
+      cursor: url('/assets/mouse.png') 4 4, auto;
+    }
+
+    /* Global cursor enforcement */
+    * {
+      cursor: inherit !important;
+    }
+
+    a, button, [role="button"], input, textarea, select {
+      cursor: url('/assets/mouse.png') 4 4, pointer !important;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 55% 35% at 0% 100%, rgba(89, 242, 255, 0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 45% 30% at 100% 0%, rgba(255, 221, 87, 0.08) 0%, transparent 70%);
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px,
+          rgba(89, 242, 255, 0.012) 3px, rgba(89, 242, 255, 0.012) 4px);
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 780px;
+      background: var(--sp);
+      border: 1px solid var(--bs);
+      border-radius: 18px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 22px;
+      background: var(--si);
+      border-bottom: 1px solid var(--bs);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 221, 87, 0.6);
+      background: rgba(2, 6, 23, 0.3);
+      color: var(--aw);
+    }
+
+    .topbar-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .topbar-sub {
+      font-size: 11px;
+      color: var(--mu);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+
+    .live-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ag);
+    }
+
+    .live-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ag);
+      box-shadow: 0 0 8px var(--ag);
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .35
+      }
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding: 11px 22px;
+      background: rgba(2, 6, 23, 0.45);
+      border-bottom: 1px solid var(--bs);
+    }
+
+    .ctrl-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-lbl {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--mu);
+    }
+
+    .shift-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--si);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .shift-btn.sx {
+      border: 1px solid rgba(89, 242, 255, 0.3);
+      color: var(--ap);
+    }
+
+    .shift-btn.sy {
+      border: 1px solid rgba(255, 221, 87, 0.3);
+      color: var(--aw);
+    }
+
+    .shift-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .shift-num {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 17px;
+      font-weight: 700;
+      min-width: 42px;
+      text-align: center;
+    }
+
+    .shift-num.sx {
+      color: var(--ap);
+    }
+
+    .shift-num.sy {
+      color: var(--aw);
+    }
+
+    .divider-dot {
+      color: rgba(148, 163, 184, 0.3);
+      font-size: 20px;
+    }
+
+    .stage {
+      padding: 22px 22px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      min-height: 520px;
+    }
+
+    .stage::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px,
+          rgba(89, 242, 255, 0.008) 3px, rgba(89, 242, 255, 0.008) 4px);
+    }
+
+    .status {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--ap);
+      min-height: 18px;
+      align-self: flex-start;
+      position: relative;
+      z-index: 2;
+    }
+
+    .blink {
+      animation: blink .9s step-end infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0
+      }
+    }
+
+    .word-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .wchip {
+      width: 72px;
+      height: 80px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: var(--si);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.35s;
+      opacity: 0;
+    }
+
+    .wchip .wletter {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--tm);
+      transition: all .35s;
+    }
+
+    .wchip .widx {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--mu);
+      transition: color .35s;
+    }
+
+    .wchip .wtrack {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: transparent;
+      transition: all .35s;
+      position: absolute;
+      bottom: 7px;
+    }
+
+    .wchip.active-x {
+      border-color: var(--ap);
+      box-shadow: 0 0 24px rgba(89, 242, 255, 0.55), inset 0 0 14px rgba(89, 242, 255, 0.08);
+    }
+
+    .wchip.active-x .wletter {
+      color: var(--ap);
+      text-shadow: 0 0 16px rgba(89, 242, 255, 0.9);
+    }
+
+    .wchip.active-x .widx {
+      color: rgba(89, 242, 255, 0.6);
+    }
+
+    .wchip.active-x .wtrack {
+      color: rgba(89, 242, 255, 0.7);
+    }
+
+    .wchip.active-x::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(89, 242, 255, .1) 60%, transparent 80%);
+      animation: shimmer 1s linear infinite;
+    }
+
+    .wchip.active-y {
+      border-color: var(--aw);
+      box-shadow: 0 0 24px rgba(255, 221, 87, 0.55), inset 0 0 14px rgba(255, 221, 87, 0.08);
+    }
+
+    .wchip.active-y .wletter {
+      color: var(--aw);
+      text-shadow: 0 0 16px rgba(255, 221, 87, 0.9);
+    }
+
+    .wchip.active-y .widx {
+      color: rgba(255, 221, 87, 0.6);
+    }
+
+    .wchip.active-y .wtrack {
+      color: rgba(255, 221, 87, 0.7);
+    }
+
+    .wchip.active-y::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255, 221, 87, .1) 60%, transparent 80%);
+      animation: shimmer 1s linear infinite;
+    }
+
+    @keyframes shimmer {
+      from {
+        transform: translateX(-120%)
+      }
+
+      to {
+        transform: translateX(200%)
+      }
+    }
+
+    .wchip.enc-x {
+      border-color: rgba(89, 242, 255, .4);
+    }
+
+    .wchip.enc-x .wletter {
+      color: rgba(89, 242, 255, .65);
+    }
+
+    .wchip.enc-y {
+      border-color: rgba(255, 221, 87, .4);
+    }
+
+    .wchip.enc-y .wletter {
+      color: rgba(255, 221, 87, .65);
+    }
+
+    .beat-meter {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .beat-block {
+      flex: 1;
+      height: 46px;
+      border-radius: 10px;
+      background: var(--si);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s;
+    }
+
+    .beat-block.on-x {
+      border-color: rgba(89, 242, 255, 0.6);
+      background: rgba(89, 242, 255, 0.07);
+      box-shadow: 0 0 18px rgba(89, 242, 255, 0.3);
+    }
+
+    .beat-block.on-y {
+      border-color: rgba(255, 221, 87, 0.6);
+      background: rgba(255, 221, 87, 0.07);
+      box-shadow: 0 0 18px rgba(255, 221, 87, 0.3);
+    }
+
+    .beat-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(148, 163, 184, 0.2);
+      transition: all .3s;
+    }
+
+    .beat-block.on-x .beat-dot {
+      background: var(--ap);
+      box-shadow: 0 0 8px var(--ap);
+    }
+
+    .beat-block.on-y .beat-dot {
+      background: var(--aw);
+      box-shadow: 0 0 8px var(--aw);
+    }
+
+    .beat-text {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--mu);
+      transition: color .3s;
+    }
+
+    .beat-block.on-x .beat-text {
+      color: var(--ap);
+    }
+
+    .beat-block.on-y .beat-text {
+      color: var(--aw);
+    }
+
+    .beat-shift {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--mu);
+      transition: all .3s;
+    }
+
+    .beat-block.on-x .beat-shift {
+      color: var(--ap);
+    }
+
+    .beat-block.on-y .beat-shift {
+      color: var(--aw);
+    }
+
+    .beat-sep {
+      font-size: 22px;
+      color: rgba(148, 163, 184, 0.2);
+      transition: all .35s;
+    }
+
+    .beat-sep.fx {
+      color: var(--ap);
+      text-shadow: 0 0 14px rgba(89, 242, 255, .8);
+    }
+
+    .beat-sep.fy {
+      color: var(--aw);
+      text-shadow: 0 0 14px rgba(255, 221, 87, .8);
+    }
+
+    .tracks {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .track-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .track-lbl {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      width: 50px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .track-lbl.lx {
+      color: var(--ap);
+    }
+
+    .track-lbl.ly {
+      color: var(--aw);
+    }
+
+    .tape-outer {
+      flex: 1;
+      overflow: hidden;
+      border-radius: 8px;
+      height: 48px;
+      background: var(--si);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      position: relative;
+      transition: border-color .3s, box-shadow .3s;
+    }
+
+    .tape-outer.atx {
+      border-color: rgba(89, 242, 255, 0.5);
+      box-shadow: 0 0 14px rgba(89, 242, 255, 0.2);
+    }
+
+    .tape-outer.aty {
+      border-color: rgba(255, 221, 87, 0.5);
+      box-shadow: 0 0 14px rgba(255, 221, 87, 0.2);
+    }
+
+    .tape-outer::before,
+    .tape-outer::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 48px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .tape-outer::before {
+      left: 0;
+      background: linear-gradient(to right, var(--si), transparent);
+    }
+
+    .tape-outer::after {
+      right: 0;
+      background: linear-gradient(to left, var(--si), transparent);
+    }
+
+    .reticle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .rx {
+      border-left: 1px solid rgba(89, 242, 255, 0.65);
+      border-right: 1px solid rgba(89, 242, 255, 0.65);
+      background: rgba(89, 242, 255, 0.05);
+    }
+
+    .ry {
+      border-left: 1px solid rgba(255, 221, 87, 0.65);
+      border-right: 1px solid rgba(255, 221, 87, 0.65);
+      background: rgba(255, 221, 87, 0.05);
+    }
+
+    .reticle::before,
+    .reticle::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+
+    .rx::before,
+    .rx::after {
+      background: var(--ap);
+      box-shadow: 0 0 8px var(--ap);
+    }
+
+    .ry::before,
+    .ry::after {
+      background: var(--aw);
+      box-shadow: 0 0 8px var(--aw);
+    }
+
+    .reticle::before {
+      top: -2px;
+    }
+
+    .reticle::after {
+      bottom: -2px;
+    }
+
+    .tape-inner {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      will-change: transform;
+    }
+
+    .tcell {
+      width: 40px;
+      height: 48px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 14px;
+      color: var(--mu);
+      transition: color .2s;
+    }
+
+    .tcell .tp {
+      font-size: 7px;
+      color: rgba(148, 163, 184, 0.35);
+    }
+
+    .tsrc-x {
+      color: var(--ap);
+      text-shadow: 0 0 12px rgba(89, 242, 255, .8);
+    }
+
+    .tsrc-y {
+      color: var(--aw);
+      text-shadow: 0 0 12px rgba(255, 221, 87, .8);
+    }
+
+    .tdst-x {
+      color: var(--ap);
+      text-shadow: 0 0 16px rgba(89, 242, 255, 1);
+      font-weight: 700;
+    }
+
+    .tdst-y {
+      color: var(--aw);
+      text-shadow: 0 0 16px rgba(255, 221, 87, 1);
+      font-weight: 700;
+    }
+
+    .output-wrap {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .out-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--mu);
+    }
+
+    .opill {
+      font-size: 10px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      border: 1px solid;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .opill.px {
+      color: rgba(89, 242, 255, .8);
+      border-color: rgba(89, 242, 255, .3);
+      background: rgba(89, 242, 255, .06);
+    }
+
+    .opill.py {
+      color: rgba(255, 221, 87, .8);
+      border-color: rgba(255, 221, 87, .3);
+      background: rgba(255, 221, 87, .06);
+    }
+
+    .opill.pf {
+      color: rgba(34, 197, 94, .85);
+      border-color: rgba(34, 197, 94, .35);
+      background: rgba(34, 197, 94, .06);
+    }
+
+    .out-chips {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .ochip {
+      width: 72px;
+      height: 80px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      background: var(--si);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 32px;
+      color: transparent;
+      transition: all .4s;
+    }
+
+    .ochip .oidx {
+      font-size: 9px;
+      color: var(--mu);
+    }
+
+    .ochip.lx {
+      color: var(--ap);
+      border-color: rgba(89, 242, 255, .5);
+      box-shadow: 0 0 20px rgba(89, 242, 255, .35);
+      animation: landIn .5s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .ochip.ly {
+      color: var(--aw);
+      border-color: rgba(255, 221, 87, .5);
+      box-shadow: 0 0 20px rgba(255, 221, 87, .35);
+      animation: landIn .5s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes landIn {
+      from {
+        transform: scale(.6) translateY(-10px);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1) translateY(0);
+        opacity: 1
+      }
+    }
+
+    .map-row {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .5s, transform .5s;
+    }
+
+    .map-row.vis {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .map-pill {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: var(--si);
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 12px;
+    }
+
+    .map-pill.mx {
+      border: 1px solid rgba(89, 242, 255, .3);
+    }
+
+    .map-pill.my {
+      border: 1px solid rgba(255, 221, 87, .3);
+    }
+
+    .mp-from {
+      color: var(--mu);
+    }
+
+    .mp-arr {
+      color: rgba(148, 163, 184, 0.25);
+    }
+
+    .mp-to-x {
+      color: var(--ap);
+      font-weight: 700;
+    }
+
+    .mp-to-y {
+      color: var(--aw);
+      font-weight: 700;
+    }
+
+    .mp-shift {
+      font-size: 9px;
+      color: var(--mu);
+      margin-left: 2px;
+    }
+
+    .info-panel {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      background: var(--si);
+      border: 1px solid var(--bs);
+      border-radius: 12px;
+      padding: 14px 18px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .5s, transform .5s;
+    }
+
+    .info-panel.vis {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .info-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--aw);
+      margin-bottom: 10px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .irow {
+      background: rgba(2, 6, 23, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .irow-lbl {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--mu);
+      margin-bottom: 4px;
+    }
+
+    .irow-val {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .formula {
+      grid-column: 1/-1;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 11px;
+      color: var(--mu);
+      line-height: 1.85;
+      background: rgba(2, 6, 23, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .fx {
+      color: var(--ap);
+    }
+
+    .fy {
+      color: var(--aw);
+    }
+
+    .fg {
+      color: var(--ag);
+    }
+
+    .fm {
+      color: var(--tm);
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 22px;
+      background: var(--si);
+      border-top: 1px solid var(--bs);
+    }
+
+    .foot-btn {
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--bs);
+      background: transparent;
+      color: var(--mu);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .foot-btn:hover {
+      border-color: var(--bb);
+      color: var(--tm);
+    }
+
+    .foot-btn.primary {
+      color: var(--ap);
+      border-color: rgba(89, 242, 255, .4);
+      background: rgba(89, 242, 255, .05);
+    }
+
+    .foot-btn.primary:hover {
+      background: rgba(89, 242, 255, .1);
+      box-shadow: 0 0 14px rgba(89, 242, 255, .25);
+    }
+
+    .replay-tag {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--mu);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rtick {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(148, 163, 184, 0.3);
+      animation: rtick 1s step-end infinite;
+    }
+
+    @keyframes rtick {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .2
+      }
+    }
+  </style>
+    <script src="global_controls.js"></script>
+</head>
+
+<body>
+  <div class="card">
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="badge">CH 02</span>
+        <div>
+          <div class="topbar-title">Alternating Cipher</div>
+          <div class="topbar-sub">Level 2 - Even +X · Odd +Y</div>
+        </div>
+      </div>
+      <div class="live-tag">Auto Demo</div>
+    </div>
+    <div class="controls">
+      <div class="ctrl-group">
+        <span class="ctrl-lbl">Shift X</span>
+        <button class="shift-btn sx" id="xDown">−</button>
+        <div class="shift-num sx" id="xVal">+3</div>
+        <button class="shift-btn sx" id="xUp">+</button>
+        <span class="ctrl-lbl" style="margin-left:4px;font-size:10px;color:rgba(89,242,255,0.45)">even pos</span>
+      </div>
+      <div class="divider-dot">·</div>
+      <div class="ctrl-group">
+        <span class="ctrl-lbl">Shift Y</span>
+        <button class="shift-btn sy" id="yDown">−</button>
+        <div class="shift-num sy" id="yVal">−2</div>
+        <button class="shift-btn sy" id="yUp">+</button>
+        <span class="ctrl-lbl" style="margin-left:4px;font-size:10px;color:rgba(255,221,87,0.45)">odd pos</span>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="status"><span id="statusTxt">Initializing…</span><span class="blink"> ▌</span></div>
+      <div class="word-row" id="wordRow"></div>
+      <div class="beat-meter">
+        <div class="beat-block" id="bx">
+          <div class="beat-dot"></div>
+          <div class="beat-text">Even · X</div>
+          <div class="beat-shift" id="bxv">+3</div>
+        </div>
+        <div class="beat-sep" id="bsep">⟷</div>
+        <div class="beat-block" id="by">
+          <div class="beat-dot"></div>
+          <div class="beat-text">Odd · Y</div>
+          <div class="beat-shift" id="byv">−2</div>
+        </div>
+      </div>
+      <div class="tracks">
+        <div class="track-row">
+          <span class="track-lbl lx">Track X</span>
+          <div class="tape-outer" id="toX">
+            <div class="reticle rx"></div>
+            <div class="tape-inner" id="tiX"></div>
+          </div>
+        </div>
+        <div class="track-row">
+          <span class="track-lbl ly">Track Y</span>
+          <div class="tape-outer" id="toY">
+            <div class="reticle ry"></div>
+            <div class="tape-inner" id="tiY"></div>
+          </div>
+        </div>
+      </div>
+      <div class="output-wrap">
+        <div class="out-header">
+          <span>Output</span>
+          <span class="opill px">+X even</span>
+          <span style="color:var(--mu);font-size:11px">alternates with</span>
+          <span class="opill py">+Y odd</span>
+          <span style="color:var(--mu);font-size:11px">=</span>
+          <span class="opill pf">encoded</span>
+        </div>
+        <div class="out-chips" id="outChips"></div>
+      </div>
+      <div class="map-row" id="mapRow"></div>
+      <div class="info-panel" id="infoPanel">
+        <div class="info-title">↳ Cipher Breakdown</div>
+        <div class="info-grid" id="infoGrid"></div>
+      </div>
+    </div>
+    <div class="footer">
+
+        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
+      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
+      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    </div>
+      <button class="foot-btn" id="btn-play">Pause</button>
+      <button class="foot-btn" id="btn-step">Step</button>
+      <div class="replay-tag">
+        <div class="rtick"></div><span id="rcd">Replaying in 2s…</span>
+      </div>
+      <button class="foot-btn primary" id="replayNow">▶ Replay Now</button>
+    </div>
+  </div>
+  <div id="flyer"
+    style="position:fixed;z-index:400;pointer-events:none;width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'SF Mono','Fira Code',monospace;font-size:20px;font-weight:700;background:rgba(2,6,23,0.95);opacity:0;">
+  </div>
+  <script>
+let speedMultiplier = 1.0;
+    const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', WORD = 'CIPHER', TW = 40;
+    let shiftX = 3, shiftY = -2, running = false, ct = { cancelled: false }, replayTimer = null, countdown = 2;
+    let isPlaying = true, stepRequested = false;
+    const $ = id => document.getElementById(id);
+    const xDown = $('xDown'), xUp = $('xUp'), xVal = $('xVal');
+    const yDown = $('yDown'), yUp = $('yUp'), yVal = $('yVal');
+    const bx = $('bx'), by = $('by'), bsep = $('bsep'), bxv = $('bxv'), byv = $('byv');
+    const toX = $('toX'), toY = $('toY'), tiX = $('tiX'), tiY = $('tiY');
+    const wordRow = $('wordRow'), outChips = $('outChips'), mapRow = $('mapRow');
+    const infoPanel = $('infoPanel'), infoGrid = $('infoGrid'), statusTxt = $('statusTxt');
+    const flyer = $('flyer'), replayNow = $('replayNow'), rcd = $('rcd');
+
+    const sleep = ms => new Promise(r => { ct._t = setTimeout(r, ms / speedMultiplier); });
+    const vis = (el, on = true) => el.classList.toggle('vis', on);
+    const setStatus = t => statusTxt.textContent = t;
+
+    async function waitForPlaybackStep() {
+      if (ct.cancelled) return;
+      if (isPlaying) {
+        await sleep(2000);
+        return;
+      }
+      setStatus('Paused - press Step to continue.');
+      while (!ct.cancelled && !isPlaying && !stepRequested) {
+        await sleep(80);
+      }
+      if (stepRequested) stepRequested = false;
+    }
+
+    function updateDisplays() {
+      xVal.textContent = (shiftX >= 0 ? '+' : '') + shiftX;
+      yVal.textContent = (shiftY >= 0 ? '+' : '') + shiftY;
+      bxv.textContent = (shiftX >= 0 ? '+' : '') + shiftX;
+      byv.textContent = (shiftY >= 0 ? '+' : '') + shiftY;
+    }
+    function mkShift(axis, dir) {
+      return () => {
+        if (axis === 'x') { if (dir > 0 && shiftX < 25) shiftX++; else if (dir < 0 && shiftX > -25) shiftX--; }
+        else { if (dir > 0 && shiftY < 25) shiftY++; else if (dir < 0 && shiftY > -25) shiftY--; }
+        updateDisplays(); cancelReplay(); kickDemo();
+      };
+    }
+    xDown.addEventListener('click', mkShift('x', -1)); xUp.addEventListener('click', mkShift('x', 1));
+    yDown.addEventListener('click', mkShift('y', -1)); yUp.addEventListener('click', mkShift('y', 1));
+
+    function buildTape(inner) {
+      inner.innerHTML = '';
+      for (let rep = 0; rep < 3; rep++)
+        for (let i = 0; i < 26; i++) {
+          const c = document.createElement('div');
+          c.className = 'tcell'; c.id = inner.id + '-' + (rep * 26 + i);
+          c.innerHTML = `<span>${ALPHA[i]}</span><span class="tp">${i}</span>`;
+          inner.appendChild(c);
+        }
+    }
+    function setTapePos(outer, inner, idx, anim, ms) {
+      const w = outer.offsetWidth || 500;
+      const x = w / 2 - idx * TW - TW / 2;
+      inner.style.transition = anim ? `transform ${ms || 900}ms cubic-bezier(0.25,0.1,0.25,1)` : 'none';
+      inner.style.transform = `translateX(${x}px)`;
+    }
+    function clearHL(inner) { inner.querySelectorAll('.tcell').forEach(c => c.classList.remove('tsrc-x', 'tsrc-y', 'tdst-x', 'tdst-y')); }
+
+    function buildWordChips() {
+      wordRow.innerHTML = '';
+      WORD.split('').forEach((ch, i) => {
+        const c = document.createElement('div'); c.className = 'wchip'; c.id = 'wc-' + i;
+        c.innerHTML = `<span class="wletter" id="wl-${i}">${ch}</span><span class="widx">[${i}] ${i % 2 === 0 ? 'even' : 'odd'}</span><span class="wtrack">${i % 2 === 0 ? 'X' : 'Y'}</span>`;
+        wordRow.appendChild(c);
+      });
+    }
+    function buildOutChips() {
+      outChips.innerHTML = '';
+      WORD.split('').forEach((_, i) => {
+        const c = document.createElement('div'); c.className = 'ochip'; c.id = 'oc-' + i;
+        c.innerHTML = `<span id="ocv-${i}"> </span><span class="oidx">[${i}]</span>`;
+        outChips.appendChild(c);
+      });
+    }
+
+    async function fly(srcEl, dstEl, letter, isX) {
+      if (!srcEl || !dstEl) return;
+      const col = isX ? '#59f2ff' : '#ffdd57', glow = isX ? 'rgba(89,242,255,0.75)' : 'rgba(255,221,87,0.75)';
+      const sr = srcEl.getBoundingClientRect(), dr = dstEl.getBoundingClientRect();
+      flyer.textContent = letter; flyer.style.color = col;
+      flyer.style.border = `2px solid ${col}`; flyer.style.boxShadow = `0 0 18px ${glow}`;
+      flyer.style.transition = 'none'; flyer.style.opacity = '1';
+      flyer.style.left = (sr.left + sr.width / 2 - 22) + 'px'; flyer.style.top = (sr.top + sr.height / 2 - 22) + 'px';
+      await sleep(50); if (ct.cancelled) { flyer.style.opacity = '0'; return; }
+      const tx = dr.left + dr.width / 2 - 22, ty = dr.top + dr.height / 2 - 22;
+      const dist = Math.hypot(tx - (sr.left + sr.width / 2 - 22), ty - (sr.top + sr.height / 2 - 22));
+      const ms = 260 + dist * 0.55;
+      flyer.style.transition = `left ${ms}ms cubic-bezier(0.4,0,0.2,1),top ${ms}ms cubic-bezier(0.4,0,0.2,1)`;
+      flyer.style.left = tx + 'px'; flyer.style.top = ty + 'px';
+      await sleep(ms); flyer.style.opacity = '0';
+    }
+
+    function startReplayCountdown() {
+      countdown = 2; rcd.textContent = `Replaying in ${countdown}s…`;
+      replayTimer = setInterval(() => {
+        countdown--;
+        if (countdown > 0) { rcd.textContent = `Replaying in ${countdown}s…`; }
+        else { clearInterval(replayTimer); rcd.textContent = 'Replaying…'; kickDemo(); }
+      }, 1000 / speedMultiplier);
+    }
+    function cancelReplay() { if (replayTimer) { clearInterval(replayTimer); replayTimer = null; } rcd.textContent = ''; }
+
+    async function runDemo() {
+      if (running) { ct.cancelled = true; await sleep(130); }
+      ct = { cancelled: false }; running = true;
+      const n = WORD.length;
+      const result = WORD.split('').map((ch, i) => {
+        const s = i % 2 === 0 ? shiftX : shiftY, src = ALPHA.indexOf(ch), dst = ((src + s) % 26 + 26) % 26;
+        return { ch, src, dst, enc: ALPHA[dst], isX: i % 2 === 0, s };
+      });
+      const encoded = result.map(r => r.enc).join('');
+
+      vis(infoPanel, false); vis(mapRow, false);
+      infoGrid.innerHTML = ''; mapRow.innerHTML = ''; flyer.style.opacity = '0';
+      bx.className = 'beat-block'; by.className = 'beat-block'; bsep.className = 'beat-sep';
+      toX.classList.remove('atx'); toY.classList.remove('aty');
+
+      buildTape(tiX); buildTape(tiY);
+      setTapePos(toX, tiX, 26, false); setTapePos(toY, tiY, 26, false);
+      buildWordChips(); buildOutChips(); updateDisplays();
+
+      setStatus('CIPHER · loading onto encoder…');
+      await sleep(500); if (ct.cancelled) { running = false; return; }
+      await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
+
+      /* Stagger-in chips */
+      for (let i = 0; i < n; i++) {
+        if (ct.cancelled) { running = false; return; }
+        const wc = document.getElementById('wc-' + i);
+        wc.style.opacity = '0'; wc.style.transform = 'translateY(14px)'; wc.style.transition = 'opacity .4s,transform .4s';
+        await sleep(30); wc.style.opacity = '1'; wc.style.transform = 'translateY(0)';
+        await sleep(130);
+      }
+      await sleep(500); if (ct.cancelled) { running = false; return; }
+
+      /* Flash even (cyan) */
+      setStatus('Even positions → Track X');
+      for (let i = 0; i < n; i += 2) { document.getElementById('wc-' + i)?.classList.add('active-x'); await sleep(130); }
+      bx.className = 'beat-block on-x'; bsep.className = 'beat-sep fx';
+      await sleep(600);
+      for (let i = 0; i < n; i += 2)document.getElementById('wc-' + i)?.classList.remove('active-x');
+      bx.className = 'beat-block'; bsep.className = 'beat-sep';
+      if (ct.cancelled) { running = false; return; }
+
+      await sleep(200);
+
+      /* Flash odd (yellow) */
+      setStatus('Odd positions → Track Y');
+      for (let i = 1; i < n; i += 2) { document.getElementById('wc-' + i)?.classList.add('active-y'); await sleep(130); }
+      by.className = 'beat-block on-y'; bsep.className = 'beat-sep fy';
+      await sleep(600);
+      for (let i = 1; i < n; i += 2)document.getElementById('wc-' + i)?.classList.remove('active-y');
+      by.className = 'beat-block'; bsep.className = 'beat-sep';
+      if (ct.cancelled) { running = false; return; }
+      await sleep(500);
+      await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
+
+      /* Encode each letter */
+      for (let i = 0; i < n; i++) {
+        if (ct.cancelled) { running = false; return; }
+        const r = result[i], isX = r.isX;
+        const wc = document.getElementById('wc-' + i);
+        const outer = isX ? toX : toY, inner = isX ? tiX : tiY;
+
+        bx.className = isX ? 'beat-block on-x' : 'beat-block';
+        by.className = isX ? 'beat-block' : 'beat-block on-y';
+        bsep.className = isX ? 'beat-sep fx' : 'beat-sep fy';
+        outer.classList.add(isX ? 'atx' : 'aty');
+        wc?.classList.add(isX ? 'active-x' : 'active-y');
+        setStatus(`[${i}] "${r.ch}" pos ${r.src} · ${isX ? 'Track X' : 'Track Y'} · shift ${r.s >= 0 ? '+' : ''}${r.s} → "${r.enc}"`);
+
+        const tapeSrc = 26 + r.src;
+        setTapePos(outer, inner, tapeSrc, false);
+        clearHL(inner);
+        inner.querySelector('#' + inner.id + '-' + tapeSrc)?.classList.add(isX ? 'tsrc-x' : 'tsrc-y');
+        await sleep(400); if (ct.cancelled) { running = false; return; }
+
+        await fly(wc, outer, r.ch, isX); if (ct.cancelled) { running = false; return; }
+
+        let tapeDst = tapeSrc + r.s;
+        if (tapeDst < 0) tapeDst += 26; if (tapeDst >= 78) tapeDst -= 26;
+        const tMs = 780 + Math.abs(r.s) * 28;
+        setTapePos(outer, inner, tapeDst, true, tMs);
+        await sleep(tMs + 80); if (ct.cancelled) { running = false; return; }
+
+        clearHL(inner);
+        const dstCell = inner.querySelector('#' + inner.id + '-' + (26 + r.dst)) || inner.querySelector('#' + inner.id + '-' + r.dst);
+        dstCell?.classList.add(isX ? 'tdst-x' : 'tdst-y');
+        await sleep(300); if (ct.cancelled) { running = false; return; }
+
+        const oc = document.getElementById('oc-' + i);
+        await fly(outer, oc, r.enc, isX); if (ct.cancelled) { running = false; return; }
+
+        const ocv = document.getElementById('ocv-' + i);
+        if (oc && ocv) { ocv.textContent = r.enc; oc.classList.add(isX ? 'lx' : 'ly'); }
+
+        const wl = document.getElementById('wl-' + i);
+        if (wl) wl.textContent = r.enc;
+        wc?.classList.remove('active-x', 'active-y');
+        wc?.classList.add(isX ? 'enc-x' : 'enc-y');
+        outer.classList.remove('atx', 'aty');
+        await sleep(320);
+        await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
+      }
+
+      bx.className = 'beat-block'; by.className = 'beat-block'; bsep.className = 'beat-sep';
+      flyer.style.opacity = '0';
+      setStatus(`Complete · CIPHER → ${encoded}`);
+
+      /* Pulse output */
+      for (let i = 0; i < n; i++) { const oc = document.getElementById('oc-' + i); if (oc) oc.style.boxShadow = `0 0 28px ${result[i].isX ? 'rgba(89,242,255,.9)' : 'rgba(255,221,87,.9)'}`; }
+      await sleep(380);
+      for (let i = 0; i < n; i++) { const oc = document.getElementById('oc-' + i); if (oc) oc.style.boxShadow = `0 0 10px ${result[i].isX ? 'rgba(89,242,255,.22)' : 'rgba(255,221,87,.22)'}`; }
+
+      result.forEach(r => {
+        const p = document.createElement('div'); p.className = `map-pill ${r.isX ? 'mx' : 'my'}`;
+        p.innerHTML = `<span class="mp-from">${r.ch}</span><span class="mp-arr">→</span><span class="${r.isX ? 'mp-to-x' : 'mp-to-y'}">${r.enc}</span><span class="mp-shift">${r.s >= 0 ? '+' : ''}${r.s}</span>`;
+        mapRow.appendChild(p);
+      });
+      vis(mapRow, true);
+      await sleep(350); if (ct.cancelled) { running = false; return; }
+
+      infoGrid.innerHTML = `
+    <div class="irow"><div class="irow-lbl">Input</div><div class="irow-val fm">CIPHER</div></div>
+    <div class="irow"><div class="irow-lbl">Output</div><div class="irow-val fg">${encoded}</div></div>
+    <div class="irow"><div class="irow-lbl">Shift X · even</div><div class="irow-val fx">${shiftX >= 0 ? '+' : ''}${shiftX} steps</div></div>
+    <div class="irow"><div class="irow-lbl">Shift Y · odd</div><div class="irow-val fy">${shiftY >= 0 ? '+' : ''}${shiftY} steps</div></div>
+    <div class="formula">
+<span class="fm">Rule :</span>  even [0,2,4] → Track <span class="fx">X (${shiftX >= 0 ? '+' : ''}${shiftX})</span>   ·   odd [1,3,5] → Track <span class="fy">Y (${shiftY >= 0 ? '+' : ''}${shiftY})</span>
+
+<span class="fm">Same letter, different position = different output.</span>
+<span class="fg">Why harder?</span> <span class="fm">Two keys needed. Knowing just one shift
+won't crack it — you need both X and Y to decode.</span></div>`;
+      vis(infoPanel, true);
+
+      await sleep(800);
+      running = false;
+      startReplayCountdown();
+    }
+
+    function kickDemo() { cancelReplay(); runDemo(); }
+    replayNow.addEventListener('click', kickDemo);
+    $('btn-play').addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      $('btn-play').textContent = isPlaying ? 'Pause' : 'Resume';
+    });
+    $('btn-step').addEventListener('click', () => {
+      if (isPlaying) {
+        isPlaying = false;
+        $('btn-play').textContent = 'Resume';
+      }
+      stepRequested = true;
+    });
+
+    buildTape(tiX); buildTape(tiY);
+    buildWordChips(); buildOutChips();
+    runDemo();
+  
+        const sDisplay = document.getElementById("speedDisplay");
+  if (document.getElementById("speedUp")) {
+    document.getElementById("speedUp").addEventListener("click", () => {
+      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+    document.getElementById("speedDown").addEventListener("click", () => {
+      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+    });
+  }
+
+  const nextBtn = document.getElementById("nextBtn");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
+      if (match) {
+        let ch = parseInt(match[1]);
+        let lvl = parseInt(match[2]);
+        lvl++;
+        if (lvl > 5) { lvl = 1; ch++; }
+        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
+      }
+    });
+  }
+</script>
+</body>
+
+</html>

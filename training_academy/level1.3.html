@@ -40,6 +40,16 @@
       justify-content: center;
       padding: 20px;
       overflow-x: hidden;
+      cursor: url('/assets/mouse.png') 4 4, auto;
+    }
+
+    /* Global cursor enforcement */
+    * {
+      cursor: inherit !important;
+    }
+
+    a, button, [role="button"], input, textarea, select {
+      cursor: url('/assets/mouse.png') 4 4, pointer !important;
     }
 
     body::before {
@@ -106,12 +116,7 @@
       background: rgba(185, 127, 255, 0.06);
     }
 
-    .topbar-title {
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
+    .topbar-title{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;}
 
     .topbar-sub {
       font-family: var(--mono);
@@ -752,7 +757,6 @@
     <div class="controls">
       <span class="ctrl-label" style="display:none;">WORD</span>
       <input class="word-input" id="wordInput" type="hidden" value="CIPHER" />
-      <button class="go-btn" id="goBtn">▶ Reflect</button>
     </div>
 
     <!-- STAGE -->
@@ -808,14 +812,16 @@
 
     <!-- FOOTER -->
     <div class="footer">
-
+        <div style="display:flex; align-items:center; gap:12px;">
+            <button class="foot-btn" id="pauseResumeBtn">Pause</button>
+            <button class="foot-btn" id="replayBtn">↩ Restart</button>
+        </div>
         <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
-      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
-      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
-    </div>
-      <button class="foot-btn" id="replayBtn">↩ Replay</button>
-      <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
+            <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
+            <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
+            <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
+        </div>
+        <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
     </div>
 
   </div>
@@ -828,7 +834,7 @@ let speedMultiplier = 1.0;
 
     /* ── DOM ── */
     const wordInput = document.getElementById('wordInput');
-    const goBtn = document.getElementById('goBtn');
+    const goBtn = document.getElementById('goBtn') || { disabled: false, addEventListener: () => {} };
     const replayBtn = document.getElementById('replayBtn');
     const statusTxt = document.getElementById('statusTxt');
     const wordDisplay = document.getElementById('wordDisplay');
@@ -845,7 +851,17 @@ let speedMultiplier = 1.0;
     const infoGrid = document.getElementById('infoGrid');
 
     /* ── Helpers ── */
-    const sleep = ms => new Promise(r => { ct._tid = setTimeout(r, ms / speedMultiplier); });
+    let isPaused = false;
+    async function sleep(ms) {
+        let elapsed = 0;
+        while (elapsed < (ms / speedMultiplier)) {
+            if (ct.cancelled) return;
+            if (!isPaused) {
+                elapsed += 20;
+            }
+            await new Promise(r => setTimeout(r, 20));
+        }
+    }
     const vis = (el, on = true) => el.classList.toggle('vis', on);
     const setStatus = t => statusTxt.textContent = t;
 
@@ -942,9 +958,11 @@ let speedMultiplier = 1.0;
 
     /* ── Main ── */
     async function runDemo() {
-      if (running) { ct.cancelled = true; await sleep(80); }
+      if (running) { ct.cancelled = true; await new Promise(r => setTimeout(r, 80)); }
       ct = { cancelled: false };
       running = true;
+      isPaused = false;
+      if (document.getElementById('pauseResumeBtn')) document.getElementById('pauseResumeBtn').textContent = 'Pause';
       goBtn.disabled = true;
 
       const raw = 'CIPHER';
@@ -1110,36 +1128,34 @@ let speedMultiplier = 1.0;
     replayBtn.addEventListener('click', runDemo);
     wordInput.addEventListener('keydown', e => { if (e.key === 'Enter') runDemo(); });
     document.getElementById('nextBtn').addEventListener('click', () => {
-      alert('Next cipher coming soon in the full game!');
+      window.location.href = "level1.4.html";
     });
+
+    const pauseResumeBtn = document.getElementById('pauseResumeBtn');
+    if (pauseResumeBtn) {
+        pauseResumeBtn.addEventListener('click', () => {
+            if (!running) return;
+            isPaused = !isPaused;
+            pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+        });
+    }
+
+    const speedUp = document.getElementById('speedUp');
+    const speedDown = document.getElementById('speedDown');
+    const sDisplay = document.getElementById('speedDisplay');
+    
+    if (speedUp && speedDown && sDisplay) {
+        speedUp.addEventListener("click", () => {
+            if (speedMultiplier < 2.0) speedMultiplier += 0.25;
+            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+        });
+        speedDown.addEventListener("click", () => {
+            if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
+            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+        });
+    }
 
     runDemo();
-  
-        const sDisplay = document.getElementById("speedDisplay");
-  if (document.getElementById("speedUp")) {
-    document.getElementById("speedUp").addEventListener("click", () => {
-      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-    document.getElementById("speedDown").addEventListener("click", () => {
-      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-  }
-
-  const nextBtn = document.getElementById("nextBtn");
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
-      if (match) {
-        let ch = parseInt(match[1]);
-        let lvl = parseInt(match[2]);
-        lvl++;
-        if (lvl > 5) { lvl = 1; ch++; }
-        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
-      }
-    });
-  }
 </script>
 </body>
 

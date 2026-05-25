@@ -1,10 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@700&display=swap');
 @import "tailwindcss";
+
+/* Global custom cursor enforcement - applies to all modules */
+* {
+  cursor: inherit !important;
+}
+
+html,
+html * {
+  cursor: url("/assets/mouse.png") 4 4, auto !important;
+}
+
+/* Specific cursor handling for interactive elements */
+input,
+textarea,
+select {
+  cursor: url("/assets/mouse.png") 4 4, text !important;
+}
+
+button,
+a,
+[role="button"],
+[role="link"],
+.cursor-pointer,
+.group,
+[onclick] {
+  cursor: url("/assets/mouse.png") 4 4, pointer !important;
+}
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Share Tech Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-display: "Teko", sans-serif;
+  --font-display: "Orbitron", sans-serif;
   --font-tech: "Rajdhani", sans-serif;
 
   --color-void: var(--current-bg-color, #050505);
@@ -12,7 +39,7 @@
   --color-surface-panel: var(--current-panel-color, #121217);
   --color-surface-highlight: #1c1c24;
   
-  --color-accent-cyan: var(--current-theme-color, #00e5ff);
+  --color-accent-cyan: var(--current-theme-color, var(--current-theme-color));
   --color-accent-magenta: #ff3e3e;
 }
 
@@ -99,6 +126,24 @@ body {
   @apply left-full;
 }
 
+/* ── Typography Utilities ──────────────────────────────── */
+
+.cq-title {
+  @apply font-display text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter text-white;
+}
+
+.cq-heading {
+  @apply font-display text-3xl md:text-4xl font-bold uppercase tracking-tight text-white;
+}
+
+.cq-subheading {
+  @apply font-display text-xl md:text-2xl font-bold uppercase tracking-wide text-white;
+}
+
+.cq-subtitle {
+  @apply font-mono text-xs uppercase tracking-widest opacity-60 text-white font-bold;
+}
+
 /* ── Story Mode Utilities ──────────────────────────────── */
 
 .grid-bg {
@@ -121,7 +166,7 @@ body {
 }
 
 .tile-highlight {
-  @apply !ring-4 !ring-[#59f2ff] !shadow-[0_0_80px_rgba(89,242,255,0.6)] !scale-[1.08] !z-[160] !border-[#59f2ff] !bg-black;
+  @apply !ring-4 !ring-[var(--current-theme-color)] !shadow-[0_0_80px_rgba(89,242,255,0.6)] !scale-[1.08] !z-[160] !border-[var(--current-theme-color)] !bg-black;
   animation: pulse-highlight 1.5s infinite;
 }
 
@@ -145,4 +190,27 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   animation: rainbowGradient 4s linear infinite;
+}
+
+/* Slightly increase minimum monospace font size to avoid tiny cipher text */
+.font-mono {
+  font-size: max(11px, 0.7rem);
+}
+
+/* Helper for tutorial text balancing */
+.tutorial-body {
+  -webkit-font-smoothing: antialiased;
+  text-wrap: balance;
+}
+
+.cyber-brand {
+  font-family: var(--font-display);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #f7fbff 0%, #7ff7ff 22%, #00f2ff 50%, #b060ff 78%, #ffffff 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 0 18px rgba(0, 242, 255, 0.18), 0 0 40px rgba(176, 96, 255, 0.12);
 }

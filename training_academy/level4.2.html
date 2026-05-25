@@ -13,7 +13,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;color:var(--ink);
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:4px;color:var(--ink);
   font-family:var(--font);overflow-x:hidden;
   background:
     radial-gradient(circle at 18% 0%,rgba(89,242,255,.13),transparent 32%),
@@ -43,14 +43,14 @@ body::after{
   font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--yellow);
   border:1px solid rgba(255,221,87,.48);background:rgba(255,221,87,.06);border-radius:999px;padding:4px 10px;
 }
-.title{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.14em}
+.title{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;}
 .sub{margin-top:2px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
 .live{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.16em}
 .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 1.3s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-.stage{position:relative;min-height:730px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.stage{position:relative;min-height:auto;padding:8px;display:flex;flex-direction:column;gap:14px}
 .status{
-  min-height:42px;display:flex;align-items:center;justify-content:center;text-align:center;
+  min-height:auto;display:flex;align-items:center;justify-content:center;text-align:center;
   border:1px solid rgba(89,242,255,.22);border-radius:12px;background:rgba(2,6,23,.64);color:var(--cyan);
   font-family:"SF Mono","Fira Code",Consolas,monospace;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
@@ -66,7 +66,7 @@ body::after{
 }
 .row-label::after{content:"";height:1px;flex:1;background:rgba(148,163,184,.14)}
 .strip-zone{
-  position:relative;min-height:168px;display:flex;align-items:center;justify-content:center;
+  position:relative;min-height:auto;display:flex;align-items:center;justify-content:center;
   border:1px solid rgba(148,163,184,.13);border-radius:14px;background:rgba(2,6,23,.56);overflow:visible;
 }
 .fold-line{
@@ -93,7 +93,7 @@ body::after{
 .cell.show{opacity:1;transform:translateY(0)}
 .cell.active{border-color:var(--cyan);box-shadow:0 0 22px rgba(89,242,255,.42),inset 0 0 18px rgba(89,242,255,.08);transform:translateY(-5px)}
 .cell.reverse.active{border-color:var(--yellow);box-shadow:0 0 22px rgba(255,221,87,.36),inset 0 0 18px rgba(255,221,87,.08)}
-.letter{font-size:clamp(22px,4vw,34px);font-weight:900;line-height:1}
+.letter {font-size:46px;font-weight:900;line-height:1;font-family:'SF Mono','Fira Code',Consolas,monospace;}
 .idx{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
 .grid-zone{
   margin-top:14px;position:relative;border:1px solid rgba(148,163,184,.13);border-radius:14px;background:rgba(2,6,23,.56);
@@ -103,7 +103,7 @@ body::after{
   display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;
 }
 .matrix-label{
-  min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:10px;
+  min-height:auto;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:10px;
   border:1px solid rgba(148,163,184,.14);background:rgba(2,6,23,.62);color:var(--muted);
   font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
 }
@@ -128,7 +128,7 @@ body::after{
 .scanner.show{opacity:1}
 .calc-strip{
   margin-top:14px;
-  min-height:86px;
+  min-height:auto;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -140,7 +140,7 @@ body::after{
 }
 .calc-card{
   min-width:96px;
-  min-height:58px;
+  min-height:auto;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -169,7 +169,7 @@ body::after{
   display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px;
 }
 .box{
-  min-height:76px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(2,6,23,.64);
+  min-height:auto;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(2,6,23,.64);
   display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;padding:10px;
 }
 .box-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
@@ -183,7 +183,7 @@ body::after{
 }
 .out-cell.filled{border-style:solid;border-color:rgba(34,197,94,.56);color:var(--green);box-shadow:0 0 18px rgba(34,197,94,.24);animation:land .45s cubic-bezier(.34,1.56,.64,1)}
 @keyframes land{from{transform:scale(.72);opacity:.35}to{transform:scale(1);opacity:1}}
-.out-cell.filled .letter{text-shadow:0 0 14px rgba(34,197,94,.76)}
+.out-cell.filled .letter {font-size:46px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;text-shadow:0 0 14px rgba(34,197,94,.76)}
 .note{
   display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid rgba(89,242,255,.20);
   border-radius:12px;background:rgba(2,6,23,.66);padding:12px 16px;
@@ -206,11 +206,30 @@ body::after{
 }
 @media(max-width:560px){
   :root{--cell:38px;--gap:5px}
-  .paper-strip{padding:8px}.letter{font-size:22px}.idx{font-size:7px}.math-panel{grid-template-columns:1fr}
+  .paper-strip{padding:8px}.letter {font-size:46px;font-family:'SF Mono','Fira Code',Consolas,monospace;}.idx{font-size:7px}.math-panel{grid-template-columns:1fr}
   .note{align-items:flex-start;flex-direction:column}
   .calc-card{min-width:76px}
   .calc-value{font-size:15px}
 }
+
+    @media (max-height: 800px) {
+        .shell, .glass-panel, .max-w-4xl {
+            transform: scale(0.9);
+            transform-origin: top center;
+        }
+    }
+    @media (max-height: 700px) {
+        .shell, .glass-panel, .max-w-4xl {
+            transform: scale(0.8);
+            transform-origin: top center;
+        }
+    }
+    @media (max-height: 600px) {
+        .shell, .glass-panel, .max-w-4xl {
+            transform: scale(0.7);
+            transform-origin: top center;
+        }
+    }
 </style>
     <script src="global_controls.js"></script>
 </head>
@@ -289,14 +308,16 @@ body::after{
   </section>
 
   <footer class="footer">
-
-        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
-      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
-      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <button class="btn" id="pauseResumeBtn">Pause</button>
+        <button class="btn" id="replayBtn">↩ Restart</button>
     </div>
-    <div class="timer" id="timer">Looping demo</div>
-    <button class="btn" id="replay">Replay Now</button>
+    <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+        <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
+        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
+        <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
+    </div>
+    <button class="btn" style="color:var(--green); border-color:var(--green);" id="nextBtn">Next Cipher →</button>
   </footer>
 </main>
 
@@ -311,7 +332,15 @@ let token = { stop: false };
 
 const $ = (id) => document.getElementById(id);
 let speedMultiplier = 1.0;
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms / speedMultiplier));
+let isPaused = false;
+async function wait(ms) {
+    let elapsed = 0;
+    while (elapsed < (ms / speedMultiplier)) {
+        if (token.stop) return;
+        if (!isPaused) elapsed += 20;
+        await new Promise(r => setTimeout(r, 20));
+    }
+}
 const indexOf = (ch) => ABC.indexOf(ch);
 
 function setActive(id) {
@@ -368,7 +397,7 @@ function reset() {
     $(id).classList.remove("hot");
     $(id).querySelector(".calc-value").textContent = "-";
   });
-  $("timer").textContent = "Looping demo";
+  if ($("timer")) $("timer").textContent = "Looping demo";
   setActive("b1");
 }
 
@@ -474,14 +503,14 @@ async function run() {
 
 function startLoop(runToken) {
   let left = 2;
-  $("timer").textContent = `Replay in ${left}s`;
+  if ($("timer")) $("timer").textContent = `Replay in ${left}s`;
   loopTimer = setInterval(() => {
     if (runToken.stop) {
       clearInterval(loopTimer);
       return;
     }
     left -= 1;
-    $("timer").textContent = left > 0 ? `Replay in ${left}s` : "Looping demo";
+    if ($("timer")) $("timer").textContent = left > 0 ? `Replay in ${left}s` : "Looping demo";
     if (left <= 0) {
       clearInterval(loopTimer);
       run();
@@ -489,40 +518,44 @@ function startLoop(runToken) {
   }, 1000 / speedMultiplier);
 }
 
-$("replay").addEventListener("click", () => {
-  running = false;
-  run();
-});
+  const replayBtn = document.getElementById('replayBtn');
+  if (replayBtn) {
+    replayBtn.addEventListener("click", () => {
+      running = false;
+      run();
+    });
+  }
 
-window.addEventListener("load", run);
-window.addEventListener("resize", () => {
-  const scannerVisible = $("scanner").classList.contains("show");
-  if (scannerVisible) $("scanner").classList.remove("show");
-});
+  const pauseResumeBtn = document.getElementById('pauseResumeBtn');
+  if (pauseResumeBtn) {
+      pauseResumeBtn.addEventListener('click', () => {
+          isPaused = !isPaused;
+          pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+      });
+  }
 
-        const sDisplay = document.getElementById("speedDisplay");
+  window.addEventListener("load", run);
+  window.addEventListener("resize", () => {
+    const scannerVisible = $("scanner").classList.contains("show");
+    if (scannerVisible) $("scanner").classList.remove("show");
+  });
+
+  const sDisplay = document.getElementById("speedDisplay");
   if (document.getElementById("speedUp")) {
     document.getElementById("speedUp").addEventListener("click", () => {
-      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+      if (speedMultiplier < 2.0) speedMultiplier += 0.25;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
     });
     document.getElementById("speedDown").addEventListener("click", () => {
-      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+      if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
+      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
     });
   }
 
   const nextBtn = document.getElementById("nextBtn");
   if (nextBtn) {
     nextBtn.addEventListener("click", () => {
-      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
-      if (match) {
-        let ch = parseInt(match[1]);
-        let lvl = parseInt(match[2]);
-        lvl++;
-        if (lvl > 5) { lvl = 1; ch++; }
-        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
-      }
+      window.location.href = "level4.3.html";
     });
   }
 </script>

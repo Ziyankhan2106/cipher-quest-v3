@@ -239,15 +239,7 @@ const Auth = () => {
   };
 
   if (loading) {
-    return (
-      <div className="page auth-page">
-        <div className="city-bg"></div>
-        <div className="auth-loading">
-          <div className="auth-loading-spinner"></div>
-          <p className="auth-loading-text">Establishing secure link&hellip;</p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
@@ -269,7 +261,7 @@ const Auth = () => {
               type="text"
               placeholder="Enter username"
               maxLength={24}
-              value={username}
+              value={username.toUpperCase()}
               onChange={handleUsernameChange}
               onKeyDown={handleEnter}
             />

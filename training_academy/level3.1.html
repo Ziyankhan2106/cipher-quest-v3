@@ -20,7 +20,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:13px 22px;background:var(--si);border-bottom:1px solid var(--bs);}
 .topbar-left{display:flex;align-items:center;gap:10px;}
 .badge{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.2em;padding:3px 10px;border-radius:999px;border:1px solid rgba(255,159,67,0.6);background:rgba(2,6,23,0.3);color:var(--orange);}
-.topbar-title{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+.topbar-title{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;}
 .topbar-sub{font-size:11px;color:var(--mu);letter-spacing:.15em;text-transform:uppercase;margin-top:1px;}
 .live-tag{display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ag);}
 .live-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ag);box-shadow:0 0 8px var(--ag);animation:pulse 1.4s ease-in-out infinite;}
@@ -38,14 +38,14 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .word-row{position:relative;z-index:2;display:flex;gap:10px;justify-content:center;width:100%;}
 .wchip{width:68px;height:74px;border-radius:12px;background:var(--si);border:1px solid rgba(148,163,184,0.18);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative;overflow:hidden;transition:all .35s;opacity:0;}
-.wchip-letter{font-family:"SF Mono","Fira Code",monospace;font-size:28px;font-weight:700;color:var(--tm);transition:all .35s;}
+.wchip-letter {font-family:"SF Mono","Fira Code",Consolas,monospace;font-size:46px;font-weight:900;color:var(--tm);transition:all .35s;}
 .wchip-idx{font-size:9px;color:var(--mu);letter-spacing:.12em;}
 .wchip.active{border-color:var(--ap);box-shadow:0 0 22px rgba(89,242,255,.4),inset 0 0 12px rgba(89,242,255,.07);}
-.wchip.active .wchip-letter{color:var(--ap);text-shadow:0 0 14px rgba(89,242,255,.9);}
+.wchip.active .wchip-letter {font-size:46px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;color:var(--ap);text-shadow:0 0 14px rgba(89,242,255,.9);}
 .wchip.active::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(89,242,255,.1) 60%,transparent 80%);animation:shimmer .9s linear infinite;}
 @keyframes shimmer{from{transform:translateX(-120%)}to{transform:translateX(200%)}}
-.wchip.enc-n{border-color:rgba(185,127,255,.5);}.wchip.enc-n .wchip-letter{color:var(--purple);}
-.wchip.enc-w{border-color:rgba(255,159,67,.5);}.wchip.enc-w .wchip-letter{color:var(--orange);}
+.wchip.enc-n{border-color:rgba(185,127,255,.5);}.wchip.enc-n .wchip-letter {font-size:46px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;color:var(--purple);}
+.wchip.enc-w{border-color:rgba(255,159,67,.5);}.wchip.enc-w .wchip-letter {font-size:46px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;color:var(--orange);}
 
 /* NUMBER LINE */
 .nline-sec{position:relative;z-index:2;width:100%;opacity:0;transition:opacity .4s;}
@@ -121,7 +121,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
 .opill.pw{color:rgba(255,159,67,.8);border-color:rgba(255,159,67,.3);background:rgba(255,159,67,.06);}
 .opill.pf{color:rgba(34,197,94,.85);border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.06);}
 .ochips{display:flex;gap:10px;justify-content:center;}
-.ochip{width:68px;height:74px;border-radius:12px;background:var(--si);border:1px solid rgba(148,163,184,0.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-family:"SF Mono","Fira Code",monospace;font-size:28px;font-weight:700;color:transparent;transition:all .4s;}
+.ochip{width:68px;height:74px;border-radius:12px;background:var(--si);border:1px solid rgba(148,163,184,0.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-family:"SF Mono","Fira Code",Consolas,monospace;font-size:42px;font-weight:900;color:transparent;transition:all .4s;}
 .ochip .oidx{font-size:9px;color:var(--mu);}
 .ochip.ln{animation:li .5s cubic-bezier(.34,1.56,.64,1);}
 .ochip.ln.nw{color:var(--purple);border-color:rgba(185,127,255,.5);box-shadow:0 0 18px rgba(185,127,255,.32);}
@@ -145,6 +145,8 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
 .foot-btn:hover{border-color:var(--bb);color:var(--tm);}
 .foot-btn.primary{color:var(--ap);border-color:rgba(89,242,255,.4);background:rgba(89,242,255,.05);}
 .foot-btn.primary:hover{background:rgba(89,242,255,.1);box-shadow:0 0 14px rgba(89,242,255,.25);}
+.go-btn { font-family: var(--font); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(89, 242, 255, 0.4); background: rgba(89, 242, 255, 0.1); color: var(--ap); cursor: pointer; margin-left: 12px; transition: all 0.2s; }
+.go-btn:hover { background: rgba(89, 242, 255, 0.2); box-shadow: 0 0 10px rgba(89, 242, 255, 0.3); }
 .rtag{font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:var(--mu);display:flex;align-items:center;gap:6px;}
 .rtick{width:5px;height:5px;border-radius:50%;background:rgba(148,163,184,.3);animation:rtick 1s step-end infinite;}
 @keyframes rtick{0%,100%{opacity:1}50%{opacity:.2}}
@@ -169,6 +171,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
   <div class="knum" id="kv">+7</div>
   <button class="kbtn" id="ku">+</button>
   <span class="ctrl-hint">try keys &gt; 13 to see the portal!</span>
+  <button class="go-btn" id="goBtn">Start</button>
 </div>
 <div class="stage">
   <div class="status"><span id="st">Initializing…</span><span class="blink"> ▌</span></div>
@@ -231,14 +234,16 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
   </div>
 </div>
 <div class="footer">
-
-        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
-      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
-      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <button class="foot-btn" id="pauseResumeBtn">Pause</button>
+        <button class="foot-btn" id="replayBtn">↩ Restart</button>
     </div>
-  <div class="rtag"><div class="rtick"></div><span id="rcd"></span></div>
-  <button class="foot-btn primary" id="rn">▶ Replay Now</button>
+    <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+        <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
+        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
+        <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
+    </div>
+    <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
 </div>
 </div>
 
@@ -249,14 +254,30 @@ let speedMultiplier = 1.0;
 const AL='ABCDEFGHIJKLMNOPQRSTUVWXYZ',WD='CIPHER';
 let key=7,running=false,ct={c:false},rTimer=null,cdn=2;
 const $=id=>document.getElementById(id);
-const slp=ms=>new Promise(r=>{ct._t=setTimeout(r, ms / speedMultiplier);});
+
+let isPaused = false;
+async function slp(ms) {
+    let elapsed = 0;
+    while (elapsed < (ms / speedMultiplier)) {
+        if (ct.c) return;
+        if (!isPaused) elapsed += 20;
+        await new Promise(r => setTimeout(r, 20));
+    }
+}
+
 const vis=(el,on=true)=>el.classList.toggle('vis',on);
 const setSt=(t,col='var(--ap)')=>{$('st').textContent=t;$('status'||document.querySelector('.status')).style.color=col;};
 
 /* ── key controls ── */
 function upK(){$('kv').textContent=(key>=0?'+':'')+key;}
-$('kd').onclick=()=>{if(key>1){key--;upK();cancelC();kick();}};
-$('ku').onclick=()=>{if(key<25){key++;upK();cancelC();kick();}};
+$('kd').onclick=()=>{
+    if(running) return;
+    if(key>1){key--;upK();cancelC();}
+};
+$('ku').onclick=()=>{
+    if(running) return;
+    if(key<25){key++;upK();cancelC();}
+};
 
 /* ── number line helpers ── */
 const MAXPOS=30; // number line goes 0-30, safe zone 0-25
@@ -310,13 +331,16 @@ async function flyP(sEl,dEl,txt,col,glow){
 }
 
 /* ── countdown ── */
-function startC(){cdn=2;$('rcd').textContent=`Replaying in ${cdn}s…`;rTimer=setInterval(()=>{cdn--;if(cdn>0)$('rcd').textContent=`Replaying in ${cdn}s…`;else{clearInterval(rTimer);$('rcd').textContent='Replaying…';kick();}},1000/speedMultiplier);}
-function cancelC(){if(rTimer){clearInterval(rTimer);rTimer=null;}$('rcd').textContent='';}
+function startC(){cdn=2;if($('rcd'))$('rcd').textContent=`Replaying in ${cdn}s…`;rTimer=setInterval(()=>{cdn--;if(cdn>0){if($('rcd'))$('rcd').textContent=`Replaying in ${cdn}s…`;}else{clearInterval(rTimer);if($('rcd'))$('rcd').textContent='Replaying…';kick();}},1000/speedMultiplier);}
+function cancelC(){if(rTimer){clearInterval(rTimer);rTimer=null;}if($('rcd'))$('rcd').textContent='';}
 
 /* ══ MAIN ══ */
 async function run(){
-  if(running){ct.c=true;await slp(130);}
+  if(running){ct.c=true;await new Promise(r => setTimeout(r, 130));}
   ct={c:false};running=true;
+  isPaused=false;
+  const pb = $('pauseResumeBtn'); if(pb) pb.textContent = 'Pause';
+  const gb = $('goBtn'); if(gb) gb.disabled = true;
   const n=WD.length;
   const res=WD.split('').map((ch,i)=>{const idx=AL.indexOf(ch),raw=idx+key,dst=raw%26;return{ch,idx,raw,dst,enc:AL[dst],wraps:raw>=26,i};});
   const enc=res.map(r=>r.enc).join(''),wc=res.filter(r=>r.wraps).length;
@@ -483,37 +507,55 @@ Mod 26 keeps every result inside A–Z, always.
 The portal is just what mod looks like in action.</span></div>`;
   vis($('ip'),true);
   await slp(800);running=false;startC();
+  const gb = $('goBtn'); if(gb) gb.disabled = false;
 }
 
 function kick(){cancelC();run();}
-$('rn').onclick=kick;
-upK();run();
+        
+const replayBtn = document.getElementById('replayBtn');
+if (replayBtn) replayBtn.addEventListener('click', kick);
 
-        const sDisplay = document.getElementById("speedDisplay");
-  if (document.getElementById("speedUp")) {
-    document.getElementById("speedUp").addEventListener("click", () => {
-      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
+const pauseResumeBtn = document.getElementById('pauseResumeBtn');
+if (pauseResumeBtn) {
+    pauseResumeBtn.addEventListener('click', () => {
+        if (!running) return;
+        isPaused = !isPaused;
+        pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
     });
-    document.getElementById("speedDown").addEventListener("click", () => {
-      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-  }
+}
 
-  const nextBtn = document.getElementById("nextBtn");
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
-      if (match) {
-        let ch = parseInt(match[1]);
-        let lvl = parseInt(match[2]);
-        lvl++;
-        if (lvl > 5) { lvl = 1; ch++; }
-        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
-      }
+const goBtn = document.getElementById('goBtn');
+if (goBtn) {
+    goBtn.addEventListener('click', () => {
+        if (!running) kick();
     });
-  }
+}
+
+upK(); 
+// Do NOT auto run: let user press start
+$('st').textContent='Set your key and press Start';document.querySelector('.status').style.color='var(--ap)';
+
+const speedUp = document.getElementById('speedUp');
+const speedDown = document.getElementById('speedDown');
+const sDisplay = document.getElementById('speedDisplay');
+
+if (speedUp && speedDown && sDisplay) {
+    speedUp.addEventListener("click", () => {
+        if (speedMultiplier < 2.0) speedMultiplier += 0.25;
+        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+    });
+    speedDown.addEventListener("click", () => {
+        if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
+        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+    });
+}
+
+const nextBtn = document.getElementById('nextBtn');
+if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+        window.location.href = "level3.2.html";
+    });
+}
 </script>
 </body>
 </html>

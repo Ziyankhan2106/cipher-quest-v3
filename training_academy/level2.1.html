@@ -40,6 +40,16 @@
       justify-content: center;
       padding: 20px;
       overflow-x: hidden;
+      cursor: url('/assets/mouse.png') 4 4, auto;
+    }
+
+    /* Global cursor enforcement */
+    * {
+      cursor: inherit !important;
+    }
+
+    a, button, [role="button"], input, textarea, select {
+      cursor: url('/assets/mouse.png') 4 4, pointer !important;
     }
 
     body::before {
@@ -107,12 +117,7 @@
       background: rgba(185, 127, 255, 0.07);
     }
 
-    .topbar-title {
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
+    .topbar-title{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;}
 
     .topbar-sub {
       font-family: var(--mono);
@@ -984,6 +989,25 @@
       background: rgba(185, 127, 255, 0.12);
       box-shadow: 0 0 14px rgba(185, 127, 255, .28);
     }
+    .go-btn {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid rgba(89, 242, 255, 0.4);
+      background: rgba(89, 242, 255, 0.1);
+      color: var(--ap);
+      cursor: pointer;
+      margin-left: 12px;
+      transition: all 0.2s;
+    }
+    .go-btn:hover {
+      background: rgba(89, 242, 255, 0.2);
+      box-shadow: 0 0 10px rgba(89, 242, 255, 0.3);
+    }
   </style>
     <script src="global_controls.js"></script>
 </head>
@@ -1013,7 +1037,7 @@
         <div class="shift-val" id="shiftVal">+3</div>
         <button class="shift-btn" id="shiftUp">+</button>
       </div>
-      <button class="go-btn" id="goBtn">▶ Scramble</button>
+      <button class="go-btn" id="goBtn">Start</button>
     </div>
 
     <!-- STAGE -->
@@ -1042,47 +1066,7 @@
           <div class="panel-chips" id="leftReversed"></div>
         </div>
 
-        <!-- CENTER: Lock -->
-        <div class="center-lock">
-          <div class="lock-phase-label top" id="lockLabel1">← spin back</div>
-          <svg id="lockSvg" width="110" height="110" viewBox="0 0 110 110">
-            <!-- Lock body -->
-            <circle cx="55" cy="55" r="52" fill="rgba(5,8,15,0.9)" stroke="rgba(185,127,255,0.3)" stroke-width="1.5" />
-            <!-- Rotating disc -->
-            <g id="dialDisc">
-              <!-- tick marks -->
-              <g stroke="rgba(74,96,122,0.4)" stroke-width="1">
-                <line x1="55" y1="5" x2="55" y2="13" />
-                <line x1="55" y1="97" x2="55" y2="105" />
-                <line x1="5" y1="55" x2="13" y2="55" />
-                <line x1="97" y1="55" x2="105" y2="55" />
-                <line x1="18.5" y1="18.5" x2="24.1" y2="24.1" />
-                <line x1="85.9" y1="85.9" x2="91.5" y2="91.5" />
-                <line x1="91.5" y1="18.5" x2="85.9" y2="24.1" />
-                <line x1="18.5" y1="91.5" x2="24.1" y2="85.9" />
-              </g>
-              <!-- inner ring -->
-              <circle cx="55" cy="55" r="38" fill="none" stroke="rgba(185,127,255,0.15)" stroke-width="1" />
-              <!-- dial numbers -->
-              <text x="55" y="22" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8"
-                fill="rgba(185,127,255,0.5)">0</text>
-              <text x="88" y="58" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8"
-                fill="rgba(185,127,255,0.5)">6</text>
-              <text x="55" y="93" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8"
-                fill="rgba(185,127,255,0.5)">13</text>
-              <text x="22" y="58" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8"
-                fill="rgba(185,127,255,0.5)">19</text>
-              <!-- center dot -->
-              <circle cx="55" cy="55" r="4" fill="rgba(185,127,255,0.3)" />
-            </g>
-            <!-- Fixed pointer notch at top -->
-            <polygon points="55,3 51,12 59,12" fill="rgba(185,127,255,0.8)" />
-            <!-- center pin -->
-            <circle cx="55" cy="55" r="2.5" fill="rgba(185,127,255,0.8)" />
-          </svg>
-          <div class="lock-shift-badge" id="lockShiftBadge"></div>
-          <div class="lock-phase-label bot" id="lockLabel2">click fwd →</div>
-        </div>
+        <!-- CENTER: Lock (removed) -->
 
         <!-- RIGHT: Caesar -->
         <div class="right-panel" id="rightPanel">
@@ -1124,15 +1108,15 @@
 
     <!-- FOOTER -->
     <div class="footer">
-
-        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
-      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
-      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
-    </div>
-      <button class="foot-btn" id="btn-play">Pause</button>
-      <button class="foot-btn" id="btn-step">Step</button>
-      <button class="foot-btn" id="replayBtn">↩ Replay</button>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="foot-btn" id="pauseResumeBtn">Pause</button>
+        <button class="foot-btn" id="replayBtn">↩ Restart</button>
+      </div>
+      <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+        <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
+        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
+        <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
+      </div>
       <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
     </div>
   </div>
@@ -1161,10 +1145,10 @@ let speedMultiplier = 1.0;
     const leftOrig = document.getElementById('leftOriginal');
     const leftRev = document.getElementById('leftReversed');
     const leftDiv = document.getElementById('leftDivider');
-    const lockLabel1 = document.getElementById('lockLabel1');
-    const lockLabel2 = document.getElementById('lockLabel2');
-    const lockBadge = document.getElementById('lockShiftBadge');
-    const dialDisc = document.getElementById('dialDisc');
+    const lockLabel1 = document.getElementById('lockLabel1') || document.createElement('div');
+    const lockLabel2 = document.getElementById('lockLabel2') || document.createElement('div');
+    const lockBadge = document.getElementById('lockShiftBadge') || document.createElement('div');
+    const dialDisc = document.getElementById('dialDisc') || document.createElement('div');
     const rightPanel = document.getElementById('rightPanel');
     const tapeWrap = document.getElementById('tapeWrap');
     const tapeInner = document.getElementById('tapeInner');
@@ -1176,21 +1160,23 @@ let speedMultiplier = 1.0;
     const infoGrid = document.getElementById('infoGrid');
     const flyer = document.getElementById('flyer');
 
-    const sleep = ms => new Promise(r => { ct._t = setTimeout(r, ms / speedMultiplier); });
+    let isPaused = false;
+    async function sleep(ms) {
+        let elapsed = 0;
+        while (elapsed < (ms / speedMultiplier)) {
+            if (ct.cancelled) return;
+            if (!isPaused) {
+                elapsed += 20;
+            }
+            await new Promise(r => setTimeout(r, 20));
+        }
+    }
     const vis = (el, on = true) => el.classList.toggle('vis', on);
     const setStatus = t => statusTxt.textContent = t;
 
     async function waitForPlaybackStep() {
       if (ct.cancelled) return;
-      if (isPlaying) {
-        await sleep(2000);
-        return;
-      }
-      setStatus('Paused - press Step to continue.');
-      while (!ct.cancelled && !isPlaying && !stepRequested) {
-        await sleep(80);
-      }
-      if (stepRequested) stepRequested = false;
+      await sleep(1000);
     }
 
     /* ── Shift controls ── */
@@ -1198,8 +1184,8 @@ let speedMultiplier = 1.0;
       shiftVal.textContent = (shift >= 0 ? '+' : '') + shift;
       lockBadge.textContent = (shift >= 0 ? '+' : '') + shift + ' steps';
     }
-    shiftDown.addEventListener('click', () => { if (shift > -25) { shift--; updateShift(); } });
-    shiftUp.addEventListener('click', () => { if (shift < 25) { shift++; updateShift(); } });
+    shiftDown.addEventListener('click', () => { if (running) return; if (shift > -25) { shift--; updateShift(); } });
+    shiftUp.addEventListener('click', () => { if (running) return; if (shift < 25) { shift++; updateShift(); } });
 
     /* ── Build alphabet tape ── */
     function buildTape() {
@@ -1308,10 +1294,12 @@ let speedMultiplier = 1.0;
 
     /* ── Main ── */
     async function runDemo() {
-      if (running) { ct.cancelled = true; await sleep(120); }
+      if (running) { ct.cancelled = true; await new Promise(r => setTimeout(r, 120)); }
       ct = { cancelled: false };
       running = true;
-      goBtn.disabled = true;
+      isPaused = false;
+      if (document.getElementById('pauseResumeBtn')) document.getElementById('pauseResumeBtn').textContent = 'Pause';
+      if (goBtn) goBtn.disabled = true;
 
       const raw = 'CIPHER';
       wordInput.value = raw;
@@ -1552,55 +1540,42 @@ let speedMultiplier = 1.0;
     }
 
     /* ── Events ── */
-    goBtn.addEventListener('click', runDemo);
-    replayBtn.addEventListener('click', runDemo);
-    document.getElementById('btn-play').addEventListener('click', () => {
-      isPlaying = !isPlaying;
-      document.getElementById('btn-play').textContent = isPlaying ? 'Pause' : 'Resume';
-    });
-    document.getElementById('btn-step').addEventListener('click', () => {
-      if (isPlaying) {
-        isPlaying = false;
-        document.getElementById('btn-play').textContent = 'Resume';
-      }
-      stepRequested = true;
-    });
+    if (goBtn) goBtn.addEventListener('click', runDemo);
+    if (replayBtn) replayBtn.addEventListener('click', runDemo);
     wordInput.addEventListener('keydown', e => { if (e.key === 'Enter') runDemo(); });
     document.getElementById('nextBtn').addEventListener('click', () => {
-      alert('Next cipher coming soon in the full game!');
+      window.location.href = "level2.2.html";
     });
+
+    const pauseResumeBtn = document.getElementById('pauseResumeBtn');
+    if (pauseResumeBtn) {
+        pauseResumeBtn.addEventListener('click', () => {
+            if (!running) return;
+            isPaused = !isPaused;
+            pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+        });
+    }
+
+    const speedUp = document.getElementById('speedUp');
+    const speedDown = document.getElementById('speedDown');
+    const sDisplay = document.getElementById('speedDisplay');
+
+    if (speedUp && speedDown && sDisplay) {
+        speedUp.addEventListener("click", () => {
+            if (speedMultiplier < 2.0) speedMultiplier += 0.25;
+            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+        });
+        speedDown.addEventListener("click", () => {
+            if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
+            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+        });
+    }
 
     /* ── Init ── */
     updateShift();
     buildTape();
     vis(splitSec, true);
     vis(outputSec, true);
-  
-        const sDisplay = document.getElementById("speedDisplay");
-  if (document.getElementById("speedUp")) {
-    document.getElementById("speedUp").addEventListener("click", () => {
-      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-    document.getElementById("speedDown").addEventListener("click", () => {
-      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-  }
-
-  const nextBtn = document.getElementById("nextBtn");
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
-      if (match) {
-        let ch = parseInt(match[1]);
-        let lvl = parseInt(match[2]);
-        lvl++;
-        if (lvl > 5) { lvl = 1; ch++; }
-        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
-      }
-    });
-  }
 </script>
 </body>
 

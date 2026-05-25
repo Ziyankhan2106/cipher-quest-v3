@@ -10,6 +10,9 @@ export interface UserProfile {
     tutorialFinished?: boolean;
     tutorialStepIndex?: number;
   };
+  storyData?: {
+    completedMissions?: string[];
+  };
 }
 
 interface AuthContextType {

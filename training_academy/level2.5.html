@@ -120,12 +120,7 @@
             color: var(--orange);
         }
 
-        .topbar-title {
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-        }
+        .topbar-title{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;}
 
         .topbar-sub {
             font-size: 11px;
@@ -415,10 +410,10 @@
         }
 
         .wchip-letter {
-            font-size: 30px;
-            font-weight: 700;
+            font-size:46px;
+            font-weight:900;
 
-            font-family: "Fira Code", monospace;
+            font-family:"SF Mono","Fira Code",Consolas,monospace;
         }
 
         .wchip-idx {
@@ -433,7 +428,7 @@
                 0 0 20px rgba(89, 242, 255, .4);
         }
 
-        .wchip.active .wchip-letter {
+        .wchip.active .wchip-letter {font-size:46px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;
             color: var(--ap);
         }
 
@@ -441,7 +436,7 @@
             border-color: rgba(255, 159, 67, .5);
         }
 
-        .wchip.encoded .wchip-letter {
+        .wchip.encoded .wchip-letter {font-size:46px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;
             color: var(--orange);
         }
 
@@ -468,11 +463,11 @@
             flex-wrap: wrap;
         }
 
-        .out-letter {
-            font-size: 34px;
-            font-weight: 700;
+        .out-letter{
+            font-size:42px;
+            font-weight:900;
 
-            font-family: "Fira Code", monospace;
+            font-family:"SF Mono","Fira Code",Consolas,monospace;
 
             color: var(--orange);
 
@@ -618,9 +613,7 @@
                 gap: 12px;
             }
 
-            .topbar-title {
-                font-size: 12px;
-            }
+            .topbar-title{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;}
 
             .acell {
                 min-width: 28px;
@@ -633,11 +626,11 @@
             }
 
             .wchip-letter {
-                font-size: 24px;
-            }
+                font-size:46px;
+            font-family:'SF Mono','Fira Code',Consolas,monospace;}
 
-            .out-letter {
-                font-size: 28px;
+            .out-letter{
+                font-size:42px;
             }
         }
     </style>
@@ -750,18 +743,16 @@
         </div>
 
         <div class="footer">
-
-        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
-      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
-      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
-    </div>
-            <button class="foot-btn" id="btn-play">Pause</button>
-            <button class="foot-btn" id="btn-step">Step</button>
-            <div class="replay-tag">
-                <div class="rtick"></div><span id="rcd">Replaying in 2s…</span>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <button class="foot-btn" id="pauseResumeBtn">Pause</button>
+                <button class="foot-btn" id="replayBtn">↩ Restart</button>
             </div>
-            <button class="foot-btn primary" id="replayNow">▶ Replay Now</button>
+            <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+                <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
+                <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
+                <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
+            </div>
+            <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
         </div>
 
     </div>
@@ -801,20 +792,18 @@ let speedMultiplier = 1.0;
         let stepRequested = false;
         let runToken = 0;
 
-        const sleep = ms =>
-            new Promise(r => setTimeout(r, ms / speedMultiplier));
+        let isPaused = false;
+        async function sleep(ms) {
+            let elapsed = 0;
+            while (elapsed < (ms / speedMultiplier)) {
+                if (!isPaused) elapsed += 20;
+                await new Promise(r => setTimeout(r, 20));
+            }
+        }
 
         async function waitForPlaybackStep(activeToken) {
             if (activeToken !== runToken) return false;
-            if (isPlaying) {
-                await sleep(2000);
-                return activeToken === runToken;
-            }
-            setStatus('Paused - press Step to continue.', 'var(--orange)');
-            while (activeToken === runToken && !isPlaying && !stepRequested) {
-                await sleep(80);
-            }
-            if (stepRequested) stepRequested = false;
+            await sleep(1000);
             return activeToken === runToken;
         }
 
@@ -877,6 +866,9 @@ let speedMultiplier = 1.0;
 
         async function runDemo() {
             const activeToken = ++runToken;
+            isPaused = false;
+            const pauseBtn = document.getElementById('pauseResumeBtn');
+            if (pauseBtn) pauseBtn.textContent = 'Pause';
 
             const cipherAlpha = buildCipherAlpha(KEY);
 
@@ -1053,47 +1045,40 @@ let speedMultiplier = 1.0;
             startReplayCountdown();
         }
 
-        $('replayNow').onclick = () => kickDemo();
-        $('btn-play').addEventListener('click', () => {
-            isPlaying = !isPlaying;
-            $('btn-play').textContent = isPlaying ? 'Pause' : 'Resume';
-        });
-        $('btn-step').addEventListener('click', () => {
-            if (isPlaying) {
-                isPlaying = false;
-                $('btn-play').textContent = 'Resume';
-            }
-            stepRequested = true;
-        });
+        const replayBtn = document.getElementById('replayBtn');
+        if (replayBtn) replayBtn.addEventListener('click', kickDemo);
+
+        const pauseResumeBtn = document.getElementById('pauseResumeBtn');
+        if (pauseResumeBtn) {
+            pauseResumeBtn.addEventListener('click', () => {
+                isPaused = !isPaused;
+                pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+            });
+        }
+
+        const speedUp = document.getElementById('speedUp');
+        const speedDown = document.getElementById('speedDown');
+        const sDisplay = document.getElementById('speedDisplay');
+
+        if (speedUp && speedDown && sDisplay) {
+            speedUp.addEventListener("click", () => {
+                if (speedMultiplier < 2.0) speedMultiplier += 0.25;
+                sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+            });
+            speedDown.addEventListener("click", () => {
+                if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
+                sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+            });
+        }
+
+        const nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                window.location.href = "level3.1.html";
+            });
+        }
 
         runDemo();
-
-    
-        const sDisplay = document.getElementById("speedDisplay");
-  if (document.getElementById("speedUp")) {
-    document.getElementById("speedUp").addEventListener("click", () => {
-      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-    document.getElementById("speedDown").addEventListener("click", () => {
-      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-  }
-
-  const nextBtn = document.getElementById("nextBtn");
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
-      if (match) {
-        let ch = parseInt(match[1]);
-        let lvl = parseInt(match[2]);
-        lvl++;
-        if (lvl > 5) { lvl = 1; ch++; }
-        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
-      }
-    });
-  }
 </script>
 
 </body>

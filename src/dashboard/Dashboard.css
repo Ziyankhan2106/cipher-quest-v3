@@ -1,5 +1,5 @@
 :root {
-  --accent-primary: #59f2ff;
+  --accent-primary: var(--current-theme-color);
   --accent-warning: #ffdd57;
   --text-main: #f4f7ff;
   --text-muted: #94a3b8;
@@ -71,7 +71,7 @@ body {
     "Segoe UI", sans-serif;
   color: var(--text-main);
   background: radial-gradient(circle at top, #1b243b 0, #020617 55%, #020617 100%);
-  cursor: url("assets/mouse.png") 6 6, auto;
+  cursor: url("/assets/mouse.png") 6 6, auto;
 }
 
 #snowCanvas {
@@ -83,12 +83,24 @@ body {
 
 .page {
   position: relative;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 0;
   color: var(--text-main);
   overflow: hidden;
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at top, transparent 40%, rgba(2,2,5,0.5) 100%),
+    radial-gradient(ellipse at bottom, rgba(2,2,5,0.7) 0%, transparent 60%),
+    radial-gradient(ellipse at left, rgba(2,2,5,0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at right, rgba(2,2,5,0.4) 0%, transparent 50%);
 }
 
 
@@ -235,6 +247,23 @@ body {
 .auth-btn-secondary:hover {
   border-color: rgba(248, 113, 113, 0.9);
   box-shadow: 0 0 12px rgba(248, 113, 113, 0.5);
+}
+
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.rainbow-username {
+  background-image: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff, #ff0000);
+  background-size: 200% auto;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  animation: rainbow 3s linear infinite;
+  display: inline-block;
 }
 
 .auth-btn-secondary.is-visible {
@@ -386,9 +415,9 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 22px;
-  padding-top: 16px;
+  justify-content: flex-end;
+  gap: 0;
+  padding-top: 0;
 }
 
 .center-media {

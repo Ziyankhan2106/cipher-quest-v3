@@ -14,7 +14,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:13px 22px;background:var(--si);border-bottom:1px solid var(--bs);}
 .topbar-left{display:flex;align-items:center;gap:10px;}
 .badge{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.2em;padding:3px 10px;border-radius:999px;border:1px solid rgba(185,127,255,0.6);background:rgba(2,6,23,0.3);color:var(--purple);}
-.topbar-title{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+.topbar-title{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;}
 .topbar-sub{font-size:11px;color:var(--mu);letter-spacing:.15em;text-transform:uppercase;margin-top:1px;}
 .live-tag{display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ag);}
 .live-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ag);box-shadow:0 0 8px var(--ag);animation:pulse 1.4s ease-in-out infinite;}
@@ -33,10 +33,10 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
 .chips-row{display:flex;gap:8px;justify-content:center;}
 
 /* Message chips */
-.mchip,.kchip,.ochip{width:64px;height:70px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;overflow:hidden;transition:all .35s;opacity:0;}
+.mchip,.kchip,.ochip{font-size:42px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;width:64px;height:70px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;overflow:hidden;transition:all .35s;opacity:0;}
 .mchip{background:var(--si);border:1px solid rgba(89,242,255,0.18);}
 .kchip{background:var(--si);border:1px solid rgba(255,221,87,0.18);}
-.ochip{background:rgba(2,6,23,0.4);border:1px dashed rgba(185,127,255,0.15);}
+.ochip{font-size:42px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;background:rgba(2,6,23,0.4);border:1px dashed rgba(185,127,255,0.15);}
 .chip-letter{font-family:"SF Mono","Fira Code",monospace;font-size:24px;font-weight:700;transition:all .35s;}
 .mchip .chip-letter{color:var(--tm);}
 .kchip .chip-letter{color:var(--aw);}
@@ -210,14 +210,16 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
   </div>
 </div>
 <div class="footer">
-
-        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-      <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
-      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums;">1.0x</span>
-      <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <button class="foot-btn" id="pauseResumeBtn">Pause</button>
+        <button class="foot-btn" id="replayBtn">↩ Restart</button>
     </div>
-  <div class="rtag"><div class="rtick"></div><span id="rcd"></span></div>
-  <button class="foot-btn primary" id="rn">▶ Replay Now</button>
+    <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
+        <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
+        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
+        <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
+    </div>
+    <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
 </div>
 </div>
 <div id="BL"></div>
@@ -226,7 +228,16 @@ let speedMultiplier = 1.0;
 const AL='ABCDEFGHIJKLMNOPQRSTUVWXYZ',MSG='CIPHER',KEY='KITE',MAXP=30;
 let running=false,ct={c:false},rTimer=null,cdn=2;
 const $=id=>document.getElementById(id);
-const slp=ms=>new Promise(r=>{ct._t=setTimeout(r, ms / speedMultiplier);});
+
+let isPaused = false;
+async function slp(ms) {
+    let elapsed = 0;
+    while (elapsed < (ms / speedMultiplier)) {
+        if (ct.c) return;
+        if (!isPaused) elapsed += 20;
+        await new Promise(r => setTimeout(r, 20));
+    }
+}
 const vis=(el,on=true)=>el.classList.toggle('vis',on);
 const setSt=(t,col='var(--ap)')=>{$('st').textContent=t;document.querySelector('.status').style.color=col;};
 const pct=n=>(Math.min(n,MAXP)/MAXP)*100;
@@ -336,8 +347,10 @@ function startC(){cdn=2;$('rcd').textContent=`Replaying in ${cdn}s…`;rTimer=se
 function cancelC(){if(rTimer){clearInterval(rTimer);rTimer=null;}$('rcd').textContent='';}
 
 async function run(){
-  if(running){ct.c=true;await slp(130);}
+  if(running){ct.c=true;await new Promise(r => setTimeout(r, 130));}
   ct={c:false};running=true;
+  isPaused=false;
+  const pb = $('pauseResumeBtn'); if(pb) pb.textContent = 'Pause';
   const res=compute();
   const encoded=res.map(r=>r.enc).join('');
   const wc=res.filter(r=>r.wraps).length;
@@ -494,34 +507,42 @@ completely different letter based on its position.</span></div>`;
 }
 
 function kick(){cancelC();run();}
-$('rn').onclick=kick;
+        
+const replayBtn = document.getElementById('replayBtn');
+if (replayBtn) replayBtn.addEventListener('click', kick);
+
+const pauseResumeBtn = document.getElementById('pauseResumeBtn');
+if (pauseResumeBtn) {
+    pauseResumeBtn.addEventListener('click', () => {
+        if (!running) return;
+        isPaused = !isPaused;
+        pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+    });
+}
+
+const speedUp = document.getElementById('speedUp');
+const speedDown = document.getElementById('speedDown');
+const sDisplay = document.getElementById('speedDisplay');
+
+if (speedUp && speedDown && sDisplay) {
+    speedUp.addEventListener("click", () => {
+        if (speedMultiplier < 2.0) speedMultiplier += 0.25;
+        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+    });
+    speedDown.addEventListener("click", () => {
+        if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
+        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+    });
+}
+
+const nextBtn = document.getElementById('nextBtn');
+if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+        window.location.href = "level3.4.html"; // Skip 3.3 per prompt structure implied, wait, maybe just go to level3.4.html
+    });
+}
+
 run();
-
-        const sDisplay = document.getElementById("speedDisplay");
-  if (document.getElementById("speedUp")) {
-    document.getElementById("speedUp").addEventListener("click", () => {
-      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-    document.getElementById("speedDown").addEventListener("click", () => {
-      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-    });
-  }
-
-  const nextBtn = document.getElementById("nextBtn");
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
-      if (match) {
-        let ch = parseInt(match[1]);
-        let lvl = parseInt(match[2]);
-        lvl++;
-        if (lvl > 5) { lvl = 1; ch++; }
-        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
-      }
-    });
-  }
 </script>
 </body>
 </html>

@@ -195,25 +195,28 @@
     <!-- Controls -->
     <footer class="flex items-center justify-between p-4 bg-slate-950/90 border-t border-slate-800">
       <div class="flex gap-3">
-        <button id="btn-play"
-          class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
-          <i data-lucide="pause" class="w-4 h-4"></i> <span id="play-text">Pause</span>
-        </button>
-        <button id="btn-next"
+        <button id="btn-restart"
           class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
-          <i data-lucide="step-forward" class="w-4 h-4"></i> Step
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Restart
+        </button>
+        <button id="btn-prev"
+          class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Prev Step
+        </button>
+        <button id="btn-next-step"
+          class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+          Next Step <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
       </div>
 
       <div class="flex items-center gap-2">
-        <div class="speed-controls flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1">
-          <button id="speedDown" class="text-slate-400 hover:text-white px-2">-</button>
-          <span id="speedDisplay" class="text-xs font-mono text-cyan-400 w-8 text-center">1.0x</span>
-          <button id="speedUp" class="text-slate-400 hover:text-white px-2">+</button>
-        </div>
         <div class="flex gap-1" id="progress-dots">
           <!-- Dots injected by JS -->
         </div>
+        <button id="btn-next-level"
+          class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ml-4">
+          Next Cipher <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
       </div>
     </footer>
 
@@ -434,24 +437,22 @@ let currentStep = 0;
 
     // 3. Flow Control
     function nextStep() {
-      currentStep = (currentStep + 1) % steps.length;
-      renderStep(currentStep);
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        renderStep(currentStep);
+      }
     }
 
-    function togglePlay() {
-      isPlaying = !isPlaying;
-      const btnText = $('play-text');
-      const icon = $('btn-play').querySelector('svg');
-
-      if (isPlaying) {
-        btnText.textContent = "Pause";
-        icon.innerHTML = `<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>`; // Pause icon
-        playInterval = setInterval(nextStep, 2000 / speedMultiplier);
-      } else {
-        btnText.textContent = "Resume";
-        icon.innerHTML = `<polygon points="5 3 19 12 5 21 5 3"></polygon>`; // Play icon
-        clearInterval(playInterval);
+    function prevStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        renderStep(currentStep);
       }
+    }
+
+    function restart() {
+      currentStep = 0;
+      renderStep(0);
     }
 
     // 4. Init
@@ -459,50 +460,24 @@ let currentStep = 0;
       buildPipeline();
       renderStep(0);
 
-      // Auto-start (Slower timing so the detailed descriptions are readable)
-      playInterval = setInterval(nextStep, 2000 / speedMultiplier);
-
-      $('btn-play').addEventListener('click', togglePlay);
-      $('btn-next').addEventListener('click', () => {
-        if (isPlaying) togglePlay(); // Pause if user takes manual control
-        nextStep();
-      });
-    });
-
-  
-        const sDisplay = document.getElementById("speedDisplay");
-  if (document.getElementById("speedUp")) {
-    document.getElementById("speedUp").addEventListener("click", () => {
-      if (speedMultiplier < 4.0) speedMultiplier += 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-      if (isPlaying) {
-        clearInterval(playInterval);
-        playInterval = setInterval(nextStep, 2000 / speedMultiplier);
+      $('btn-next-step').addEventListener('click', nextStep);
+      $('btn-prev').addEventListener('click', prevStep);
+      $('btn-restart').addEventListener('click', restart);
+      
+      const nextLevelBtn = document.getElementById('btn-next-level');
+      if (nextLevelBtn) {
+        nextLevelBtn.addEventListener('click', () => {
+          const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
+          if (match) {
+            let ch = parseInt(match[1]);
+            let lvl = parseInt(match[2]);
+            lvl++;
+            if (lvl > 5) { lvl = 1; ch++; }
+            if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
+          }
+        });
       }
     });
-    document.getElementById("speedDown").addEventListener("click", () => {
-      if (speedMultiplier > 0.5) speedMultiplier -= 0.5;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(1) + "x";
-      if (isPlaying) {
-        clearInterval(playInterval);
-        playInterval = setInterval(nextStep, 2000 / speedMultiplier);
-      }
-    });
-  }
-
-  const nextBtn = document.getElementById("nextBtn");
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      const match = window.location.pathname.match(/level(\d+)\.(\d+)\.html/);
-      if (match) {
-        let ch = parseInt(match[1]);
-        let lvl = parseInt(match[2]);
-        lvl++;
-        if (lvl > 5) { lvl = 1; ch++; }
-        if (ch <= 4) window.location.href = `level${ch}.${lvl}.html`;
-      }
-    });
-  }
 </script>
 </body>
 

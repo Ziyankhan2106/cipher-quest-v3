@@ -9,6 +9,8 @@ const Multiplayer = () => {
   const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
 
+  const storyCompleted = (user?.storyData?.completedMissions?.length || 0) >= 20;
+
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searchHint, setSearchHint] = useState('');
@@ -196,7 +198,7 @@ const Multiplayer = () => {
 
   const refreshLeaderboard = async () => {
     try {
-      const data = await api('/api/multiplayer/leaderboard');
+      const data = await api('/api/cipherlab/leaderboard');
       if (data.entries) setLeaderboard(data.entries);
     } catch {}
   };
@@ -231,7 +233,7 @@ const Multiplayer = () => {
   useEffect(() => {
     setAnswer('');
     if (match?.lastRoundCorrectAnswer) {
-      const winnerName = match.lastRoundWinner ? (match.usernames[match.lastRoundWinner] || 'Operative') : 'None (Draw)';
+      const winnerName = match.lastRoundWinner ? (match.usernames[match.lastRoundWinner]?.toUpperCase() || 'CALLSIGN') : 'None (Draw)';
       setRoundFeedback({ winner: winnerName, correct: match.lastRoundCorrectAnswer });
       // Keep results visible for a while
       const timer = setTimeout(() => setRoundFeedback(null), 6000);
@@ -287,7 +289,7 @@ const Multiplayer = () => {
     if (match.myAnswered) {
       duelStatus = match.opponentAnswered ? "Both answers locked. Resolving…" : "Answer locked in. Waiting for opponent…";
     } else {
-      duelStatus = match.opponentAnswered ? "⚡ Your opponent has already answered! Hurry up!" : "Decrypt and enter the original message below.";
+      duelStatus = match.opponentAnswered ? "⚡ Your opponent has already answered! Hurry up!" : "";
     }
   }
 
@@ -334,7 +336,7 @@ const Multiplayer = () => {
     }
     
     if (w === user?.uid && match.matchId !== lastConfettiMatch) {
-        confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 }, colors: ['#59f2ff', '#ffffff'] });
+        confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 }, colors: ['var(--current-theme-color)', '#ffffff'] });
         setLastConfettiMatch(match.matchId);
     }
   }
@@ -363,36 +365,27 @@ const Multiplayer = () => {
   };
 
   return (
-    <div className="h-screen w-screen bg-[#020205] flex flex-col text-white relative overflow-hidden font-sans selection:bg-[color:var(--current-theme-color)]/30">
-      {/* Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[url('/background.jpg')] bg-cover bg-center opacity-15 mix-blend-luminosity"></div>
-        <div className="absolute top-[10%] left-[5%] w-[35vw] h-[35vw] rounded-full mix-blend-screen opacity-40 pointer-events-none" style={{ backgroundColor: 'color-mix(in srgb, var(--current-theme-color) 10%, transparent)', filter: 'blur(160px)' }}></div>
-        <div className="absolute bottom-[5%] right-[5%] w-[40vw] h-[40vw] rounded-full mix-blend-screen opacity-30 pointer-events-none" style={{ backgroundColor: 'color-mix(in srgb, var(--current-theme-color) 8%, transparent)', filter: 'blur(180px)' }}></div>
-        <div className="absolute inset-0 grid-bg opacity-[0.08] pointer-events-none"></div>
-        <div className="scanlines opacity-40"></div>
-        <div className="absolute inset-0 bg-radial from-transparent to-black/90 pointer-events-none"></div>
+    <div className="h-screen w-screen bg-[#020205] flex flex-col text-white relative overflow-hidden font-sans selection:bg-[var(--current-theme-color)]/30">
+      {/* Standardized Background */}
+      <div className="absolute inset-0 z-0 bg-[#050505] overflow-hidden pointer-events-none">
+        <div className="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
+        <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
       </div>
 
       {/* Header */}
-      <div className="relative z-10 flex items-center justify-between px-10 pt-8">
-        <div className="flex items-center gap-3">
-          <Users className="text-[color:var(--current-theme-color)]" size={24} />
-          <span className="font-display text-2xl uppercase tracking-widest">Multiplayer Duel</span>
-        </div>
-        <div className="flex items-center gap-6">
-          <div className="text-right flex flex-col items-end">
-            <div className="text-[10px] uppercase font-mono tracking-[0.3em] text-white/40 mb-1">Operator</div>
-            <div className="font-display text-lg uppercase tracking-widest text-[color:var(--current-theme-color)] flex items-center gap-2">
-              <span>{user?.username || 'UNASSIGNED'}</span>
-              <User size={18} />
-            </div>
-          </div>
-          <button className="flex items-center gap-2 px-6 py-2 bg-white/5 hover:bg-white/10 transition-all rounded outline-none border border-[color:var(--current-theme-color)]/20 shadow-[0_0_10px_rgba(0,0,0,0.5)]" 
-                   onClick={() => navigate('/dashboard')}>
-               <Home size={18} className="text-[color:var(--current-theme-color)]" />
-               <span className="font-mono text-[10px] text-white tracking-widest uppercase">Return to Nexus</span>
-           </button>
+      <div className="relative z-10 w-full mb-12">
+        {/* Left corner back arrow */}
+        <button onClick={() => navigate('/dashboard')} className="fixed top-0 left-0 w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
+           <div className="w-8 h-8 flex items-center justify-center">
+             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
+               <path d="m15 18-6-6 6-6"/>
+             </svg>
+           </div>
+        </button>
+
+        {/* Right side module name */}
+        <div className="absolute top-6 right-10 flex flex-col items-end pointer-events-auto z-40">
+          <h1 className="cq-title tracking-widest uppercase text-right mb-4">Multiplayer</h1>
         </div>
       </div>
 
@@ -403,56 +396,20 @@ const Multiplayer = () => {
           {/* Lobby (always visible when no active match) */}
           {!match && (
             <>
-            {/* Hero Banner */}
-            <div className="glass-panel border border-[color:var(--current-theme-color)]/20 p-10 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-[color:var(--current-theme-color)]/10 via-transparent to-red-500/5 pointer-events-none"></div>
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[color:var(--current-theme-color)] to-red-500 shadow-[0_0_15px_var(--current-theme-color)]"></div>
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[color:var(--current-theme-color)]/10 blur-[120px] pointer-events-none"></div>
-              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-6">
-                  <div className="w-20 h-20 bg-[#0a0a0f] border border-[color:var(--current-theme-color)]/50 flex items-center justify-center rounded-lg shadow-[0_0_25px_color-mix(in_srgb,var(--current-theme-color)_40%,transparent)] relative overflow-hidden">
-                    <div className="absolute inset-0 bg-[color:var(--current-theme-color)]/10 animate-[pulse_3s_ease-in-out_infinite]"></div>
-                    <User size={36} className="text-[color:var(--current-theme-color)] drop-shadow-[0_0_10px_var(--current-theme-color)]" />
-                  </div>
-                  <div>
-                    <div className="font-mono text-[10px] uppercase tracking-[0.4em] text-[color:var(--current-theme-color)] mb-1 flex items-center gap-2">
-                      &gt; Arena Operative
-                    </div>
-                    <h2 className="font-display text-4xl uppercase tracking-widest text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">{user?.username || 'UNASSIGNED'}</h2>
-                  </div>
-                </div>
-                <div className="flex items-center gap-8">
-                  <div className="text-center">
-                    <div className="font-display text-3xl text-[color:var(--current-theme-color)] drop-shadow-[0_0_8px_var(--current-theme-color)]">{user?.xp || 0}</div>
-                    <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-white/40">Total XP</div>
-                  </div>
-                  <div className="w-px h-10 bg-white/10"></div>
-                  <div className="text-center">
-                    <div className="font-display text-3xl text-white">{user?.level || 1}</div>
-                    <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-white/40">Level</div>
-                  </div>
-                  <div className="w-px h-10 bg-white/10"></div>
-                  <div className="text-center">
-                    <div className="font-display text-3xl text-red-500">{invites.length}</div>
-                    <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-white/40">Pending</div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-16">
               <div className="lg:col-span-2 space-y-8">
                 {/* Search Panel */}
-                <div className="glass-panel p-8 border border-[color:var(--current-theme-color)]/20 relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[color:var(--current-theme-color)]/5 to-transparent pointer-events-none"></div>
-                  <div className="absolute top-0 right-0 w-48 h-48 bg-[color:var(--current-theme-color)]/10 blur-[80px] pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                <div className="glass-panel p-8 border border-[var(--current-theme-color)]/20 relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--current-theme-color)]/5 to-transparent pointer-events-none"></div>
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--current-theme-color)]/10 blur-[80px] pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity"></div>
                   
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-2">
-                      <Radar size={16} className="text-[color:var(--current-theme-color)] animate-pulse" />
-                      <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[color:var(--current-theme-color)]">&gt; Challenge Friend</span>
+                      <Radar size={16} className="text-[var(--current-theme-color)] animate-pulse" />
+                      <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[var(--current-theme-color)]">&gt; Challenge Friend</span>
                     </div>
-                    <h2 className="font-display text-3xl uppercase mb-2 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Find Operative</h2>
+                    <h2 className="cq-subheading mb-2 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Find Callsign</h2>
                     <p className="text-white/40 text-xs mb-8">Enter a callsign to find your friend. Send a duel invite and wait for them to accept.</p>
 
                     {!user && (
@@ -467,9 +424,9 @@ const Multiplayer = () => {
 
                     <div className="flex flex-col md:flex-row gap-4 mb-6">
                       <input type="text" value={searchQuery} onChange={handleSearchChange} onKeyDown={(e) => e.key === 'Enter' && runSearch(searchQuery)}
-                             className="flex-1 bg-[#0a0a0f] border border-white/20 focus:border-[color:var(--current-theme-color)] focus:shadow-[0_0_15px_color-mix(in_srgb,var(--current-theme-color)_30%,transparent)] text-white font-mono tracking-widest uppercase p-5 rounded outline-none transition-all placeholder:text-white/10"
+                             className="flex-1 bg-[#0a0a0f] border border-white/20 focus:border-[var(--current-theme-color)] focus:shadow-[0_0_15px_color-mix(in_srgb,var(--current-theme-color)_30%,transparent)] text-white font-mono tracking-widest uppercase p-5 rounded outline-none transition-all placeholder:text-white/10"
                              placeholder="USERNAME..." maxLength={24} autoComplete="off" />
-                      <button onClick={() => runSearch(searchQuery)} className="px-10 py-5 bg-[color:var(--current-theme-color)]/10 border border-[color:var(--current-theme-color)]/50 text-[color:var(--current-theme-color)] hover:bg-[color:var(--current-theme-color)] hover:text-black font-bold font-mono text-[12px] uppercase tracking-[0.3em] hover:shadow-[0_0_20px_var(--current-theme-color)] transition-all rounded">Search</button>
+                      <button onClick={() => runSearch(searchQuery)} className="px-10 py-5 bg-[var(--current-theme-color)]/10 border border-[var(--current-theme-color)]/50 text-[var(--current-theme-color)] hover:bg-[var(--current-theme-color)] hover:text-black font-bold font-mono text-[12px] uppercase tracking-[0.3em] hover:shadow-[0_0_20px_var(--current-theme-color)] transition-all rounded">Search</button>
                     </div>
 
                     {searchResults.length > 0 && (
@@ -479,21 +436,21 @@ const Multiplayer = () => {
                           <span className="font-mono text-[10px] text-white/50 uppercase tracking-widest whitespace-nowrap">Rounds:</span>
                           <div className="flex gap-2">
                             {[1, 3, 5, 7].map(r => (
-                              <button key={r} onClick={() => setMatchFormat(r)} className={`px-4 py-2 font-mono text-sm font-bold rounded transition-all ${matchFormat === r ? 'bg-[color:var(--current-theme-color)] text-black shadow-[0_0_15px_var(--current-theme-color)]' : 'bg-white/5 text-white/50 border border-white/10 hover:border-white/30'}`}>Best of {r}</button>
+                              <button key={r} onClick={() => setMatchFormat(r)} className={`px-4 py-2 font-mono text-sm font-bold rounded transition-all ${matchFormat === r ? 'bg-[var(--current-theme-color)] text-black shadow-[0_0_15px_var(--current-theme-color)]' : 'bg-white/5 text-white/50 border border-white/10 hover:border-white/30'}`}>Best of {r}</button>
                             ))}
                           </div>
                         </div>
                       </div>
                       <div className="space-y-3 mb-4">
                         {searchResults.map(u => (
-                          <div key={u.uid} className="flex items-center justify-between bg-black/40 border border-[color:var(--current-theme-color)]/20 px-6 py-4 rounded group hover:border-[color:var(--current-theme-color)]/60 transition-colors">
+                          <div key={u.uid} className="flex items-center justify-between bg-black/40 border border-[var(--current-theme-color)]/20 px-6 py-4 rounded group hover:border-[var(--current-theme-color)]/60 transition-colors">
                             <div className="flex items-center gap-4">
-                              <div className="w-8 h-8 rounded-full bg-[color:var(--current-theme-color)]/20 flex items-center justify-center border border-[color:var(--current-theme-color)]/30">
-                                <User size={16} className="text-[color:var(--current-theme-color)]" />
+                              <div className="w-8 h-8 rounded-full bg-[var(--current-theme-color)]/20 flex items-center justify-center border border-[var(--current-theme-color)]/30">
+                                <User size={16} className="text-[var(--current-theme-color)]" />
                               </div>
-                              <span className="font-mono tracking-widest uppercase text-base text-white/90 group-hover:text-white transition-colors">{u.username}</span>
+                              <span className="font-mono tracking-widest uppercase text-base text-white/90 group-hover:text-white transition-colors">{u.username.toUpperCase()}</span>
                             </div>
-                            <button onClick={() => sendInvite(u.uid)} className="px-6 py-3 border border-[color:var(--current-theme-color)]/50 text-[color:var(--current-theme-color)] hover:bg-[color:var(--current-theme-color)] hover:text-black font-bold font-mono text-[10px] uppercase tracking-[0.2em] transition-all rounded shadow-[inset_0_0_10px_color-mix(in_srgb,var(--current-theme-color)_10%,transparent)]">Challenge ({matchFormat}R)</button>
+                            <button onClick={() => sendInvite(u.uid)} className="px-6 py-3 border border-[var(--current-theme-color)]/50 text-[var(--current-theme-color)] hover:bg-[var(--current-theme-color)] hover:text-black font-bold font-mono text-[10px] uppercase tracking-[0.2em] transition-all rounded shadow-[inset_0_0_10px_color-mix(in_srgb,var(--current-theme-color)_10%,transparent)]">Challenge ({matchFormat}R)</button>
                           </div>
                         ))}
                       </div>
@@ -510,12 +467,12 @@ const Multiplayer = () => {
 
                 {/* Sent Invites */}
                 {outgoingInvites.length > 0 && (
-                  <div className="glass-panel p-8 border border-[color:var(--current-theme-color)]/20 relative overflow-hidden group">
-                     <h2 className="font-display text-2xl uppercase mb-4 text-white">Sent Signals</h2>
+                  <div className="glass-panel p-8 border border-[var(--current-theme-color)]/20 relative overflow-hidden group">
+                     <h2 className="cq-subheading mb-4">Sent Signals</h2>
                      <div className="space-y-3">
                        {outgoingInvites.map(inv => (
                          <div key={inv.inviteId} className="flex items-center justify-between bg-black/40 border border-white/10 px-6 py-4 rounded">
-                           <span className="font-mono text-sm tracking-widest uppercase text-white/80">To <strong className="text-[color:var(--current-theme-color)]">{inv.toUsername}</strong>: {inv.status === 'declined' ? <span className="text-red-500">DECLINED</span> : 'Pending...'}</span>
+                           <span className="font-mono text-sm tracking-widest uppercase text-white/80">To <strong className="text-[var(--current-theme-color)]">{inv.toUsername.toUpperCase()}</strong>: {inv.status === 'declined' ? <span className="text-red-500">DECLINED</span> : 'Pending...'}</span>
                            <button onClick={() => clearInvite(inv.inviteId)} className="px-4 py-2 border border-white/20 text-white/50 text-[10px] font-mono tracking-widest uppercase hover:text-white hover:border-white/50 transition-all rounded">Cancel</button>
                          </div>
                        ))}
@@ -533,7 +490,7 @@ const Multiplayer = () => {
                         <AlertTriangle size={16} className="text-red-500 animate-[pulse_1s_infinite]" />
                         <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-red-500">&gt; Incoming Signal</span>
                       </div>
-                      <h2 className="font-display text-3xl uppercase mb-6 text-white">Challenge Received</h2>
+                      <h2 className="cq-subheading mb-6">Challenge Received</h2>
                       <div className="space-y-4">
                         {invites.map(inv => (
                           <div key={inv.inviteId} className="flex flex-col md:flex-row md:items-center justify-between bg-black/50 border border-red-500/30 px-6 py-5 rounded gap-4 shadow-inner">
@@ -541,7 +498,7 @@ const Multiplayer = () => {
                               <div className="w-10 h-10 rounded bg-red-500/20 flex items-center justify-center border border-red-500/50">
                                 <AlertCircle size={20} className="text-red-500 animate-pulse" />
                               </div>
-                              <span className="font-mono text-base"><strong className="text-red-500 tracking-widest uppercase">{inv.fromUsername || 'Operative'}</strong> has challenged you. <span className="text-white/40 text-xs">(Best of {inv.roundCount})</span></span>
+                              <span className="font-mono text-base"><strong className="text-red-500 tracking-widest uppercase">{inv.fromUsername?.toUpperCase() || 'CALLSIGN'}</strong> has challenged you. <span className="text-white/40 text-xs">(Best of {inv.matchFormat})</span></span>
                             </div>
                             <div className="flex gap-3">
                               <button onClick={() => acceptInvite(inv.inviteId)} className="px-8 py-3 bg-red-500 text-white font-bold font-mono text-[11px] uppercase tracking-[0.3em] hover:bg-white hover:text-black hover:shadow-[0_0_20px_#ef4444] transition-all rounded shadow-[0_0_10px_rgba(239,68,68,0.5)]">Accept</button>
@@ -555,26 +512,41 @@ const Multiplayer = () => {
                 )}
               </div>
 
-              {/* Leaderboard */}
-              <div className="lg:col-span-1">
-                <div className="glass-panel border border-[color:var(--current-theme-color)]/30 overflow-hidden relative flex flex-col h-full">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[color:var(--current-theme-color)]/10 blur-[50px] pointer-events-none opacity-50"></div>
+              {/* Leaderboard and Operator Stats */}
+              <div className="lg:col-span-1 flex flex-col gap-8">
+                
+                {/* Operator Stats */}
+                <div className="glass-panel p-4 border border-[var(--current-theme-color)]/20 rounded shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black/60 backdrop-blur">
+                   <div className="font-mono text-[10px] text-white/50 uppercase tracking-widest mb-3 pb-2 border-b border-white/10 text-left">Operator Stats</div>
+                   <div className="flex items-center justify-between gap-4">
+                      <div className="w-12 h-12 tactical-panel bg-white/5 p-1 flex-shrink-0">
+                        <img src={`/assets/badge${user?.level || 1}.png`} alt={`Level ${user?.level || 1}`} className="w-full h-full object-contain" />
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <span className={`text-sm font-bold uppercase tracking-widest ${storyCompleted ? 'rainbow-text' : 'text-white/90'}`}>{user?.username?.toUpperCase() || 'UNASSIGNED'}</span>
+                        <span className="font-mono text-xs text-[var(--current-theme-color)] mt-1">{user?.xp?.toLocaleString() || 0} XP</span>
+                      </div>
+                   </div>
+                </div>
+
+                <div className="glass-panel border border-[var(--current-theme-color)]/30 overflow-hidden relative flex flex-col h-full">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--current-theme-color)]/10 blur-[50px] pointer-events-none opacity-50"></div>
                   <div className="p-6 border-b border-white/10 relative z-10 flex items-center justify-between bg-[#0a0a0f]">
                     <div className="flex items-center gap-3">
-                      <Trophy className="text-[color:var(--current-theme-color)]" size={20} />
-                      <h3 className="font-display text-xl uppercase tracking-widest text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Top Operatives</h3>
+                      <Trophy className="text-[var(--current-theme-color)]" size={20} />
+                      <h3 className="cq-subheading tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Top Callsigns</h3>
                     </div>
                   </div>
                   
                   <div className="flex-1 overflow-y-auto p-2">
                     <div className="flex flex-col gap-1 p-4">
-                      {leaderboard.map((lb, i) => (
-                        <div key={lb.uid} className={`flex items-center justify-between py-3 px-4 rounded transition-colors group relative overflow-hidden ${i < 3 ? 'bg-[color:var(--current-theme-color)]/10 border border-[color:var(--current-theme-color)]/30' : 'hover:bg-white/5'}`}>
+                      {leaderboard.slice(0, 5).map((lb, i) => (
+                        <div key={lb.uid} className={`flex items-center justify-between py-3 px-4 rounded transition-colors group relative overflow-hidden ${i < 3 ? 'bg-[var(--current-theme-color)]/10 border border-[var(--current-theme-color)]/30' : 'hover:bg-white/5'}`}>
                           <div className="flex items-center gap-4 relative z-10">
                             <span className={`font-display text-xl font-bold w-6 ${i === 0 ? 'text-yellow-400 drop-shadow-[0_0_10px_#facc15]' : (i === 1 ? 'text-gray-300' : (i === 2 ? 'text-amber-600' : 'text-white/30'))}`}>#{i+1}</span>
                             <span className="font-mono text-sm tracking-widest uppercase text-white/90 group-hover:text-white">{lb.callsign}</span>
                           </div>
-                          <span className="font-mono text-xs text-[color:var(--current-theme-color)] font-bold relative z-10">{lb.points} XP</span>
+                          <span className="font-mono text-xs text-[var(--current-theme-color)] font-bold relative z-10">{lb.points} XP</span>
                         </div>
                       ))}
                       {leaderboard.length === 0 && (
@@ -596,29 +568,28 @@ const Multiplayer = () => {
             <>
             {roundSplash.show && (
               <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-md">
-                <div className="font-mono text-sm tracking-[0.4em] text-[color:var(--current-theme-color)] uppercase mb-4">Initializing Round</div>
-                <div className="font-display text-8xl uppercase text-white tracking-widest drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]">ROUND {roundSplash.num}</div>
-                <div className="w-48 h-1 bg-[color:var(--current-theme-color)] mt-8 animate-pulse shadow-[0_0_20px_var(--current-theme-color)]"></div>
+                <div className="font-mono text-sm tracking-[0.4em] text-[var(--current-theme-color)] uppercase mb-4">Initializing Round</div>
+                <div className="cq-title tracking-widest drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]">ROUND {roundSplash.num}</div>
+                <div className="w-48 h-1 bg-[var(--current-theme-color)] mt-8 animate-pulse shadow-[0_0_20px_var(--current-theme-color)]"></div>
               </div>
             )}
             
             {!roundSplash.show && (
-            <div className="glass-panel border border-[color:var(--current-theme-color)]/30 overflow-hidden relative group">
-              <div className="absolute inset-0 bg-gradient-to-br from-[color:var(--current-theme-color)]/5 to-transparent pointer-events-none"></div>
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[color:var(--current-theme-color)]/10 blur-[100px] pointer-events-none"></div>
+            <div className="glass-panel border border-[var(--current-theme-color)]/30 overflow-hidden relative group">
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--current-theme-color)]/5 to-transparent pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--current-theme-color)]/10 blur-[100px] pointer-events-none"></div>
               
               <div className="p-8 pb-4 flex flex-col gap-4 border-b border-white/10 relative z-10">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
-                    <Zap size={16} className="text-[color:var(--current-theme-color)] animate-[pulse_2s_infinite]" />
-                    <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[color:var(--current-theme-color)]">Live Duel</span>
-                    <span className="font-mono text-[10px] px-3 py-1 bg-[color:var(--current-theme-color)]/20 border border-[color:var(--current-theme-color)]/30 rounded text-[color:var(--current-theme-color)]">Round {(match.currentRound || 0) + 1} / {match.totalRounds}</span>
+                    <Zap size={16} className="text-[var(--current-theme-color)] animate-[pulse_2s_infinite]" />
+                    <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[var(--current-theme-color)]">Live Duel</span>
+                    <span className="font-mono text-[10px] px-3 py-1 bg-[var(--current-theme-color)]/20 border border-[var(--current-theme-color)]/30 rounded text-[var(--current-theme-color)]">Round {match.currentRound || 1} / {match.matchFormat || 1}</span>
                   </div>
-                  <button onClick={forfeitMatch} className="text-[10px] text-red-400/60 hover:text-red-400 font-mono uppercase tracking-tighter transition-colors border border-red-500/20 px-3 py-1 bg-red-500/5 rounded">[ Abort Mission ]</button>
 
                   {/* Score Display */}
                   <div className="flex items-center gap-4 bg-black/40 px-6 py-2 rounded-full border border-white/10 shadow-inner">
-                    <span className="font-display text-xl uppercase flex items-center gap-2 text-[color:var(--current-theme-color)]">
+                    <span className="font-display text-xl uppercase flex items-center gap-2 text-[var(--current-theme-color)]">
                       {myScore} <span className="font-mono text-[9px] text-white/40">PTS</span>
                     </span>
                     <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">vs</span>
@@ -631,7 +602,7 @@ const Multiplayer = () => {
                 {/* Round Progress Dots */}
                 <div className="flex items-center justify-center gap-2">
                   {roundDots().map((r, i) => (
-                    <div key={i} className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold font-mono transition-all ${r.status === 'won' ? 'bg-[color:var(--current-theme-color)] text-black shadow-[0_0_10px_var(--current-theme-color)]' : (r.status === 'lost' ? 'bg-red-500 text-white shadow-[0_0_10px_rgba(239,68,68,0.5)]' : (r.status === 'draw' ? 'bg-yellow-500/30 text-yellow-400 border border-yellow-500/50' : (r.status === 'active' ? 'bg-white/20 text-white border-2 border-[color:var(--current-theme-color)] animate-pulse' : 'bg-white/5 text-white/20 border border-white/10')))}`}>
+                    <div key={i} className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold font-mono transition-all ${r.status === 'won' ? 'bg-[var(--current-theme-color)] text-black shadow-[0_0_10px_var(--current-theme-color)]' : (r.status === 'lost' ? 'bg-red-500 text-white shadow-[0_0_10px_rgba(239,68,68,0.5)]' : (r.status === 'draw' ? 'bg-yellow-500/30 text-yellow-400 border border-yellow-500/50' : (r.status === 'active' ? 'bg-white/20 text-white border-2 border-[var(--current-theme-color)] animate-pulse' : 'bg-white/5 text-white/20 border border-white/10')))}`}>
                       {r.round + 1}
                     </div>
                   ))}
@@ -643,7 +614,7 @@ const Multiplayer = () => {
                   {/* Ciphertext Display */}
                   <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-xl p-10 relative overflow-hidden shadow-xl">
                     <div className="absolute left-0 top-0 h-full w-1 bg-white/20 animate-pulse"></div>
-                    <div className="font-sans font-bold text-[10px] text-[color:var(--current-theme-color)] uppercase tracking-[0.3em] mb-6 flex justify-between">
+                    <div className="font-sans font-bold text-[10px] text-[var(--current-theme-color)] uppercase tracking-[0.3em] mb-6 flex justify-between">
                       <span>Target Payload (Encrypted)</span>
                       <Zap size={16} className="animate-[pulse_2s_infinite]" />
                     </div>
@@ -654,27 +625,27 @@ const Multiplayer = () => {
 
                   {/* Connector */}
                   <div className="flex flex-col items-center justify-center -my-6 z-20 h-20 relative">
-                     <div className="w-[2px] h-full bg-gradient-to-b from-[color:var(--current-theme-color)]/0 via-[color:var(--current-theme-color)] to-[color:var(--current-theme-color)]/0 absolute opacity-50"></div>
-                     <div className="w-1.5 h-6 bg-[color:var(--current-theme-color)] absolute animate-[bounce_2s_infinite] shadow-[0_0_15px_var(--current-theme-color)] rounded-full z-10"></div>
-                     <div className="px-6 py-2 bg-[#0a0a0f] border border-[color:var(--current-theme-color)]/50 rounded-full relative z-20 flex items-center gap-3 backdrop-blur-md shadow-[0_0_30px_rgba(0,0,0,0.8)]">
-                        <Settings size={16} className="text-[color:var(--current-theme-color)] animate-[spin_4s_linear_infinite]" />
+                     <div className="w-[2px] h-full bg-gradient-to-b from-[var(--current-theme-color)]/0 via-[var(--current-theme-color)] to-[var(--current-theme-color)]/0 absolute opacity-50"></div>
+                     <div className="w-1.5 h-6 bg-[var(--current-theme-color)] absolute animate-[bounce_2s_infinite] shadow-[0_0_15px_var(--current-theme-color)] rounded-full z-10"></div>
+                     <div className="px-6 py-2 bg-[#0a0a0f] border border-[var(--current-theme-color)]/50 rounded-full relative z-20 flex items-center gap-3 backdrop-blur-md shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+                        <Settings size={16} className="text-[var(--current-theme-color)] animate-[spin_4s_linear_infinite]" />
                         <span className="font-mono text-[10px] text-white/70 uppercase tracking-[0.3em]">Processing Node</span>
-                        <ArrowRightLeft size={16} className="text-[color:var(--current-theme-color)]" />
+                        <ArrowRightLeft size={16} className="text-[var(--current-theme-color)]" />
                      </div>
                   </div>
 
                   {/* Plaintext Input Area */}
-                  <div className="glass-panel p-10 relative shadow-[0_40px_80px_rgba(0,0,0,0.5)] transition-all duration-500 rounded-xl border border-[color:var(--current-theme-color)]/30">
-                    <div className="absolute left-0 top-0 h-full w-1 transition-colors duration-500 bg-[color:var(--current-theme-color)]"></div>
+                  <div className="glass-panel p-10 relative shadow-[0_40px_80px_rgba(0,0,0,0.5)] transition-all duration-500 rounded-xl border border-[var(--current-theme-color)]/30">
+                    <div className="absolute left-0 top-0 h-full w-1 transition-colors duration-500 bg-[var(--current-theme-color)]"></div>
 
-                    <div className="font-sans font-bold text-[10px] uppercase tracking-[0.3em] mb-8 flex justify-between text-[color:var(--current-theme-color)]">
+                    <div className="font-sans font-bold text-[10px] uppercase tracking-[0.3em] mb-8 flex justify-between text-[var(--current-theme-color)]">
                       <span>Encryption Protocol: {match.cipherType}</span>
                       <span className="animate-pulse">[AWAITING DECRYPTION]</span>
                     </div>
 
                     {match.cipherHint && (
                       <div className="mb-6 font-mono text-[11px] text-white/70 bg-[#0a0a0f]/50 p-4 border border-white/5 rounded">
-                        <span className="text-[color:var(--current-theme-color)] font-bold uppercase">&gt; Intel:</span> {match.cipherHint}
+                        <span className="text-[var(--current-theme-color)] font-bold uppercase">&gt; Intel:</span> {match.cipherHint}
                       </div>
                     )}
 
@@ -694,14 +665,16 @@ const Multiplayer = () => {
 
                     <div className="mt-8 flex justify-end">
                        <button onClick={submitAnswer} disabled={match.myAnswered}
-                               className="px-10 py-5 bg-[color:var(--current-theme-color)] text-black font-bold font-mono text-[12px] uppercase tracking-[0.3em] hover:bg-white hover:shadow-[0_0_30px_var(--current-theme-color)] transition-all disabled:opacity-20 disabled:cursor-not-allowed rounded shadow-[0_0_15px_color-mix(in_srgb,var(--current-theme-color)_50%,transparent)] flex items-center gap-3">
+                               className="px-10 py-5 bg-[var(--current-theme-color)] text-black font-bold font-mono text-[12px] uppercase tracking-[0.3em] hover:bg-white hover:shadow-[0_0_30px_var(--current-theme-color)] transition-all disabled:opacity-20 rounded shadow-[0_0_15px_color-mix(in_srgb,var(--current-theme-color)_50%,transparent)] flex items-center gap-3">
                          Execute Decryption <Send size={16} />
                        </button>
                     </div>
 
-                    <div className="mt-6 flex justify-center">
-                      <p className={`font-mono text-[11px] px-4 py-2 rounded uppercase tracking-widest transition-colors ${match.myAnswered ? 'bg-[color:var(--current-theme-color)]/20 text-[color:var(--current-theme-color)]' : 'bg-white/5 text-white/50'}`}>{duelStatus}</p>
-                    </div>
+                    {duelStatus && (
+                      <div className="mt-6 flex justify-center">
+                        <p className={`font-mono text-[11px] px-4 py-2 rounded uppercase tracking-widest transition-colors ${match.myAnswered ? 'bg-[var(--current-theme-color)]/20 text-[var(--current-theme-color)]' : 'bg-white/5 text-white/50'}`}>{duelStatus}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -712,8 +685,8 @@ const Multiplayer = () => {
 
           {/* Match Results */}
           {match && match.status === 'done' && showFinalResults && (
-            <div className={`glass-panel p-16 text-center border overflow-hidden relative ${match.winnerUid === user?.uid ? 'border-[color:var(--current-theme-color)]' : 'border-red-500/50'}`}>
-              <div className={`absolute inset-0 bg-radial from-transparent ${match.winnerUid === user?.uid ? 'to-[color:var(--current-theme-color)]/10' : 'to-red-500/10'}`}></div>
+            <div className={`glass-panel p-16 text-center border overflow-hidden relative ${match.winnerUid === user?.uid ? 'border-[var(--current-theme-color)]' : 'border-red-500/50'}`}>
+              <div className={`absolute inset-0 bg-radial from-transparent ${match.winnerUid === user?.uid ? 'to-[var(--current-theme-color)]/10' : 'to-red-500/10'}`}></div>
               
               <div className="flex justify-center mb-6">
                 {match.winnerUid === user?.uid ? (
@@ -729,7 +702,7 @@ const Multiplayer = () => {
               <p className="relative z-10 text-white/80 text-lg mb-8 font-mono uppercase tracking-[0.2em]">{resultSub}</p>
               
               {resultXp && (
-                <div className={`relative z-10 font-mono text-3xl font-bold mb-12 py-4 px-8 inline-block border rounded bg-black/40 shadow-inner ${resultXp.includes('+') ? 'text-[color:var(--current-theme-color)] border-[color:var(--current-theme-color)]/30' : 'text-white/40 border-white/10'}`}>
+                <div className={`relative z-10 font-mono text-3xl font-bold mb-12 py-4 px-8 inline-block border rounded bg-black/40 shadow-inner ${resultXp.includes('+') ? 'text-[var(--current-theme-color)] border-[var(--current-theme-color)]/30' : 'text-white/40 border-white/10'}`}>
                   {resultXp}
                 </div>
               )}
@@ -742,15 +715,15 @@ const Multiplayer = () => {
 
           {roundFeedback && (
           <div className="fixed top-[58%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-sm px-4">
-            <div className="tactical-panel bg-[#0a0a0f]/98 border-[color:var(--current-theme-color)] p-6 shadow-[0_0_50px_rgba(0,229,255,0.3)] animate-in fade-in zoom-in duration-300">
+            <div className="tactical-panel bg-[#0a0a0f]/98 border-[var(--current-theme-color)] p-6 shadow-[0_0_50px_rgba(0,229,255,0.3)] animate-in fade-in zoom-in duration-300">
               <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-2">
-                <span className="font-mono text-xs uppercase tracking-widest text-[color:var(--current-theme-color)]">Round Transmission Intercepted</span>
+                <span className="font-mono text-xs uppercase tracking-widest text-[var(--current-theme-color)]">Round Transmission Intercepted</span>
                 <button onClick={() => setRoundFeedback(null)} className="text-white/20 hover:text-white"><XIcon size={16}/></button>
               </div>
               <div className="space-y-4 text-center">
                 <div>
                   <p className="font-mono text-[10px] text-white/40 uppercase mb-1">Round Winner</p>
-                  <p className="font-sans text-xl text-[color:var(--current-theme-color)] font-bold">
+                  <p className="font-sans text-xl text-[var(--current-theme-color)] font-bold">
                     {roundFeedback.winner === 'None (Draw)' ? 'NO WINNER (DRAW)' : roundFeedback.winner}
                   </p>
                 </div>
