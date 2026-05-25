@@ -738,8 +738,8 @@ Return ONLY a JSON array of strings."""
 
     try:
         response = ai_client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt,
+            model="gemini-3.1-flash-lite",
+            contents=prompt,`
             config={"response_mime_type": "application/json"}
         )
         hints = json.loads(response.text)
