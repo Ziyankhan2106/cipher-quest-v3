@@ -390,17 +390,17 @@ const Multiplayer = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex-1 overflow-y-auto px-8 py-8 hide-scrollbar">
-        <div className="w-full space-y-8">
+      <div className="relative z-10 flex-1 overflow-y-auto px-8 py-4 hide-scrollbar">
+        <div className="w-full space-y-6">
 
           {/* Lobby (always visible when no active match) */}
           {!match && (
             <>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-16">
-              <div className="lg:col-span-2 space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+              <div className="lg:col-span-2 space-y-6">
                 {/* Search Panel */}
-                <div className="glass-panel p-8 border border-[var(--current-theme-color)]/20 relative overflow-hidden group">
+                <div className="glass-panel p-6 border border-[var(--current-theme-color)]/20 relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--current-theme-color)]/5 to-transparent pointer-events-none"></div>
                   <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--current-theme-color)]/10 blur-[80px] pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity"></div>
                   
@@ -409,8 +409,8 @@ const Multiplayer = () => {
                       <Radar size={16} className="text-[var(--current-theme-color)] animate-pulse" />
                       <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[var(--current-theme-color)]">&gt; Challenge Friend</span>
                     </div>
-                    <h2 className="cq-subheading mb-2 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Find Callsign</h2>
-                    <p className="text-white/40 text-xs mb-8">Enter a callsign to find your friend. Send a duel invite and wait for them to accept.</p>
+                    <h2 className="cq-subheading mb-1 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Find Callsign</h2>
+                    <p className="text-white/40 text-xs mb-5">Enter a callsign to find your friend. Send a duel invite and wait for them to accept.</p>
 
                     {!user && (
                       <div className="mb-6 p-5 bg-red-500/10 border border-red-500/30 rounded flex items-center justify-between gap-4">
@@ -467,8 +467,8 @@ const Multiplayer = () => {
 
                 {/* Sent Invites */}
                 {outgoingInvites.length > 0 && (
-                  <div className="glass-panel p-8 border border-[var(--current-theme-color)]/20 relative overflow-hidden group">
-                     <h2 className="cq-subheading mb-4">Sent Signals</h2>
+                  <div className="glass-panel p-6 border border-[var(--current-theme-color)]/20 relative overflow-hidden group">
+                     <h2 className="cq-subheading mb-3">Sent Signals</h2>
                      <div className="space-y-3">
                        {outgoingInvites.map(inv => (
                          <div key={inv.inviteId} className="flex items-center justify-between bg-black/40 border border-white/10 px-6 py-4 rounded">
@@ -482,7 +482,7 @@ const Multiplayer = () => {
 
                 {/* Incoming Invites */}
                 {invites.length > 0 && (
-                  <div className="glass-panel p-8 border border-red-500/50 relative overflow-hidden shadow-[0_0_30px_rgba(239,68,68,0.15)]">
+                  <div className="glass-panel p-6 border border-red-500/50 relative overflow-hidden shadow-[0_0_30px_rgba(239,68,68,0.15)]">
                     <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-transparent pointer-events-none"></div>
                     
                     <div className="relative z-10">
@@ -490,8 +490,8 @@ const Multiplayer = () => {
                         <AlertTriangle size={16} className="text-red-500 animate-[pulse_1s_infinite]" />
                         <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-red-500">&gt; Incoming Signal</span>
                       </div>
-                      <h2 className="cq-subheading mb-6">Challenge Received</h2>
-                      <div className="space-y-4">
+                      <h2 className="cq-subheading mb-4">Challenge Received</h2>
+                      <div className="space-y-3">
                         {invites.map(inv => (
                           <div key={inv.inviteId} className="flex flex-col md:flex-row md:items-center justify-between bg-black/50 border border-red-500/30 px-6 py-5 rounded gap-4 shadow-inner">
                             <div className="flex items-center gap-4">
@@ -518,11 +518,11 @@ const Multiplayer = () => {
                 {/* Operator Stats */}
                 <div className="glass-panel p-4 border border-[var(--current-theme-color)]/20 rounded shadow-[0_0_15px_rgba(0,0,0,0.5)] bg-black/60 backdrop-blur">
                    <div className="font-mono text-[10px] text-white/50 uppercase tracking-widest mb-3 pb-2 border-b border-white/10 text-left">Operator Stats</div>
-                   <div className="flex items-center justify-between gap-4">
+                   <div className="flex items-center gap-4">
                       <div className="w-12 h-12 tactical-panel bg-white/5 p-1 flex-shrink-0">
                         <img src={`/assets/badge${user?.level || 1}.png`} alt={`Level ${user?.level || 1}`} className="w-full h-full object-contain" />
                       </div>
-                      <div className="flex flex-col items-end">
+                      <div className="flex flex-col items-start">
                         <span className={`text-sm font-bold uppercase tracking-widest ${storyCompleted ? 'rainbow-text' : 'text-white/90'}`}>{user?.username?.toUpperCase() || 'UNASSIGNED'}</span>
                         <span className="font-mono text-xs text-[var(--current-theme-color)] mt-1">{user?.xp?.toLocaleString() || 0} XP</span>
                       </div>
@@ -550,13 +550,32 @@ const Multiplayer = () => {
                         </div>
                       ))}
                       {leaderboard.length === 0 && (
-                        <div className="text-center py-8">
+                        <div className="text-center py-4">
                            <Hourglass size={36} className="text-white/20 mx-auto mb-2" />
                            <p className="font-mono text-[10px] text-white/40 uppercase tracking-widest">No intel acquired yet.</p>
                         </div>
                       )}
+                      
+                      {/* Your Rank as bottom row */}
+                      {(() => {
+                        const myRank = leaderboard.findIndex((lb: any) => lb.uid === user?.uid);
+                        if (myRank < 0) return null;
+                        const myEntry = leaderboard[myRank];
+                        return (
+                          <div className="flex items-center justify-between py-3 px-4 rounded transition-colors group relative overflow-hidden mt-2" style={{ background: 'rgba(0,242,255,0.08)', border: '1px solid rgba(0,242,255,0.3)' }}>
+                            <div className="flex items-center gap-4 relative z-10">
+                              <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/50 w-24">YOUR RANK</span>
+                              <span className="font-display text-xl font-bold w-6" style={{ color: '#00f2ff', textShadow: '0 0 10px rgba(0,242,255,0.5)' }}>#{myRank + 1}</span>
+                              <span className="font-mono text-sm tracking-widest uppercase text-white font-bold ml-2">{user?.username || ''}</span>
+                            </div>
+                            <span className="font-mono text-xs text-[var(--current-theme-color)] font-bold relative z-10">{myEntry ? `${myEntry.points} XP` : `${user?.xp || 0} XP`}</span>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
+
+
                 </div>
               </div>
             </div>

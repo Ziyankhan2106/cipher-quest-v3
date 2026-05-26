@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Terminal, Shield, Zap, History, 
   CheckCircle2, Lightbulb, AlertTriangle, User,
-  Globe, ArrowLeft
+  Globe, ArrowLeft, Lock, Key, Cpu
 } from 'lucide-react';
 import { generateMission, calculateScore, CipherMission } from '../src/lib/cipherUtils';
 import confetti from 'canvas-confetti';
@@ -151,7 +151,7 @@ export default function App() {
 
   return (
     <div 
-      className="relative min-h-screen terminal-grid selection:bg-white selection:text-black"
+      className="relative h-screen overflow-hidden terminal-grid selection:bg-white selection:text-black"
     >
       <div className="scanline" />
       {/* Standardized Background */}
@@ -160,7 +160,7 @@ export default function App() {
         <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
       </div>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-12">
+      <main className="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-4 h-full flex flex-col justify-center">
         <AnimatePresence mode="wait">
           {view === 'dash' && user && (
             <Dashboard user={user} leaderboard={leaderboard} onStartLab={() => setView('lab')} storyCompleted={storyCompleted} authUser={authUser} globalXp={globalXp} />
@@ -199,31 +199,179 @@ export default function App() {
 function Dashboard({ user, leaderboard, onStartLab, storyCompleted, authUser, globalXp }: { 
   user: UserData, leaderboard: LeaderboardEntry[], onStartLab: () => void, storyCompleted: boolean, authUser: any, globalXp: number
 }) {
+  const [showRank, setShowRank] = useState(false);
+  const userRank = leaderboard.findIndex(e => e.uid === user.uid) + 1;
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-12">
-      <div className="lg:col-span-8 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div onClick={onStartLab} className="glass-panel p-8 rounded-sm group cursor-pointer hover:border-[var(--current-theme-color)] transition-all duration-500">
-            <div className="flex justify-end items-start mb-12">
-              <div className="text-xs font-mono px-3 py-1 bg-white/10 rounded-full">ACTIVE_LAB</div>
-            </div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-6">
+      <div className="lg:col-span-6 space-y-8 h-full">
+        <div onClick={onStartLab} className="glass-panel p-10 rounded-sm group cursor-pointer hover:border-[var(--current-theme-color)] transition-all duration-500 w-full h-full flex flex-col justify-between relative overflow-hidden" style={{ minHeight: '420px' }}>
+          {/* Cyan inner glow fill */}
+          <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 30% 60%, rgba(0,242,255,0.12) 0%, rgba(0,242,255,0.04) 50%, transparent 75%)' }} />
+          <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ background: 'radial-gradient(ellipse at 30% 60%, rgba(0,242,255,0.22) 0%, rgba(0,242,255,0.08) 50%, transparent 75%)' }} />
+
+          <div className="relative z-10 flex flex-col gap-6 flex-1">
             <div>
-              <h3 className="cq-subheading mb-2">Neural Lab</h3>
-              <p className="text-white/40 text-sm font-mono leading-relaxed group-hover:text-white/60 transition-colors mb-6">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="w-2 h-2 rounded-full bg-[var(--current-theme-color)] animate-pulse" style={{ boxShadow: '0 0 8px #00f2ff' }} />
+                <span className="font-mono text-[11px] tracking-[0.35em] text-[var(--current-theme-color)] uppercase">&gt; MODULE_ACTIVE</span>
+              </div>
+              <h3 className="cq-subheading mb-3 text-3xl">Neural Lab</h3>
+              <p className="text-white/40 text-[15px] font-mono leading-relaxed group-hover:text-white/60 transition-colors">
                 EXECUTE DECRYPTION SEQUENCES. CHALLENGE YOUR NEURAL CAPACITY IN REAL-TIME.
               </p>
-              <button onClick={(e) => { e.stopPropagation(); onStartLab(); }} className="cyber-button text-xs py-3 w-full group-hover:scale-[1.02] transition-transform shadow-[0_0_15px_rgba(0,242,255,0.3)] bg-[#00f2ff] !text-black border-[#00f2ff]" style={{ backgroundColor: '#00f2ff', color: 'black', borderColor: '#00f2ff' }}>
-                ENTER_LAB
-              </button>
             </div>
-            <div className="mt-8 h-1 w-0 bg-[var(--current-theme-color)] group-hover:w-full transition-all duration-700" />
+            
+            {/* Minimal Cyberpunk Decryption Visuals */}
+            <div className="flex-1 w-full flex items-center justify-center relative overflow-hidden mt-6 group">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                 <Shield size={240} className="text-[var(--current-theme-color)] opacity-5 group-hover:opacity-10 transition-opacity duration-700" strokeWidth={1} />
+              </div>
+              
+              <div className="relative z-10 w-full max-w-[340px] mx-auto flex flex-col items-center gap-6 opacity-40 group-hover:opacity-80 transition-opacity duration-700">
+                <div className="flex items-center justify-between w-full border-b border-[var(--current-theme-color)]/30 pb-3">
+                   <div className="flex items-center gap-3">
+                     <Lock size={18} className="text-[var(--current-theme-color)]" />
+                     <span className="font-mono text-xs text-[var(--current-theme-color)] tracking-[0.3em]">AES-256</span>
+                   </div>
+                   <span className="font-mono text-xs text-white/50 tracking-widest">LOCKED</span>
+                </div>
+                
+                <div className="grid grid-cols-4 gap-3 w-full">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className="h-3 rounded-sm bg-[var(--current-theme-color)]/20 overflow-hidden relative">
+                       <div className="absolute top-0 left-0 bottom-0 bg-[var(--current-theme-color)]/60" style={{ width: `${Math.random() * 100}%`, animation: `pulse ${2 + Math.random()}s infinite` }} />
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="flex items-center justify-between w-full border-t border-white/10 pt-3 mt-3">
+                   <span className="font-mono text-xs text-white/30 tracking-widest">DECRYPTING_SEQUENCE...</span>
+                   <Cpu size={18} className="text-[var(--current-theme-color)]/40 animate-pulse" />
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Global Rankings moved to Multiplayer — removed from CipherLab dashboard */}
+          <div className="relative z-10 flex flex-col mt-4">
+            <button onClick={(e) => { e.stopPropagation(); onStartLab(); }} className="cyber-button text-sm py-5 w-full group-hover:scale-[1.02] transition-transform shadow-[0_0_15px_rgba(0,242,255,0.3)] bg-[#00f2ff] !text-black border-[#00f2ff] font-bold text-base" style={{ backgroundColor: '#00f2ff', color: 'black', borderColor: '#00f2ff' }}>
+              ENTER_LAB
+            </button>
+            <div className="h-[3px] w-0 opacity-0 group-hover:w-full group-hover:opacity-100 transition-all duration-700 mt-2" style={{ backgroundColor: '#00f2ff', boxShadow: '0 0 8px 2px rgba(0,242,255,0.7), 0 0 16px 4px rgba(0,242,255,0.3)' }} />
+          </div>
         </div>
+      </div>
+
+      <div className="lg:col-span-6 space-y-6">
+        <div className="glass-panel p-6 rounded-sm">
+          <h4 className="cq-subtitle mb-4">Operator Stats</h4>
+          <div className="space-y-4">
+            <div className="flex items-center gap-4 py-3 border-b border-white/5">
+              <div className="w-14 h-14 tactical-panel bg-white/5 p-1 flex-shrink-0">
+                <img src={`/assets/badge${authUser?.level || 1}.png`} alt="Badge" className="w-full h-full object-contain" />
+              </div>
+              <div className="flex flex-col">
+                <span className={`text-base font-bold uppercase tracking-widest ${storyCompleted ? 'rainbow-text' : 'text-white/90'}`}>{user.username.toUpperCase()}</span>
+                <span className="font-mono text-sm text-[var(--current-theme-color)] mt-1">{globalXp.toLocaleString()} XP</span>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowRank(true)}
+              className="mt-5 w-full relative overflow-hidden rounded group transition-all duration-300"
+              style={{ background: 'linear-gradient(135deg, rgba(0,242,255,0.15) 0%, rgba(0,242,255,0.05) 100%)', border: '1px solid rgba(0,242,255,0.35)' }}
+            >
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'linear-gradient(135deg, rgba(0,242,255,0.25) 0%, rgba(0,242,255,0.1) 100%)' }} />
+              <div className="relative z-10 flex items-center justify-between px-5 py-4">
+                <span className="font-mono text-[9px] tracking-[0.35em] uppercase text-white/30">Global Standings</span>
+                <div className="flex items-center gap-3">
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-white/50">YOUR RANK</span>
+                    <span className="font-mono font-black leading-none" style={{ color: '#00f2ff', fontSize: '2.2rem', textShadow: '0 0 20px rgba(0,242,255,0.7)' }}>
+                      {userRank > 0 ? `#${userRank}` : '—'}
+                    </span>
+                  </div>
+                  <span className="text-white/30 text-xl">›</span>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Rank Modal */}
+        <AnimatePresence>
+          {showRank && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+              style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(12px)' }}
+              onClick={() => setShowRank(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.92, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.92, y: 20 }}
+                onClick={e => e.stopPropagation()}
+                className="w-full max-w-md glass-panel p-6 rounded-sm border border-[var(--current-theme-color)]/30 shadow-[0_0_60px_rgba(0,242,255,0.15)]"
+              >
+                {/* Modal Header */}
+                <div className="flex items-center justify-between mb-5 pb-3 border-b border-white/10">
+                  <div className="flex items-center gap-3">
+                    <Globe size={16} className="text-[var(--current-theme-color)]" />
+                    <span className="font-mono text-[11px] tracking-[0.3em] uppercase text-[var(--current-theme-color)]">Global Leaderboard</span>
+                  </div>
+                  <button onClick={() => setShowRank(false)} className="text-white/30 hover:text-white transition-colors text-lg leading-none">✕</button>
+                </div>
+
+                {/* User Rank Banner */}
+                {userRank > 0 && (
+                  <div className="mb-4 px-4 py-3 rounded flex items-center justify-between" style={{ background: 'rgba(0,242,255,0.08)', border: '1px solid rgba(0,242,255,0.3)' }}>
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-2xl font-bold" style={{ color: '#00f2ff' }}>#{userRank}</span>
+                      <div>
+                        <p className="font-mono text-xs text-white/40 uppercase tracking-widest">Your Rank</p>
+                        <p className="font-bold uppercase tracking-widest text-white text-sm">{user.username}</p>
+                      </div>
+                    </div>
+                    <span className="font-mono text-sm font-bold" style={{ color: '#00f2ff' }}>{globalXp.toLocaleString()} XP</span>
+                  </div>
+                )}
+
+                {/* Leaderboard List */}
+                <div className="space-y-1 max-h-72 overflow-y-auto pr-1">
+                  {leaderboard.slice(0, 20).map((entry, i) => {
+                    const isMe = entry.uid === user.uid;
+                    return (
+                      <div key={entry.uid} className={`flex items-center justify-between px-4 py-2.5 rounded transition-all ${
+                        isMe
+                          ? 'border'
+                          : 'hover:bg-white/5'
+                      }`}
+                        style={isMe ? { background: 'rgba(0,242,255,0.08)', borderColor: 'rgba(0,242,255,0.4)' } : {}}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className={`font-mono text-sm font-bold w-7 ${
+                            i === 0 ? 'text-yellow-400' : i === 1 ? 'text-gray-300' : i === 2 ? 'text-amber-600' : isMe ? 'text-[var(--current-theme-color)]' : 'text-white/30'
+                          }`}>#{i + 1}</span>
+                          <span className={`font-mono text-sm uppercase tracking-widest ${isMe ? 'text-white font-bold' : 'text-white/70'}`}>{entry.callsign}</span>
+                          {isMe && <span className="text-[9px] font-mono px-1.5 py-0.5 rounded uppercase tracking-widest" style={{ background: 'rgba(0,242,255,0.2)', color: '#00f2ff' }}>YOU</span>}
+                        </div>
+                        <span className={`font-mono text-xs font-bold ${isMe ? 'text-[var(--current-theme-color)]' : 'text-white/40'}`}>{entry.points.toLocaleString()} XP</span>
+                      </div>
+                    );
+                  })}
+                  {leaderboard.length === 0 && (
+                    <p className="text-center text-white/30 font-mono text-xs py-8 uppercase tracking-widest">No data available</p>
+                  )}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Operational Directives / Rules */}
-        <div className="glass-panel p-8 border border-white/10 hover:border-[var(--current-theme-color)]/30 transition-colors mt-8">
-          <h3 className="text-[12px] font-mono font-bold tracking-[0.3em] uppercase text-[var(--current-theme-color)] mb-6 flex items-center gap-3">
+        <div className="glass-panel p-6 border border-white/10 hover:border-[var(--current-theme-color)]/30 transition-colors">
+          <h3 className="text-[12px] font-mono font-bold tracking-[0.2em] uppercase text-[var(--current-theme-color)] mb-5 flex items-center gap-3">
             <Terminal className="w-5 h-5" /> Operational Directives
           </h3>
           <ul className="space-y-4 font-sans text-[14px] leading-relaxed text-white/70 list-none">
@@ -248,27 +396,6 @@ function Dashboard({ user, leaderboard, onStartLab, storyCompleted, authUser, gl
               <p>Reward will be given on basis on time taken, hints used and incorrect attempts.</p>
             </li>
           </ul>
-        </div>
-      </div>
-
-      <div className="lg:col-span-4 space-y-8">
-        <div className="glass-panel p-6 rounded-sm">
-          <h4 className="cq-subtitle mb-4">Operator Stats</h4>
-          <div className="space-y-4">
-            <div className="flex items-center gap-4 py-2 border-b border-white/5">
-              <div className="w-12 h-12 tactical-panel bg-white/5 p-1 flex-shrink-0">
-                <img src={`/assets/badge${authUser?.level || 1}.png`} alt="Badge" className="w-full h-full object-contain" />
-              </div>
-              <div className="flex flex-col">
-                <span className={`text-sm font-bold uppercase tracking-widest ${storyCompleted ? 'rainbow-text' : 'text-white/90'}`}>{user.username.toUpperCase()}</span>
-                <span className="font-mono text-xs text-[var(--current-theme-color)] mt-1">{globalXp.toLocaleString()} XP</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between text-sm py-2">
-              <span className="text-white/40">COMPLETED_CIPHERS</span>
-              <span className="font-mono">{user.completedLevelIds.length}</span>
-            </div>
-          </div>
         </div>
       </div>
     </motion.div>

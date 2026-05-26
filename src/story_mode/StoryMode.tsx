@@ -587,12 +587,39 @@ const MissionView = () => {
                   <div className="flex-1 min-h-[300px] glass-panel p-6 flex flex-col relative overflow-hidden group border border-white/5 shadow-2xl rounded-xl">
                     <div className="absolute inset-0 bg-gradient-to-br from-[var(--current-theme-color)]/5 to-transparent opacity-50 z-0 pointer-events-none"></div>
                     
-                    <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-6 relative z-10">
+                    <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4 relative z-10">
                        <div className="flex items-center gap-3">
                          <Terminal size={18} className="text-white/50" />
                          <span className="font-sans font-bold tracking-[0.2em] text-white/50 uppercase text-[15px]">Command Feed</span>
                        </div>
-                       <span className="font-mono text-white/20 text-[13px] tracking-widest">&gt;&gt;SYS:ROOT</span>
+                    </div>
+
+                    {/* ATTEMPTS LEFT Row */}
+                    <div className="relative z-10 flex items-center justify-between px-4 py-3 mb-4 rounded-lg" style={{ background: 'rgba(0,242,255,0.04)', border: '1px solid rgba(0,242,255,0.15)' }}>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold uppercase tracking-[0.25em] text-white/70" style={{ fontSize: '12px' }}>ATTEMPTS LEFT</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {[1, 2, 3].map(i => {
+                          const isActive = Math.ceil(integrity / 34) >= i;
+                          return (
+                            <div key={i} style={isActive ? {
+                              width: '20px',
+                              height: '20px',
+                              borderRadius: '2px',
+                              backgroundColor: '#00f2ff',
+                              boxShadow: '0 0 5px 1px #00f2ff, 0 0 10px 2px rgba(0,242,255,0.3)'
+                            } : {
+                              width: '20px',
+                              height: '20px',
+                              borderRadius: '2px',
+                              backgroundColor: 'rgba(255,30,30,0.05)',
+                              border: '1px solid rgba(255,30,30,0.2)',
+                              boxShadow: 'none'
+                            }} />
+                          );
+                        })}
+                      </div>
                     </div>
                     
                     <div className="relative z-10 space-y-3 font-mono text-[14px] leading-relaxed flex flex-col h-full">
