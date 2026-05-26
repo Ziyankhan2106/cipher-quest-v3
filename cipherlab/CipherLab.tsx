@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Terminal, Shield, Zap, History, 
@@ -78,6 +78,27 @@ async function updateGlobalXp(delta: number): Promise<{xp: number, level: number
     return { xp: data.xp || 0, level: data.level || 1 };
   } catch { return { xp: 0, level: 1 }; }
 }
+
+/* ── ScrambleText: randomises characters then locks into real text ── */
+const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@$%&!?';
+
+const ScrambleText = ({ text, className }: { text: string; className?: string }) => {
+  const [displayed, setDisplayed] = useState('');
+  useEffect(() => {
+    if (!text) return;
+    let frame = 0;
+    const totalFrames = 22;
+    setDisplayed(text.split('').map(() => SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]).join(''));
+    const iv = setInterval(() => {
+      frame++;
+      if (frame >= totalFrames) { setDisplayed(text); clearInterval(iv); return; }
+      const locked = Math.floor((frame / totalFrames) * text.length);
+      setDisplayed(text.split('').map((ch, i) => i < locked ? ch : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]).join(''));
+    }, 50);
+    return () => clearInterval(iv);
+  }, [text]);
+  return <span className={className}>{displayed}</span>;
+};
 
 // --- Main App ---
 export default function App() {
@@ -263,6 +284,8 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
   const [isActive, setIsActive] = useState(false);
   const [startTime, setStartTime] = useState(0);
   const [feedback, setFeedback] = useState<'none' | 'success' | 'error'>('none');
+  const [isShaking, setIsShaking] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const startNewMission = useCallback(() => {
     if (!user) return;
@@ -308,6 +331,8 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
     } else {
       setFeedback('error');
       setUserInput('');
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 500);
       setTimeout(() => setFeedback('none'), 1000);
     }
   };
@@ -328,7 +353,31 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
   };
 
   return (
-    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 w-full max-w-[1400px] mx-auto px-2 lg:px-4 py-4 flex flex-col items-center text-lg" style={{ maxHeight: 'calc(100vh - 56px)', overflow: 'hidden' }}>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={isShaking ? {
+        x: [0, -14, 14, -9, 9, -4, 4, 0],
+        filter: ['brightness(1) hue-rotate(0deg)', 'brightness(1.6) hue-rotate(280deg)', 'brightness(1.2) hue-rotate(180deg)', 'brightness(1) hue-rotate(0deg)'],
+        opacity: 1, scale: 1,
+      } : { opacity: 1, scale: 1, x: 0, filter: 'brightness(1) hue-rotate(0deg)' }}
+      transition={{ duration: 0.45, ease: 'easeOut' }}
+      className="flex-1 w-full max-w-[1400px] mx-auto px-2 lg:px-4 py-4 flex flex-col items-center text-lg"
+      style={{ maxHeight: 'calc(100vh - 56px)', overflow: 'hidden' }}
+    >
+      {/* Full-screen red glitch flash on wrong answer */}
+      <AnimatePresence>
+        {isShaking && (
+          <motion.div
+            key="glitch-flash-lab"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.35, 0.1, 0.28, 0] }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, times: [0, 0.15, 0.35, 0.6, 1] }}
+            className="fixed inset-0 z-[90] pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse at center, rgba(255,30,30,0.6) 0%, rgba(200,0,0,0.3) 100%)', mixBlendMode: 'screen' }}
+          />
+        )}
+      </AnimatePresence>
       <div className="w-full flex justify-between items-center mb-8 border-b border-white/10 pb-4 mt-12 opacity-0 h-0 pointer-events-none"></div>
 
       <div className="w-full flex flex-col xl:flex-row gap-6 items-stretch min-h-full">
@@ -339,26 +388,26 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
             
             <div className="flex items-center gap-4 mb-10 border-b border-white/5 pb-6">
               <Zap className="text-[var(--current-theme-color)] animate-[pulse_2s_infinite]" />
-              <h2 className="font-sans text-xs tracking-[0.4em] uppercase text-[var(--current-theme-color)] font-bold">CipherLab Protocol</h2>
+              <h2 className="font-sans text-[14px] tracking-[0.4em] uppercase text-[var(--current-theme-color)] font-bold">CipherLab Protocol</h2>
             </div>
             <div className="flex flex-col gap-4 mb-2 flex-1">
               {sessionMission ? (
                 <>
                   <div className="mt-2 border border-[var(--current-theme-color)]/10 bg-[var(--current-theme-color)]/5 p-2 rounded">
-                    <span className="text-[var(--current-theme-color)] font-bold tracking-[0.12em] uppercase text-sm">&gt; Target Algorithm:</span>
-                      <div className="text-white mt-1 font-mono text-xl">{sessionMission.type.replace(/_/g, ' ')}</div>
+                    <span className="text-[var(--current-theme-color)] font-bold tracking-[0.12em] uppercase text-[14px]">&gt; Target Algorithm:</span>
+                      <div className="text-white mt-1 font-mono text-2xl">{sessionMission.type.replace(/_/g, ' ')}</div>
                   </div>
                   <div className="mt-2 border border-[var(--current-theme-color)]/20 bg-[var(--current-theme-color)]/5 p-3 rounded">
-                      <span className="text-[var(--current-theme-color)] font-bold tracking-[0.12em] uppercase text-sm">&gt; Known Pattern:</span>
-                      <div className="text-white mt-1 font-mono text-xl italic">{sessionMission.schemeHint}</div>
+                      <span className="text-[var(--current-theme-color)] font-bold tracking-[0.12em] uppercase text-[14px]">&gt; Known Pattern:</span>
+                      <div className="text-white mt-1 font-mono text-2xl italic">{sessionMission.schemeHint}</div>
                   </div>
                   <div className="mt-3 flex flex-col gap-2">
                     <button onClick={revealHint} disabled={hintsCount >= sessionMission.originalText.length || !isActive || globalXp <= 0}
-                              className="w-full py-2 border border-[var(--current-theme-color)]/10 text-[var(--current-theme-color)] hover:bg-[var(--current-theme-color)]/10 transition-colors text-sm tracking-[0.12em] font-bold disabled:opacity-30 disabled:pointer-events-none rounded flex items-center justify-center gap-2">
+                              className="w-full py-2 border border-[var(--current-theme-color)]/10 text-[var(--current-theme-color)] hover:bg-[var(--current-theme-color)]/10 transition-colors text-[14px] tracking-[0.12em] font-bold disabled:opacity-30 disabled:pointer-events-none rounded flex items-center justify-center gap-2">
                       <Lightbulb className="w-4 h-4" /> REVEAL INTEL (-20 XP)
                     </button>
                     <button onClick={handleSkip} disabled={!isActive}
-                              className="w-full py-2 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-black transition-colors text-sm tracking-[0.12em] font-bold disabled:opacity-30 disabled:pointer-events-none rounded">
+                              className="w-full py-2 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-black transition-colors text-[14px] tracking-[0.12em] font-bold disabled:opacity-30 disabled:pointer-events-none rounded">
                       SKIP SEQUENCE
                     </button>
                   </div>
@@ -377,58 +426,92 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
         {/* Right Column */}
           <div className="flex-[1.6] flex flex-col gap-4 w-full">
             <div className={`bg-[#0a0a0c]/80 border border-white/6 backdrop-blur rounded-lg p-4 relative overflow-hidden shadow ${!sessionMission ? 'opacity-50 pointer-events-none' : ''}`}>
-                    <div className="font-sans font-bold text-sm text-white/30 uppercase tracking-[0.3em] mb-6 flex justify-between">
+                    <div className="font-sans font-bold text-[14px] text-white/30 uppercase tracking-[0.3em] mb-6 flex justify-between">
               <span>Intercepted Ciphertext</span>
               <Shield className="w-4 h-4 text-[var(--current-theme-color)]" />
             </div>
             
-              <div className="font-mono text-6xl lg:text-[72px] leading-[1] text-[var(--current-theme-color)] tracking-[0em] break-all">
-              <span className="text-white/10 select-none mr-2">&gt;</span>{sessionMission?.encryptedText || 'AWAITING_INPUT...'}
+              <div className="font-mono text-[80px] leading-[1] text-[var(--current-theme-color)] tracking-[0em] break-all">
+              <span className="text-white/10 select-none mr-2">&gt;</span>
+              {sessionMission
+                ? <ScrambleText text={sessionMission.encryptedText} />
+                : <span className="opacity-20">AWAITING_INPUT...</span>
+              }
             </div>
             
             {hintsCount >= 1 && (
                <div className="mt-8 border-t border-white/10 pt-6">
-                 <span className="text-[9px] font-mono uppercase opacity-40 block mb-2 tracking-widest text-white">Partial_Reconstruction</span>
-                 <div className="font-mono text-2xl tracking-[0.4em] text-white font-bold">{getRevealedWord()}</div>
+                 <span className="text-[12px] font-mono uppercase opacity-40 block mb-2 tracking-widest text-white">Partial_Reconstruction</span>
+                 <div className="font-mono text-3xl tracking-[0.4em] text-white font-bold">{getRevealedWord()}</div>
                </div>
             )}
           </div>
 
               <div className={`glass-panel p-4 relative shadow-[0_20px_40px_rgba(0,0,0,0.35)] transition-all duration-500 rounded-lg ${!sessionMission && feedback !== 'success' ? 'opacity-50 pointer-events-none' : ''}`}>
-                <div className="font-sans font-bold text-sm uppercase tracking-[0.25em] mb-4 flex justify-between text-[var(--current-theme-color)]">
+                <div className="font-sans font-bold text-[14px] uppercase tracking-[0.25em] mb-4 flex justify-between text-[var(--current-theme-color)]">
               <span>Decryption Input</span>
               {feedback === 'success' ? <span>[DECRYPTED]</span> : sessionMission ? <span className="animate-pulse">[AWAITING ANSWER]</span> : null}
             </div>
 
             <form onSubmit={handleSubmit}>
-               <div className="relative flex items-center bg-[#050505]/80 rounded-lg p-4 border border-white/6 focus-within:border-white/20 transition-colors">
-                 <span className="font-mono text-[28px] text-white/20 select-none mr-3">&gt;</span>
-                <input 
-                  type="text"
-                  value={userInput}
-                  onChange={e => setUserInput(e.target.value.toUpperCase())}
-                  disabled={feedback === 'success' || !sessionMission}
-                  className="w-full bg-transparent text-white font-mono text-5xl tracking-[0em] outline-none uppercase placeholder:text-white/40"
-                  placeholder="ENTER PLAINTEXT..."
-                  spellCheck={false}
-                />
+               <div
+                className="relative flex items-center bg-[#050505]/80 rounded-lg p-4 border border-white/6 focus-within:border-[var(--current-theme-color)]/40 transition-colors cursor-text"
+                onClick={() => inputRef.current?.focus()}
+              >
+                <span className="font-mono text-[34px] text-white/20 select-none mr-3">&gt;</span>
+                <div className="relative flex-1 flex items-center flex-wrap gap-[3px] min-h-[60px]">
+                  {userInput.length === 0 && (
+                    <span className="font-mono text-[60px] text-white/10 select-none absolute left-0 pointer-events-none">ENTER PLAINTEXT...</span>
+                  )}
+                  {userInput.split('').map((char, i) => (
+                    <span
+                      key={i}
+                      className="font-mono text-[60px] leading-none"
+                      style={{
+                        color: 'var(--current-theme-color)',
+                        textShadow: '0 0 8px var(--current-theme-color), 0 0 20px var(--current-theme-color)',
+                        display: 'inline-block',
+                        transition: 'all 0.05s',
+                      }}
+                    >
+                      {char}
+                    </span>
+                  ))}
+                  {feedback !== 'success' && (
+                    <span
+                      className="font-mono text-[60px] leading-none animate-pulse select-none"
+                      style={{ color: 'var(--current-theme-color)', opacity: 0.8 }}
+                    >▋</span>
+                  )}
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={userInput}
+                    onChange={e => setUserInput(e.target.value.toUpperCase())}
+                    disabled={feedback === 'success' || !sessionMission}
+                    className="absolute inset-0 opacity-0 w-full h-full cursor-text"
+                    spellCheck={false}
+                    autoComplete="off"
+                    autoCorrect="off"
+                  />
+                </div>
               </div>
 
               <div className="h-8 mt-3 flex items-center">
                  {feedback === 'error' && (
-                   <p className="font-mono text-[12px] font-bold text-red-500 tracking-[0.2em] flex items-center gap-2 px-3 py-1 bg-red-500/10 rounded border border-red-500/20">
+                   <p className="font-mono text-[14px] font-bold text-red-500 tracking-[0.2em] flex items-center gap-2 px-3 py-1 bg-red-500/10 rounded border border-red-500/20">
                      <AlertTriangle className="w-4 h-4" /> INTEGRITY FAILURE: MISMATCH DETECTED.
                    </p>
                  )}
                  {feedback === 'success' && (
-                   <p className="font-mono text-[12px] font-bold text-green-500 tracking-[0.2em] flex items-center gap-2 px-3 py-1 bg-green-500/10 rounded border border-green-500/20">
+                   <p className="font-mono text-[14px] font-bold text-green-500 tracking-[0.2em] flex items-center gap-2 px-3 py-1 bg-green-500/10 rounded border border-green-500/20">
                      <CheckCircle2 className="w-4 h-4" /> BREACH SUCCESSFUL.
                    </p>
                  )}
               </div>
 
               <div className="mt-4 flex justify-between items-center">
-                <div className="font-mono text-sm text-white/60 tracking-widest uppercase">
+                <div className="font-mono text-[15px] text-white/60 tracking-widest uppercase">
                   {sessionMission && `Time Stability: ${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`}
                 </div>
                 

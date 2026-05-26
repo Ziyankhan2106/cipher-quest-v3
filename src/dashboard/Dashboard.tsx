@@ -615,10 +615,11 @@ const Dashboard = () => {
           <div className="absolute inset-0 bg-black/90 backdrop-blur-md" onClick={() => setBadgesModalOpen(false)} />
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-            className="tactical-panel bg-[#0a0a0f] p-8 max-w-4xl w-full max-h-[80vh] overflow-y-auto relative z-10"
-            style={{ borderColor: 'rgba(0,242,255,0.3)', boxShadow: '0 0 50px rgba(0,242,255,0.1)' }}
+            className="tactical-panel bg-[#0a0a0f] max-w-4xl w-full relative z-10 flex flex-col"
+            style={{ borderColor: 'rgba(0,242,255,0.3)', boxShadow: '0 0 50px rgba(0,242,255,0.1)', maxHeight: '80vh' }}
           >
-            <div className="flex justify-between items-center mb-8 pb-4 border-b border-white/10">
+            {/* Sticky header */}
+            <div className="flex justify-between items-center px-8 pt-8 pb-4 border-b border-white/10 flex-shrink-0">
               <div>
                 <h2 className="cq-title" style={{ color: 'var(--current-theme-color)' }}>Operator Ranks</h2>
                 <p className="font-mono text-xs text-white/50 uppercase tracking-widest mt-2">Clearance Level Verification</p>
@@ -627,17 +628,20 @@ const Dashboard = () => {
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
               </button>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[1,2,3,4,5,6,7,8].map(lvl => (
-                <div key={lvl} className={`flex flex-col items-center p-4 border rounded ${level === lvl ? 'border-[var(--current-theme-color)]/50 bg-[var(--current-theme-color)]/5 shadow-[0_0_15px_rgba(0,242,255,0.2)]' : 'border-white/5 bg-white/5'}`}>
-                  <div className="w-20 h-20 mb-4 p-2 relative">
-                    <img src={`/assets/badge${lvl}.png`} alt={`Level ${lvl}`} className="w-full h-full object-contain" />
-                    {level === lvl && <div className="absolute -top-2 -right-2 bg-[var(--current-theme-color)] text-black text-[9px] font-bold px-2 py-0.5 rounded-full font-mono uppercase">Current</div>}
+            {/* Scrollable grid body */}
+            <div className="overflow-y-auto p-8 pt-6" style={{ flex: '1 1 auto' }}>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {[1,2,3,4,5,6,7,8].map(lvl => (
+                  <div key={lvl} className={`flex flex-col items-center p-4 border rounded ${level === lvl ? 'border-[var(--current-theme-color)]/50 bg-[var(--current-theme-color)]/5 shadow-[0_0_15px_rgba(0,242,255,0.2)]' : 'border-white/5 bg-white/5'}`}>
+                    <div className="w-20 h-20 mb-4 p-2 relative">
+                      <img src={`/assets/badge${lvl}.png`} alt={`Level ${lvl}`} className="w-full h-full object-contain" />
+                      {level === lvl && <div className="absolute -top-2 -right-2 bg-[var(--current-theme-color)] text-black text-[9px] font-bold px-2 py-0.5 rounded-full font-mono uppercase">Current</div>}
+                    </div>
+                    <span className="font-display font-bold text-lg mb-1 text-white">{RANK_NAMES[lvl]}</span>
+                    <span className="font-mono text-[10px] text-[var(--current-theme-color)] uppercase tracking-widest">Level 0{lvl}</span>
                   </div>
-                  <span className="font-display font-bold text-lg mb-1 text-white">{RANK_NAMES[lvl]}</span>
-                  <span className="font-mono text-[10px] text-[var(--current-theme-color)] uppercase tracking-widest">Level 0{lvl}</span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </motion.div>
         </div>
