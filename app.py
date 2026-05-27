@@ -34,7 +34,7 @@ SESSION_COOKIE = "cq_session"
 SESSION_TTL_S = 60 * 60 * 24 * 7  # 7 days
 IS_PROD = os.getenv("NODE_ENV", "development") == "production"
 
-# ── Firebase Admin init ───────────────────────────────────────────────────────
+# ── Firebase Admin Iinit ───────────────────────────────────────────────────────
 
 firebase_ready = False
 _db = None
