@@ -5,38 +5,82 @@ import { CHAPTERS, AVATAR_VARIANTS, AvatarVariant, Chapter } from './lib/game-da
 import { fetchMission, fetchHint } from './lib/api';
 import { StoryModeProvider, useStoryMode } from './lib/StoryModeContext';
 import { generateCertificate } from './lib/certificate';
-import { Download, FileText, X as XIcon, ChevronRight, ChevronLeft, Settings, Lock, Shield, Radar, CheckCircle2, AlertCircle, MoveHorizontal, Terminal, Lightbulb, Unlock, Verified, ShieldX, ArrowRightLeft, AlertTriangle } from 'lucide-react';
+import { Download, FileText, X as XIcon, ChevronRight, ChevronLeft, Settings, Lock, Shield, Radar, CheckCircle2, AlertCircle, MoveHorizontal, Terminal, Lightbulb, Unlock, Verified, ShieldX, ArrowRightLeft, AlertTriangle, Zap } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import IntroSequence from './IntroSequence';
 
-/* ── ScrambleText: randomises characters then locks into real text ── */
-const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@$%&!?';
-
-const ScrambleText = ({ text, className }: { text: string; className?: string }) => {
-  const [displayed, setDisplayed] = useState('');
+const BriefingTerminal = ({ text, speaker, speakerColor, operatorName, onComplete }: any) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const [isTyping, setIsTyping] = useState(true);
 
   useEffect(() => {
-    if (!text) return;
-    let frame = 0;
-    const totalFrames = 22; // ~1.1 s at 50 ms per frame
-    setDisplayed(text.split('').map(() => SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]).join(''));
-    const iv = setInterval(() => {
-      frame++;
-      if (frame >= totalFrames) {
-        setDisplayed(text);
-        clearInterval(iv);
-        return;
+    const currentLine = text.replace('{NAME}', operatorName.toUpperCase());
+    setIsTyping(true);
+    setDisplayedText('');
+    
+    let i = 0;
+    const interval = setInterval(() => {
+      setDisplayedText(currentLine.substring(0, i + 1));
+      i++;
+      if (i === currentLine.length) {
+        clearInterval(interval);
+        setIsTyping(false);
       }
-      const locked = Math.floor((frame / totalFrames) * text.length);
-      setDisplayed(
-        text.split('').map((ch, i) =>
-          i < locked ? ch : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
-        ).join('')
-      );
-    }, 50);
-    return () => clearInterval(iv);
-  }, [text]);
+    }, 30);
+    
+    return () => clearInterval(interval);
+  }, [text, operatorName]);
 
-  return <span className={className}>{displayed}</span>;
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        if (isTyping) {
+          const currentLine = text.replace('{NAME}', operatorName.toUpperCase());
+          setDisplayedText(currentLine);
+          setIsTyping(false);
+        } else {
+          onComplete();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isTyping, text, operatorName, onComplete]);
+
+  return (
+    <div className="flex-1 flex flex-col justify-center max-w-4xl mx-auto w-full">
+      <div className="border border-[var(--current-theme-color)]/20 bg-[#0a0a0f]/90 p-10 backdrop-blur-md shadow-[0_0_40px_rgba(0,0,0,0.8)] relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--current-theme-color)] to-transparent opacity-50"></div>
+        
+        <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
+          <Terminal size={20} className="text-[var(--current-theme-color)]" />
+          <span className="text-sm font-bold tracking-[0.3em] uppercase text-white/50">SECURE COMMS LINK</span>
+          <span className="ml-auto text-xs text-red-500 animate-pulse flex items-center gap-2">
+            <Zap size={14} /> LIVE
+          </span>
+        </div>
+
+        <div className="min-h-[150px]">
+          <div className="flex flex-col gap-2">
+            <span className={`text-xs tracking-[0.2em] font-bold ${speakerColor}`}>
+              {speaker} ::
+            </span>
+            <p className="text-2xl leading-relaxed tracking-wide text-white/90">
+              {displayedText}
+              <span className={`inline-block w-3 h-6 ml-2 ${speakerColor.replace('text-', 'bg-')} ${isTyping ? 'animate-pulse' : 'animate-bounce'}`}></span>
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-12 flex justify-between items-center text-xs text-white/30 tracking-[0.2em]">
+          <span>ENCRYPTION NETWORK : STANDBY</span>
+          <span className={isTyping ? 'opacity-0' : 'opacity-100 animate-pulse text-[var(--current-theme-color)]'}>
+            [PRESS ENTER TO INITIATE PROTOCOL]
+          </span>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const Dashboard = () => {
@@ -203,7 +247,7 @@ const Dashboard = () => {
                 {/* Mission Gallery */}
                 <div className="relative z-10 flex items-center gap-8 overflow-visible h-[500px] w-max pr-12">
                   {chapter.missions.map((mission, i) => (
-                    <Link key={mission.id} to={locked ? '#' : `mission/${mission.id}`} onClick={(e) => locked && e.preventDefault()}>
+                    <Link key={mission.id} to={locked ? '#' : `/story/mission/${mission.id}`} onClick={(e) => locked && e.preventDefault()}>
                       <div className={`relative group cursor-pointer outline-none w-[280px] h-[380px] flex-shrink-0 transition-transform duration-500 hover:scale-[1.02] ${['translate-y-4', 'translate-y-[-8px]', 'translate-y-12', 'translate-y-0', 'translate-y-[-4px]'][i % 5]}`}>
                         <div className={`absolute inset-0 tactical-panel bg-[#0a0a0f]/95 border-white/5 flex flex-col group-hover:border-[var(--current-theme-color)]/40 group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)] transition-all ${completedMissions.has(mission.id) ? 'border-[var(--current-theme-color)]/20' : ''}`}>
                           <div className="h-40 bg-white/5 relative overflow-hidden flex items-center justify-center p-8 border-b border-white/5">
@@ -228,7 +272,7 @@ const Dashboard = () => {
                             </div>
                             <div className="pt-6 flex items-center justify-between border-t border-white/5">
                                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 group-hover:text-white transition-colors">
-                                 {completedMissions.has(mission.id) ? 'Re-Intercept' : 'Begin_Breach'}
+                                 {completedMissions.has(mission.id) ? 'Re-Encrypt' : 'Initiate_Protocol'}
                                </span>
                                <ChevronRight className="text-white/20 group-hover:text-[var(--current-theme-color)] group-hover:translate-x-1 transition-all" size={16} />
                             </div>
@@ -378,7 +422,7 @@ const MissionView = () => {
   const navigate = useNavigate();
   const { completeMission, operatorName, xp, selectedAvatar } = useStoryMode();
   
-  const [missionState, setMissionState] = useState<'intercept' | 'cipher' | 'failed'>('intercept');
+  const [missionState, setMissionState] = useState<'briefing' | 'intercept' | 'cipher' | 'failed'>('briefing');
   const [mission, setMission] = useState<any>(null);
   const [input, setInput] = useState('');
   const [integrity, setIntegrity] = useState(100);
@@ -391,7 +435,6 @@ const MissionView = () => {
   
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const missionData = useMemo(() => {
     for (const chapter of CHAPTERS) {
@@ -399,6 +442,10 @@ const MissionView = () => {
       if (found) return found;
     }
     return null;
+  }, [id]);
+
+  const chapterData = useMemo(() => {
+    return CHAPTERS.find(c => c.missions.some(m => m.id === id));
   }, [id]);
 
   useEffect(() => {
@@ -412,12 +459,30 @@ const MissionView = () => {
     loadMission();
   }, [id]);
 
+  useEffect(() => {
+    if (completedChapterId) {
+      const timer = setTimeout(() => {
+        handleProceedNextChapter();
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [completedChapterId, navigate]);
+
+  const handleProceedNextChapter = () => {
+    setCompletedChapterId(null);
+    if (completedChapterId! < 4) {
+      navigate(`/story/mission/${completedChapterId! + 1}-1`);
+    } else {
+      navigate('/story/quantum-ascent');
+    }
+  };
+
   const loadMission = async () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     
     setLoading(true);
-    setMissionState('intercept');
+    setMissionState('briefing');
     setInput('');
     setIntegrity(100);
     setHints([]);
@@ -430,14 +495,17 @@ const MissionView = () => {
       const data = await fetchMission(id!);
       setMission(data);
       setLoading(false);
-      
-      timeoutRef.current = setTimeout(() => {
-        setMissionState('cipher');
-      }, 1500);
     } catch (e) {
       console.error(e);
       setLoading(false);
     }
+  };
+
+  const startIntercept = () => {
+    setMissionState('intercept');
+    timeoutRef.current = setTimeout(() => {
+      setMissionState('cipher');
+    }, 1500);
   };
 
   const checkAnswer = async () => {
@@ -451,7 +519,10 @@ const MissionView = () => {
          const chapId = parseInt(id!.split('-')[0]);
          setCompletedChapterId(chapId);
       } else {
-         setTimeout(() => navigate('/story'), 2500);
+         const chapId = parseInt(id!.split('-')[0]);
+         const missionNum = parseInt(id!.split('-')[1]);
+         const nextId = `${chapId}-${missionNum + 1}`;
+         setTimeout(() => navigate(`/story/mission/${nextId}`), 2500);
       }
     } else {
       setError(true);
@@ -509,37 +580,20 @@ const MissionView = () => {
          </div>
       </button>
 
-      {/* Full-screen red glitch flash on wrong answer */}
-      <AnimatePresence>
-        {error && (
-          <motion.div
-            key="glitch-flash"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.35, 0.1, 0.28, 0] }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, times: [0, 0.15, 0.35, 0.6, 1] }}
-            className="fixed inset-0 z-[90] pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse at center, rgba(255,30,30,0.6) 0%, rgba(200,0,0,0.3) 100%)', mixBlendMode: 'screen' }}
-          />
-        )}
-      </AnimatePresence>
-
       {mission && (
-        <motion.div
-          animate={error ? {
-            x: [0, -14, 14, -9, 9, -4, 4, 0],
-            filter: [
-              'brightness(1) hue-rotate(0deg)',
-              'brightness(1.6) hue-rotate(280deg)',
-              'brightness(1.2) hue-rotate(180deg)',
-              'brightness(1) hue-rotate(0deg)',
-            ]
-          } : { x: 0, filter: 'brightness(1) hue-rotate(0deg)' }}
-          transition={{ duration: 0.45, ease: 'easeOut' }}
-          className="flex-1 overflow-y-auto overflow-x-hidden z-10 flex flex-col items-center py-12 relative hide-scrollbar"
-        >
+        <div className="flex-1 overflow-y-auto overflow-x-hidden z-10 flex flex-col items-center py-12 relative hide-scrollbar">
           <div className="w-full max-w-[1400px] px-8 flex flex-col xl:flex-row gap-16 items-stretch min-h-full">
             
+            {missionState === 'briefing' && (
+              <BriefingTerminal 
+                text={missionData?.storyIntro || 'KNOX: Mission parameters loading...'}
+                speaker={chapterData?.speaker || 'KNOX'}
+                speakerColor={chapterData?.speakerColor || 'text-white'}
+                operatorName={operatorName}
+                onComplete={startIntercept}
+              />
+            )}
+
             {missionState === 'intercept' && (
                 <div className="flex-1 flex flex-col justify-center max-w-4xl mx-auto w-full">
                    <div className="bg-[#0a0a0f]/90 border border-white/10 rounded-xl p-12 shadow-2xl backdrop-blur-xl relative overflow-hidden">
@@ -548,8 +602,8 @@ const MissionView = () => {
                        {missionState === 'intercept' && (
                            <div className="flex flex-col items-center justify-center py-20 text-center">
                               <Radar size={64} className="text-white/20 animate-spin mb-6" />
-                              <h2 className="cq-subheading text-white/50 tracking-[0.3em]">Intercepting Comms...</h2>
-                              <p className="font-mono text-xs text-[var(--current-theme-color)] mt-4 animate-pulse">&gt; Routing through proxy...</p>
+                              <h2 className="cq-subheading text-white/50 tracking-[0.3em]">Securing Payload...</h2>
+                              <p className="font-mono text-xs text-[var(--current-theme-color)] mt-4 animate-pulse">&gt; Initiating encryption sequence...</p>
                            </div>
                        )}
                    </div>
@@ -575,7 +629,7 @@ const MissionView = () => {
                 <div className="flex-1 flex flex-col gap-8 max-w-[500px]">
                   
                   <div>
-                    <div className="font-mono text-[var(--current-theme-color)] text-[13px] tracking-[0.3em] mb-3 flex items-center gap-3 uppercase">
+                    <div className="font-mono text-[var(--current-theme-color)] text-[10px] tracking-[0.3em] mb-3 flex items-center gap-3 uppercase">
                        <span className="w-2 h-2 bg-[var(--current-theme-color)] animate-pulse rounded-full shadow-[0_0_8px_var(--current-theme-color)]"></span>
                        Active Operation_
                     </div>
@@ -587,54 +641,27 @@ const MissionView = () => {
                   <div className="flex-1 min-h-[300px] glass-panel p-6 flex flex-col relative overflow-hidden group border border-white/5 shadow-2xl rounded-xl">
                     <div className="absolute inset-0 bg-gradient-to-br from-[var(--current-theme-color)]/5 to-transparent opacity-50 z-0 pointer-events-none"></div>
                     
-                    <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4 relative z-10">
+                    <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-6 relative z-10">
                        <div className="flex items-center gap-3">
                          <Terminal size={18} className="text-white/50" />
-                         <span className="font-sans font-bold tracking-[0.2em] text-white/50 uppercase text-[15px]">Command Feed</span>
+                         <span className="font-sans font-bold tracking-[0.2em] text-white/50 uppercase text-[12px]">Command Feed</span>
                        </div>
-                    </div>
-
-                    {/* ATTEMPTS LEFT Row */}
-                    <div className="relative z-10 flex items-center justify-between px-4 py-3 mb-4 rounded-lg" style={{ background: 'rgba(0,242,255,0.04)', border: '1px solid rgba(0,242,255,0.15)' }}>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold uppercase tracking-[0.25em] text-white/70" style={{ fontSize: '12px' }}>ATTEMPTS LEFT</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        {[1, 2, 3].map(i => {
-                          const isActive = Math.ceil(integrity / 34) >= i;
-                          return (
-                            <div key={i} style={isActive ? {
-                              width: '20px',
-                              height: '20px',
-                              borderRadius: '2px',
-                              backgroundColor: '#00f2ff',
-                              boxShadow: '0 0 5px 1px #00f2ff, 0 0 10px 2px rgba(0,242,255,0.3)'
-                            } : {
-                              width: '20px',
-                              height: '20px',
-                              borderRadius: '2px',
-                              backgroundColor: 'rgba(255,30,30,0.05)',
-                              border: '1px solid rgba(255,30,30,0.2)',
-                              boxShadow: 'none'
-                            }} />
-                          );
-                        })}
-                      </div>
+                       <span className="font-mono text-white/20 text-[10px] tracking-widest">&gt;&gt;SYS:ROOT</span>
                     </div>
                     
-                    <div className="relative z-10 space-y-3 font-mono text-[14px] leading-relaxed flex flex-col h-full">
+                    <div className="relative z-10 space-y-3 font-mono text-[11px] leading-relaxed flex flex-col h-full">
                       <p className="text-[var(--current-theme-color)]/40">&gt;&gt; Firewall online.</p>
                       
                       <div className="mt-2 border border-[var(--current-theme-color)]/20 bg-[var(--current-theme-color)]/5 p-4 rounded mb-4">
-                         <span className="text-[var(--current-theme-color)] font-bold tracking-[0.2em] uppercase text-[14px]">&gt; Known Protocol Parameters:</span>
-                         <div className="text-white mt-2 font-mono text-[16px] whitespace-pre-wrap">{mission.rule}</div>
+                         <span className="text-[var(--current-theme-color)] font-bold tracking-[0.2em] uppercase text-[12px]">&gt; Known Protocol Parameters:</span>
+                         <div className="text-white mt-2 font-mono text-[14px] whitespace-pre-wrap">{mission.rule}</div>
                          
                          {mission.fullMapping && (
                            <div className="mt-4 border-t border-[var(--current-theme-color)]/20 pt-4">
-                             <span className="text-[var(--current-theme-color)] font-bold tracking-[0.2em] uppercase text-[13px] mb-3 block">&gt; Decryption Key:</span>
+                             <span className="text-[var(--current-theme-color)] font-bold tracking-[0.2em] uppercase text-[11px] mb-3 block">&gt; Encryption Mapping:</span>
                              <div className="grid grid-cols-6 gap-2">
                                 {Object.entries(mission.fullMapping).map(([k, v]: [any, any]) => (
-                                  <div key={k} className="flex gap-1 items-center bg-black/40 px-2 py-1.5 border border-[var(--current-theme-color)]/10 text-[14px]">
+                                  <div key={k} className="flex gap-1 items-center bg-black/40 px-2 py-1.5 border border-[var(--current-theme-color)]/10 text-[12px]">
                                      <span className="text-white/30">{k}</span>
                                      <span className="font-bold text-[var(--current-theme-color)]">→{v}</span>
                                   </div>
@@ -649,15 +676,15 @@ const MissionView = () => {
                              <div className="bg-[#0a0a0f] border border-[var(--current-theme-color)]/30 p-4 rounded mb-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] relative overflow-hidden">
                                 <div className="absolute inset-0 bg-[var(--current-theme-color)]/5 opacity-50"></div>
                                 <div className="relative z-10 flex items-center justify-between mb-3 border-b border-white/10 pb-2">
-                                  <p className="text-[var(--current-theme-color)] uppercase tracking-widest font-bold flex items-center gap-2 text-[14px]"><Lightbulb size={16} /> Tactical Intel [{currentHintIndex + 1}/{hints.length}]</p>
-                                  <button onClick={requestHint} className="text-[13px] font-bold uppercase tracking-widest text-[var(--current-theme-color)] px-3 py-1.5 bg-[var(--current-theme-color)]/10 hover:bg-[var(--current-theme-color)]/20 border border-[var(--current-theme-color)]/30 rounded transition-colors shadow-[0_0_10px_var(--current-theme-color)] relative z-20 cursor-pointer">Follow Up Intel</button>
+                                  <p className="text-[var(--current-theme-color)] uppercase tracking-widest font-bold flex items-center gap-2 text-[12px]"><Lightbulb size={16} /> Tactical Intel [{currentHintIndex + 1}/{hints.length}]</p>
+                                  <button onClick={requestHint} className="text-[11px] font-bold uppercase tracking-widest text-[var(--current-theme-color)] px-3 py-1.5 bg-[var(--current-theme-color)]/10 hover:bg-[var(--current-theme-color)]/20 border border-[var(--current-theme-color)]/30 rounded transition-colors shadow-[0_0_10px_var(--current-theme-color)] relative z-20 cursor-pointer">Follow Up Intel</button>
                                 </div>
-                                <p className="text-white/80 font-mono text-[16px] leading-relaxed relative z-10">{hints[currentHintIndex]}</p>
+                                <p className="text-white/80 font-mono text-[14px] leading-relaxed relative z-10">{hints[currentHintIndex]}</p>
                              </div>
                          )}
                          
                          {!isSuccess && hints.length === 0 && (
-                             <button onClick={requestHint} className="text-[14px] uppercase tracking-widest text-white/50 hover:text-[var(--current-theme-color)] border border-white/10 hover:border-[var(--current-theme-color)] bg-[#0a0a0f] px-4 py-2 w-full text-left transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">&gt;&gt; REQUEST FOR HINT</button>
+                             <button onClick={requestHint} className="text-xs uppercase tracking-widest text-white/50 hover:text-[var(--current-theme-color)] border border-white/10 hover:border-[var(--current-theme-color)] bg-[#0a0a0f] px-4 py-2 w-full text-left transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">&gt;&gt; REQUEST FOR HINT</button>
                          )}
                       </div>
                     </div>
@@ -668,17 +695,16 @@ const MissionView = () => {
                 <div className="flex-[1.5] flex flex-col gap-6 w-full">
                   
                   {/* Input Data Display */}
-                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-xl px-10 pt-6 pb-8 relative shadow-xl">
+                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-xl p-10 relative overflow-hidden shadow-xl">
                     <div className="absolute left-0 top-0 h-full w-1 bg-white/20 animate-pulse"></div>
                     
-                    <div className="font-sans font-bold text-[13px] text-white/30 uppercase tracking-[0.3em] mb-6 flex justify-between">
-                      <span>Intercepted Feed (Plaintext)</span>
+                    <div className="font-sans font-bold text-[10px] text-white/30 uppercase tracking-[0.3em] mb-6 flex justify-between">
+                      <span>Outbound Payload (Plaintext)</span>
                       <AlertTriangle size={16} className="text-red-500" />
                     </div>
                     
-                    <div className="font-mono text-[76px] leading-[1.1] text-white tracking-[0.1em] break-all">
-                      <span className="text-white/10 select-none mr-4">&gt;</span>
-                      <ScrambleText text={mission.plaintext} />
+                    <div className="font-mono text-[42px] leading-[1.2] text-white tracking-[0.1em] break-all">
+                      <span className="text-white/10 select-none mr-4">&gt;</span>{mission.plaintext}
                     </div>
                   </div>
 
@@ -691,11 +717,10 @@ const MissionView = () => {
                      
                      <div className="px-6 py-2 bg-[#0a0a0f] border border-[var(--current-theme-color)]/50 rounded-full relative z-20 flex items-center gap-3 backdrop-blur-md shadow-[0_0_30px_rgba(0,0,0,0.8)]">
                         <Settings size={16} className="text-[var(--current-theme-color)] animate-[spin_4s_linear_infinite]" />
-                        <span className="font-mono text-[13px] text-white/70 uppercase tracking-[0.3em]">Processing Node</span>
+                        <span className="font-mono text-[10px] text-white/70 uppercase tracking-[0.3em]">Processing Node</span>
                         <ArrowRightLeft size={16} className="text-[var(--current-theme-color)]" />
                      </div>
                   </div>
-
 
                   {/* Ciphertext Input Area */}
                   <div className={`glass-panel p-10 relative shadow-[0_40px_80px_rgba(0,0,0,0.5)] transition-all duration-500 rounded-xl ${isSuccess ? 'border shadow-none' : 'border border-[var(--current-theme-color)]/30'}`}
@@ -706,63 +731,29 @@ const MissionView = () => {
                     
                     <div className={`absolute left-0 top-0 h-full w-1 transition-colors duration-500 ${isSuccess ? 'bg-[var(--current-theme-color)]' : 'bg-[var(--current-theme-color)]'}`}></div>
 
-                    <div className={`font-sans font-bold text-[13px] uppercase tracking-[0.3em] mb-8 flex justify-between text-[var(--current-theme-color)]`}>
+                    <div className={`font-sans font-bold text-[10px] uppercase tracking-[0.3em] mb-8 flex justify-between text-[var(--current-theme-color)]`}>
                       <span>Encryption Protocol</span>
                       {isSuccess ? <span>[PROTOCOL SECURED]</span> : <span className="animate-pulse">[AWAITING ENCRYPTION]</span>}
                     </div>
 
-                    <div
-                      className="relative flex items-center bg-[#0a0a0f]/50 rounded-lg p-6 border border-white/5 focus-within:border-[var(--current-theme-color)]/40 transition-colors cursor-text"
-                      onClick={() => inputRef.current?.focus()}
-                    >
-                      <span className="font-mono text-[50px] text-white/20 select-none mr-4">&gt;</span>
-                      <div className="relative flex-1 flex items-center flex-wrap gap-[3px] min-h-[54px]">
-                        {/* Placeholder */}
-                        {input.length === 0 && (
-                          <span className="font-mono text-[62px] text-white/10 select-none absolute left-0 pointer-events-none">ENTER CIPHER...</span>
-                        )}
-                        {/* Per-character glow blocks */}
-                        {input.split('').map((char, i) => (
-                          <span
-                            key={i}
-                            className="font-mono text-[62px] leading-none"
-                            style={{
-                              color: 'var(--current-theme-color)',
-                              textShadow: '0 0 8px var(--current-theme-color), 0 0 20px var(--current-theme-color)',
-                              display: 'inline-block',
-                              transition: 'all 0.05s',
-                            }}
-                          >
-                            {char}
-                          </span>
-                        ))}
-                        {/* Blinking cursor */}
-                        {!isSuccess && (
-                          <span
-                            className="font-mono text-[62px] leading-none animate-pulse select-none"
-                            style={{ color: 'var(--current-theme-color)', opacity: 0.8 }}
-                          >▋</span>
-                        )}
-                        {/* Hidden real input to capture keystrokes */}
-                        <input
-                          ref={inputRef}
-                          type="text"
-                          value={input}
-                          onChange={(e) => setInput(e.target.value.toUpperCase())}
-                          onKeyDown={(e) => e.key === 'Enter' && !isSuccess && checkAnswer()}
-                          disabled={isSuccess}
-                          className="absolute inset-0 opacity-0 w-full h-full cursor-text"
-                          spellCheck={false}
-                          autoComplete="off"
-                          autoCorrect="off"
-                        />
-                      </div>
+                    <div className="relative flex items-center bg-[#0a0a0f]/50 rounded-lg p-6 border border-white/5 focus-within:border-white/20 transition-colors">
+                      <span className="font-mono text-[32px] text-white/20 select-none mr-4">&gt;</span>
+                      <input 
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value.toUpperCase())}
+                        onKeyDown={(e) => e.key === 'Enter' && !isSuccess && checkAnswer()}
+                        disabled={isSuccess}
+                        className="w-full bg-transparent text-white font-mono text-[40px] tracking-[0.1em] outline-none uppercase placeholder:text-white/10"
+                        placeholder="ENTER CIPHER..."
+                        spellCheck="false"
+                      />
                     </div>
 
                     {/* Error Display */}
                     <div className="h-8 mt-6 flex items-center">
                        {error && (
-                         <p className="font-mono text-[14px] font-bold text-red-500 tracking-[0.2em] flex items-center gap-2 px-3 py-1 bg-red-500/10 rounded border border-red-500/20 animate-in fade-in">
+                         <p className="font-mono text-[12px] font-bold text-red-500 tracking-[0.2em] flex items-center gap-2 px-3 py-1 bg-red-500/10 rounded border border-red-500/20 animate-in fade-in">
                            <AlertCircle size={16} />
                            INTEGRITY FAILURE: MISMATCH DETECTED.
                          </p>
@@ -773,7 +764,7 @@ const MissionView = () => {
                     <div className="mt-8 flex justify-end">
                       {!isSuccess ? (
                         <button onClick={checkAnswer} className="cyber-button !bg-[#00f2ff] hover:!bg-white !text-black hover:!text-[#00f2ff] text-[18px] py-3 px-10 hover:shadow-[0_0_25px_rgba(255,255,255,0.8)] border-none outline-none group transition-colors duration-300">
-                          <span className="relative z-10 font-bold group-hover:!text-[#00f2ff]">EXECUTE CIPHER</span>
+                          <span className="relative z-10 font-bold group-hover:!text-[#00f2ff]">EXECUTE ENCRYPTION</span>
                         </button>
                       ) : (
                         <button onClick={() => navigate('/story')} className="relative overflow-hidden text-[#0a0a0f] font-sans font-bold uppercase tracking-[0.2em] text-[14px] py-5 px-14 rounded hover:bg-white transition-all duration-300 outline-none group"
@@ -796,7 +787,7 @@ const MissionView = () => {
                 </>
             )}
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Chapter Complete Popup */}
@@ -811,8 +802,14 @@ const MissionView = () => {
             <motion.div 
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="w-full max-w-5xl flex flex-col items-center gap-12"
+              className="w-full max-w-5xl flex flex-col items-center gap-12 relative"
             >
+              <div className="absolute -top-12 -right-12 z-[110]">
+                <button onClick={handleProceedNextChapter} className="tactical-panel w-12 h-12 flex items-center justify-center hover:bg-white/10 transition-colors">
+                  <XIcon size={24} className="text-white/50 hover:text-white" />
+                </button>
+              </div>
+
               <div className="text-center space-y-4">
                 <h2 className="cq-title">Sector_Secured</h2>
                 <p className="font-mono text-sm text-[var(--current-theme-color)] uppercase tracking-[0.5em] animate-pulse">Authentication_Clearance_Generated</p>
@@ -835,10 +832,10 @@ const MissionView = () => {
                   <Download size={24} /> DOWNLOAD_CLEARANCE
                 </a>
                 <button 
-                  onClick={() => navigate('/story')}
+                  onClick={handleProceedNextChapter}
                   className="cyber-button px-16 h-16 text-lg border-white/10 hover:bg-white/5"
                 >
-                  RETURN_TO_HQ
+                  PROCEED_TO_NEXT_SECTOR
                 </button>
               </div>
             </motion.div>
@@ -1089,11 +1086,25 @@ const QuantumAscent = () => {
   );
 };
 
+const DashboardWrapper = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!localStorage.getItem('cq_story_intro_seen')) {
+      navigate('/story/intro');
+    } else {
+      navigate('/story/dashboard');
+    }
+  }, [navigate]);
+  return null;
+};
+
 function StoryMode() {
   return (
     <StoryModeProvider>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<DashboardWrapper />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="intro" element={<IntroSequence />} />
         <Route path="mission/:id" element={<MissionView />} />
         <Route path="quantum-ascent" element={<QuantumAscent />} />
       </Routes>

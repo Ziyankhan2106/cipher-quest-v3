@@ -9,6 +9,8 @@ export interface Mission {
 export interface Chapter {
   id: number;
   title: string;
+  speaker: string;
+  speakerColor: string;
   missions: Mission[];
 }
 
@@ -31,45 +33,53 @@ export const CHAPTERS: Chapter[] = [
   {
     id: 1,
     title: 'SECTOR 1: THE OUTSKIRTS',
+    speaker: 'JUNKYARD',
+    speakerColor: 'text-amber-500',
     missions: [
-      { id: '1-1', name: 'Gateway Firewall Override', description: 'Reverse the String', type: 'reverse', storyIntro: 'SysAdmin: The Outer Gate uses a basic mirror distortion. Intercept their packet and reverse the sequence to break inside.' },
-      { id: '1-2', name: 'Neon Glitch Protocol', description: 'Shift by (+/- X)', type: 'caesar', storyIntro: 'SysAdmin: The street signs are flickering in a pattern. They are linearly shifting characters. Find the frequency delta and realign.' },
-      { id: '1-3', name: 'Alleyway Mirror Network', description: 'A-Z, B-Y, C-X and so on', type: 'atbash', storyIntro: 'SysAdmin: A black-market trader is using an inverted alphabet protocol. A maps to Z. Decode their drop location.' },
-      { id: '1-4', name: 'Black Market Custom Key', description: 'Create your own mapping', type: 'monoalphabetic', storyIntro: 'SysAdmin: We captured a bespoke frequency map from a local smuggler. Analyze the structure and replace the letters.' },
-      { id: '1-5', name: 'Smuggler Number-Tagging', description: '0-9, a-z = 10-35, A-Z = 36-51, .?!, = 52,53,54,55', type: 'fixed-number', storyIntro: 'SysAdmin: They are converting alphanumerics to raw integers to bypass the cargo scanners. We must translate the numerical blocks.' }
+      { id: '1-1', name: 'Gateway Firewall Proxy', description: 'Reverse the String', type: 'reverse', storyIntro: 'Listen up, {NAME}. The Syndicate is knocking on the Outer Gate. We gotta scramble our outbound routing logs right now. Take this standard packet and reverse the sequence so they can\'t trace the origin.' },
+      { id: '1-2', name: 'Neon Glitch Evasion', description: 'Shift by (+/- X)', type: 'caesar', storyIntro: 'They broke the outer wall! To get our data through the glitching neon grid safely, we need a linear character shift. Calculate the delta and encrypt the feed before they sniff it.' },
+      { id: '1-3', name: 'Alleyway Mirror Drop', description: 'A-Z, B-Y, C-X and so on', type: 'atbash', storyIntro: 'Extraction point is set in the alleys. We\'re transmitting coordinates using an inverted alphabet protocol. Don\'t mess this up, or their drones will read it loud and clear.' },
+      { id: '1-4', name: 'Black Market Secure Line', description: 'Create your own mapping', type: 'monoalphabetic', storyIntro: 'A local smuggler offered us a secure tunnel, but we have to match his custom frequency map. Restructure our plaintext using his bespoke substitution matrix.' },
+      { id: '1-5', name: 'Cargo Tag Forgery', description: '0-9, a-z = 10-35, A-Z = 36-51, .?!, = 52,53,54,55', type: 'fixed-number', storyIntro: 'To bypass the cargo scanners into Sector 2, we must disguise our data as numerical shipping blocks. Convert this alphanumeric payload into raw integers. See you on the other side.' }
     ]
   },
   {
     id: 2,
     title: 'SECTOR 2: THE NEON SLUMS',
+    speaker: 'SILK',
+    speakerColor: 'text-fuchsia-500',
     missions: [
-      { id: '2-1', name: 'Shadow Protocol Bypass', description: 'Reverse then Shift by (+/- X)', type: 'reverse-caesar', storyIntro: 'SysAdmin: Layered street-level obfuscation. A reversal followed by a standard shift. Unpack it in reverse order.' },
-      { id: '2-2', name: 'Synth-Wave Modulation', description: '+/- X, +/- Y alternating', type: 'alternating', storyIntro: 'SysAdmin: The data shift modulates periodically like a synth beat. Track the alternating wave frequency and adjust.' },
-      { id: '2-3', name: 'Elevator Depth Charge', description: '+1 then +2 and beyond', type: 'positional', storyIntro: 'SysAdmin: Dynamic shifting based on floor index position. The deeper you go into the slums, the higher the shift.' },
-      { id: '2-4', name: 'Vocal Scrambler Module', description: 'Replace Vowels and Spaces with Numbers and Symbols', type: 'vowel-scrambler', storyIntro: 'SysAdmin: Gang leaders are scrambling their voice comms by stripping vowels and assigning distinct symbols.' },
-      { id: '2-5', name: 'Rogue Keycard Override', description: 'Say the Key is XIATUV then ABCDE... = XIATUV_BCDEFGHJK...', type: 'keyed-substitution', storyIntro: 'SysAdmin: A stolen VIP keycard alters the alphabet array. We pulled the keyword from their wallet. Implement the substitute.' }
+      { id: '2-1', name: 'Shadow Protocol Shell', description: 'Reverse then Shift by (+/- X)', type: 'reverse-caesar', storyIntro: 'Welcome to the Slums, {NAME}. Syndicate sniffers are crawling everywhere here. Apply layered obfuscation: reverse the payload, then apply a standard shift. Keep it quiet.' },
+      { id: '2-2', name: 'Synth-Wave Pulse Encryption', description: '+/- X, +/- Y alternating', type: 'alternating', storyIntro: 'The sniffers are adapting to our frequency. We need a dynamic wave signature. Modulate the data shift periodically, alternating between two frequencies so they lose the lock.' },
+      { id: '2-3', name: 'Elevator Depth Charge', description: '+1 then +2 and beyond', type: 'positional', storyIntro: 'We are diving deep into the underground infrastructure. The encryption must scale with our depth index. Apply a progressively higher shift to each character as we go down.' },
+      { id: '2-4', name: 'Vocal Scrambler Bypass', description: 'Replace Vowels and Spaces with Numbers and Symbols', type: 'vowel-scrambler', storyIntro: 'They tapped our voice comms. Strip the vowels from our transmission and inject distinct numerical symbols. That\'ll scramble the audio feed into static on their end.' },
+      { id: '2-5', name: 'Rogue VIP Ghosting', description: 'Say the Key is XIATUV then ABCDE... = XIATUV_BCDEFGHJK...', type: 'keyed-substitution', storyIntro: 'I managed to steal a VIP keycard. To spoof our identity in their system, we must alter our data signature using the VIP\'s keyword as the alphabet array base. Make it convincing.' }
     ]
   },
   {
     id: 3,
     title: 'SECTOR 3: THE CORPORATE GRID',
+    speaker: 'PROXY',
+    speakerColor: 'text-emerald-500',
     missions: [
-      { id: '3-1', name: 'Traffic Grid Geometry', description: '((index_of_the_alphabet) + key_number) mod 26', type: 'modular-shift', storyIntro: 'SysAdmin: Corporate data is wrapped using strict modular arithmetic. Calculate the modulo 26 shifts for the transit nodes.' },
-      { id: '3-2', name: 'Poly-Auth Terminal', description: '((index_of_the_alphabet) + index_of_key) mod 26', type: 'vignere', storyIntro: 'SysAdmin: MegaCorp Polyalphabetic encryption detected. They use a repeating employee ID keyword to dynamically shift text.' },
-      { id: '3-3', name: 'Corporate Vault Equation', description: '(A*(index of alphabet) + B) mod 26', type: 'affine', storyIntro: 'SysAdmin: Their financial vaults map characters to linear algebraic equations. We need to solve for multipliers A and B.' },
-      { id: '3-4', name: 'Data Packet Rerouting', description: 'Reorder using a rule', type: 'permutation', storyIntro: 'SysAdmin: Heavy payload fragmentation. The data is all there, but the layout is shuffled. Reconstruct the block routing.' },
-      { id: '3-5', name: 'Security Drone Disruption', description: 'ABCDEF -> CBAFED (key = CAT) = (CBA + CAT) + (FED + CAT)', type: 'blocked-rotate', storyIntro: 'SysAdmin: Combat drones divide data into blocks, reverse the rotors, and add a local key. Bring them down.' }
+      { id: '3-1', name: 'Traffic Grid Modulus', description: '((index_of_the_alphabet) + key_number) mod 26', type: 'modular-shift', storyIntro: 'Welcome to the MegaCorp Grid, Operator {NAME}. To blend in with corporate traffic, we must wrap our data using strict modular arithmetic. Calculate the modulo 26 shifts exactly.' },
+      { id: '3-2', name: 'Poly-Auth Trojan', description: '((index_of_the_alphabet) + index_of_key) mod 26', type: 'vignere', storyIntro: 'The Syndicate is auditing all corporate logs. We must disguise our presence with Polyalphabetic encryption. Use the target employee ID to dynamically shift our text.' },
+      { id: '3-3', name: 'Corporate Vault Injection', description: '(A*(index of alphabet) + B) mod 26', type: 'affine', storyIntro: 'We are targeting their financial vaults now. Map our characters to linear algebraic equations using multiplier A and B. It creates an untraceable deposit signature.' },
+      { id: '3-4', name: 'Packet Dispersion Routing', description: 'Reorder using a rule', type: 'permutation', storyIntro: 'The core defenses are heavily monitored. Fragment our heavy payload and shuffle the layout. The data will reassemble automatically upon infiltration past the sentries.' },
+      { id: '3-5', name: 'Security Drone Hijack', description: 'ABCDEF -> CBAFED (key = CAT) = (CBA + CAT) + (FED + CAT)', type: 'blocked-rotate', storyIntro: 'Combat drones are swarming our position. To hijack their targeting array, divide our override sequence into blocks, reverse the rotors, and embed their local key.' }
     ]
   },
   {
     id: 4,
     title: 'SECTOR 4: THE SYNDICATE CORE',
+    speaker: 'KNOX',
+    speakerColor: 'text-[var(--current-theme-color)]',
     missions: [
-      { id: '4-1', name: 'DNA Sequencing Hack', description: 'Full A-Z Random Mapping', type: 'monoalphabetic', storyIntro: 'SysAdmin: Syndicate genetics labs use a full random mapping to obfuscate DNA data. Decrypt the sequence using the intercepted map.' },
-      { id: '4-2', name: 'Power Core Collapse', description: '(I_Original + I_Reverse)', type: 'rotate-add', storyIntro: 'SysAdmin: The reactor terminal folds the data structure on top of itself and sums the output. Unfold the grid variables.' },
-      { id: '4-3', name: 'Additive Surge Wave', description: '(1,3,5,7) then flip the block', type: 'encrypt-additively', storyIntro: 'SysAdmin: Successive additive operations create a constant changing stream of shifts across the grid. Surf the wave.' },
-      { id: '4-4', name: 'Executive Mainframe Bypass', description: 'Encrypt with y = (x^a) mod n', type: 'mini-rsa', storyIntro: 'SysAdmin: The CEO mainframe is protected by asymmetric cryptography. We intercepted the public key. Calculate the private components.' },
-      { id: '4-5', name: 'Syndicate Archival Wipe', description: 'Hash 2^n to get 1 root', type: 'merkle', storyIntro: 'SysAdmin: They are securing everything via a Merkle root to prove database state. We need to crack the root hash to wipe their servers.' }
+      { id: '4-1', name: 'DNA Sequencing Spoof', description: 'Full A-Z Random Mapping', type: 'monoalphabetic', storyIntro: 'Operator {NAME}, we are inside the Syndicate genetics lab. To inject our lethal payload, we must obfuscate it using their full random DNA mapping protocol.' },
+      { id: '4-2', name: 'Power Core Implosion', description: '(I_Original + I_Reverse)', type: 'rotate-add', storyIntro: 'Approaching the main reactor. Fold our explosive data structure on top of itself and sum the output. The reactor will process it as a critical failure wave.' },
+      { id: '4-3', name: 'Additive Surge Strike', description: '(1,3,5,7) then flip the block', type: 'encrypt-additively', storyIntro: 'The Syndicate firewall is rebuilding itself. Hit them with a constant changing stream of shifts across the grid to keep them blinded.' },
+      { id: '4-4', name: 'Executive Mainframe Lockout', description: 'Encrypt with y = (x^a) mod n', type: 'mini-rsa', storyIntro: 'The CEO mainframe is vulnerable. We have their public key. Encrypt our final lockout command using asymmetric cryptography so they can never regain access.' },
+      { id: '4-5', name: 'Syndicate Merkle Wipe', description: 'Hash 2^n to get 1 root', type: 'merkle', storyIntro: 'This is it. They are securing backups via a Merkle root. We must encrypt a malicious root hash to silently wipe their entire server state. Do not fail.' }
     ]
   }
 ];

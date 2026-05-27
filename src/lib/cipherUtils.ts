@@ -16,7 +16,7 @@ export interface CipherMission {
 const CIPHERLAB_WORDS = [
     "Porsche", "Apple", "Google", "Samsung", "Bugatti", "Firefox", "Chrome", "Safari", "Opera", "Edge",
     "Ferrari", "Intel", "AMD", "Nvidia", "Qualcomm", "Sony", "Nintendo", "Xbox", "PlayStation", "Switch",
-    "AstonMartin", "Logitech", "Razer", "Corsair", "Asus", "Acer", "Lenovo", "Dell", "HP", "Microsoft",
+    "AstonMartin", "Logitech", "Razer", "Corsair", "Asus", "Acer", "Lenovo", "Dell", "Surface", "Microsoft",
     "McLaren", "Ubuntu", "Debian", "Fedora", "ArchLinux", "CentOS", "RedHat", "Kali", "Parrot", "Mint",
     "Chevrolet", "Docker", "Kubernetes", "Jenkins", "GitLab", "GitHub", "Bitbucket", "Jira", "Confluence", "Trello"
 ];
