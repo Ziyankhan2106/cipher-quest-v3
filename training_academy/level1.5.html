@@ -411,7 +411,173 @@ body::after{
 .foot-btn:hover{color:var(--text);border-color:rgba(34,211,110,.5);}
 .foot-btn.primary{color:var(--green);background:rgba(34,211,110,0.06);border-color:rgba(34,211,110,.4);}
 .foot-btn.primary:hover{background:rgba(34,211,110,0.12);box-shadow:0 0 14px rgba(34,211,110,.28);}
-</style>
+
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    
+        .step-btn {
+            background: #59f2ff !important;
+            color: #000 !important;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px) !important;
+            border: none !important;
+            border-radius: 0 !important;
+            font-weight: 800 !important;
+        }
+        .step-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed !important;
+        }
+        .next-cipher-btn {
+            background: #ffdd57 !important;
+            color: #000 !important;
+            border: none !important;
+            font-weight: 800 !important;
+        }
+
+    
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
+    </style>
     <script src="global_controls.js"></script>
 </head>
 <body>
@@ -462,18 +628,14 @@ body::after{
   </div>
 
   <!-- FOOTER -->
-  <div class="footer">
-    <div style="display:flex; align-items:center; gap:12px;">
-      <button class="foot-btn" id="pauseResumeBtn">Pause</button>
-      <button class="foot-btn" id="replayBtn">↩ Restart</button>
-    </div>
-    <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-      <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-      <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-      <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-    </div>
-    <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
-  </div>
+        <div class="footer">
+            <div style="display:flex; gap:12px;">
+                <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+                <button class="foot-btn step-btn" id="nextStep">Next Step</button>
+                <button class="foot-btn" id="replayBtn">Restart</button>
+            </div>
+            <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
+        </div>
 </div>
 
 <!-- Drop package overlay -->
@@ -482,433 +644,376 @@ body::after{
 <div class="ejected-num" id="ejectedNum"></div>
 
 <script>
-let speedMultiplier = 1.0;
-/* ── Encoding map ── */
-const GROUPS = [
-  { id:'digit', name:'DIGITS',     range:'codes 0 – 9',   chars:'0123456789',         base:0,  col:'var(--col-digit)',  glow:'rgba(89,242,255,0.35)' },
-  { id:'lower', name:'LOWERCASE',  range:'codes 10 – 35', chars:'abcdefghijklmnopqrstuvwxyz', base:10, col:'var(--col-lower)', glow:'rgba(185,127,255,0.35)' },
-  { id:'upper', name:'UPPERCASE',  range:'codes 36 – 61', chars:'ABCDEFGHIJKLMNOPQRSTUVWXYZ', base:36, col:'var(--col-upper)', glow:'rgba(255,229,102,0.35)' },
-  { id:'sym',   name:'SYMBOLS',    range:'codes 62 – 65', chars:'.?!,',                base:62, col:'var(--col-sym)',   glow:'rgba(255,159,67,0.35)'  },
-];
+    const GROUPS = [
+      { id:'digit', name:'DIGITS',     range:'codes 0 – 9',   chars:'0123456789',         base:0,  col:'var(--col-digit)',  glow:'rgba(89,242,255,0.35)' },
+      { id:'lower', name:'LOWERCASE',  range:'codes 10 – 35', chars:'abcdefghijklmnopqrstuvwxyz', base:10, col:'var(--col-lower)', glow:'rgba(185,127,255,0.35)' },
+      { id:'upper', name:'UPPERCASE',  range:'codes 36 – 61', chars:'ABCDEFGHIJKLMNOPQRSTUVWXYZ', base:36, col:'var(--col-upper)', glow:'rgba(255,229,102,0.35)' },
+      { id:'sym',   name:'SYMBOLS',    range:'codes 62 – 65', chars:'.?!,',                base:62, col:'var(--col-sym)',   glow:'rgba(255,159,67,0.35)'  },
+    ];
 
-function encodeChar(ch) {
-  for (const g of GROUPS) {
-    const idx = g.chars.indexOf(ch);
-    if (idx !== -1) return { code: g.base + idx, group: g, idx };
-  }
-  return null;
-}
+    function encodeChar(ch) {
+      for (const g of GROUPS) {
+        const idx = g.chars.indexOf(ch);
+        if (idx !== -1) return { code: g.base + idx, group: g, idx };
+      }
+      return null;
+    }
 
-/* ── State ── */
-let running = false;
-let ct = { cancelled:false };
-let isPlaying = true;
-let stepRequested = false;
+    let currentStep = -1;
+    let isAnimating = false;
+    const raw = 'CIPHER';
+    const chars = raw.split('');
+    const n = chars.length;
+    const results = chars.map(ch => {
+        const enc = encodeChar(ch);
+        if (!enc) return { ch, code: '?', group: null, idx: -1 };
+        return { ch, code: enc.code, group: enc.group, idx: enc.idx };
+    });
 
-/* ── DOM ── */
-const wordInput  = document.getElementById('wordInput');
-const goBtn      = document.getElementById('goBtn') || { disabled: false, addEventListener: () => {} };
-const replayBtn  = document.getElementById('replayBtn');
-const statusTxt  = document.getElementById('statusTxt');
-const beltSec    = document.getElementById('beltSection') || document.createElement('div');
-const pkgList    = document.getElementById('pkgList');
-const banksWrap  = document.getElementById('banksWrap');
-const banksRow   = document.getElementById('banksRow');
-const outLabel   = document.getElementById('outLabel');
-const outChips   = document.getElementById('outChips');
-const infoPanel  = document.getElementById('infoPanel');
-const infoGrid   = document.getElementById('infoGrid');
-const dropPkg    = document.getElementById('dropPkg');
-const ejectedNum = document.getElementById('ejectedNum');
+    /* ── DOM ── */
+    const wordInput  = document.getElementById('wordInput');
+    const replayBtn  = document.getElementById('replayBtn');
+    const prevStepBtn = document.getElementById('prevStep');
+    const nextStepBtn = document.getElementById('nextStep');
+    const btnNext = document.getElementById('btn-next');
+    
+    const statusTxt  = document.getElementById('statusTxt');
+    const beltSec    = document.getElementById('beltSection') || document.createElement('div');
+    const pkgList    = document.getElementById('pkgList');
+    const banksWrap  = document.getElementById('banksWrap');
+    const banksRow   = document.getElementById('banksRow');
+    const outLabel   = document.getElementById('outLabel');
+    const outChips   = document.getElementById('outChips');
+    const infoPanel  = document.getElementById('infoPanel');
+    const infoGrid   = document.getElementById('infoGrid');
+    const dropPkg    = document.getElementById('dropPkg');
+    const ejectedNum = document.getElementById('ejectedNum');
 
-let isPaused = false;
-async function sleep(ms) {
-    let elapsed = 0;
-    while (elapsed < (ms / speedMultiplier)) {
-        if (ct.cancelled) return;
-        if (!isPaused) {
-            elapsed += 20;
+    async function sleep(ms) {
+        await new Promise(r => setTimeout(r, ms));
+    }
+    const vis = (el, on = true) => el.classList.toggle('vis', on);
+    const setStatus = t => statusTxt.textContent = t;
+
+    function buildBanks() {
+      banksRow.innerHTML = '';
+      GROUPS.forEach(g => {
+        const bank = document.createElement('div');
+        bank.className = `bank ${g.id}-bank`;
+        bank.id = `bank-${g.id}`;
+
+        const hdr = document.createElement('div');
+        hdr.className = 'bank-header';
+        hdr.innerHTML = `<div class="bank-name">${g.name}</div><div class="bank-range">${g.range}</div>`;
+        bank.appendChild(hdr);
+
+        const grid = document.createElement('div');
+        grid.className = 'lockers-grid';
+        g.chars.split('').forEach((ch,i) => {
+          const lk = document.createElement('div');
+          lk.className = 'locker';
+          lk.id = `lk-${g.id}-${i}`;
+          lk.innerHTML = `<span class="lk-ch">${ch === '.' ? '.' : ch === '?' ? '?' : ch === '!' ? '!' : ch === ',' ? ',' : ch}</span><span class="lk-num">${g.base+i}</span>`;
+          grid.appendChild(lk);
+        });
+        bank.appendChild(grid);
+        banksRow.appendChild(bank);
+      });
+    }
+
+    function buildPackages() {
+      pkgList.innerHTML = '';
+      outChips.innerHTML = '';
+      chars.forEach((ch,i) => {
+        const pkg = document.createElement('div');
+        pkg.className = 'pkg loaded';
+        pkg.id = `pkg-${i}`;
+        const enc = encodeChar(ch);
+        pkg.innerHTML = `<span>${ch === ' ' ? '␣' : ch}</span><span class="pidx">[${i}]</span>`;
+        if (!enc) pkg.style.opacity = '.3'; // unknown char
+        pkgList.appendChild(pkg);
+
+        const oc = document.createElement('div');
+        oc.className = 'oc';
+        oc.id = `oc-${i}`;
+        oc.innerHTML = `<span class="onumval" id="onv-${i}"> </span><span class="ochara">${ch === ' ' ? '␣' : ch}</span>`;
+        outChips.appendChild(oc);
+      });
+    }
+
+    async function animateDrop(pkgEl, lockerEl, ch, col) {
+      const pkgRect    = pkgEl.getBoundingClientRect();
+      const lockerRect = lockerEl.getBoundingClientRect();
+
+      dropPkg.textContent = ch === ' ' ? '␣' : ch;
+      dropPkg.style.display = 'flex';
+      dropPkg.style.width  = '44px';
+      dropPkg.style.height = '44px';
+      dropPkg.style.borderRadius = '8px';
+      dropPkg.style.border = `2px solid ${col}`;
+      dropPkg.style.color  = col;
+      dropPkg.style.boxShadow = `0 0 18px ${col}`;
+      dropPkg.style.background = 'rgba(5,8,15,0.95)';
+      dropPkg.style.alignItems = 'center';
+      dropPkg.style.justifyContent = 'center';
+      dropPkg.style.fontFamily = 'Share Tech Mono, monospace';
+      dropPkg.style.fontSize = '18px';
+      dropPkg.style.fontWeight = '700';
+      dropPkg.style.position = 'fixed';
+      dropPkg.style.zIndex = '100';
+      dropPkg.style.pointerEvents = 'none';
+      dropPkg.style.transition = 'none';
+
+      dropPkg.style.left = pkgRect.left + pkgRect.width/2 - 22 + 'px';
+      dropPkg.style.top  = pkgRect.top  + 'px';
+
+      await sleep(40);
+
+      const tx = lockerRect.left + lockerRect.width/2 - 22;
+      const ty = lockerRect.top  + lockerRect.height/2 - 22;
+
+      const ms = 250;
+
+      dropPkg.style.transition = `left ${ms}ms cubic-bezier(0.4,0,1,1), top ${ms}ms cubic-bezier(0.4,0,1,1), opacity ${ms}ms`;
+      dropPkg.style.left = tx + 'px';
+      dropPkg.style.top  = ty + 'px';
+      dropPkg.style.opacity = '0.7';
+
+      await sleep(ms);
+      dropPkg.style.display = 'none';
+    }
+
+    async function animateEject(lockerEl, outEl, code, col) {
+      const lkRect  = lockerEl.getBoundingClientRect();
+      const outRect = outEl.getBoundingClientRect();
+
+      ejectedNum.textContent = String(code);
+      ejectedNum.style.color = col;
+      ejectedNum.style.border = `1.5px solid ${col}`;
+      ejectedNum.style.background = 'rgba(5,8,15,0.95)';
+      ejectedNum.style.borderRadius = '8px';
+      ejectedNum.style.padding = '5px 10px';
+      ejectedNum.style.boxShadow = `0 0 16px ${col}`;
+      ejectedNum.style.transition = 'none';
+      ejectedNum.style.opacity = '1';
+
+      const sx = lkRect.left  + lkRect.width/2  - 24;
+      const sy = lkRect.top   + lkRect.height/2 - 16;
+      ejectedNum.style.left = sx + 'px';
+      ejectedNum.style.top  = sy + 'px';
+
+      await sleep(40);
+
+      const tx = outRect.left + outRect.width/2  - 24;
+      const ty = outRect.top  + outRect.height/2 - 16;
+
+      const ms = 250;
+
+      ejectedNum.style.transition = `left ${ms}ms cubic-bezier(0.25,0.1,0.25,1), top ${ms}ms cubic-bezier(0.25,0.1,0.25,1), opacity ${ms}ms`;
+      ejectedNum.style.left = tx + 'px';
+      ejectedNum.style.top  = ty + 'px';
+      ejectedNum.style.opacity = '0';
+
+      await sleep(ms);
+    }
+    
+    async function scanToLocker(group, targetIdx) {
+      const scanMs = 30;
+      for (let i = 0; i <= targetIdx; i++) {
+        const lk = document.getElementById(`lk-${group.id}-${i}`);
+        if (!lk) continue;
+        lk.classList.add('lk-scan');
+        if (i > 0) {
+          const prev = document.getElementById(`lk-${group.id}-${(i-1)}`);
+          if (prev && !prev.classList.contains('lk-open')) prev.classList.remove('lk-scan');
         }
-        await new Promise(r => setTimeout(r, 20));
+        await sleep(scanMs);
+      }
     }
-}
-const vis   = (el,on=true) => el.classList.toggle('vis',on);
-const setStatus = t => statusTxt.textContent = t;
 
-async function waitForPlaybackStep(runToken) {
-  if (runToken.cancelled) return;
-  await sleep(1000);
-}
+    async function renderStep(step) {
+        if (isAnimating) return;
+        isAnimating = true;
 
-/* ── Build locker banks ── */
-function buildBanks() {
-  banksRow.innerHTML = '';
-  GROUPS.forEach(g => {
-    const bank = document.createElement('div');
-    bank.className = `bank ${g.id}-bank`;
-    bank.id = `bank-${g.id}`;
+        dropPkg.style.display = 'none';
+        ejectedNum.style.opacity = '0';
+        document.querySelectorAll('.locker').forEach(l => l.classList.remove('lk-open','lk-scan'));
+        document.querySelectorAll('.bank').forEach(b => { b.classList.remove('bank-glow'); b.style.boxShadow=''; });
+        document.querySelectorAll('.pkg').forEach(p => p.classList.remove('active','done'));
 
-    const hdr = document.createElement('div');
-    hdr.className = 'bank-header';
-    hdr.innerHTML = `<div class="bank-name">${g.name}</div><div class="bank-range">${g.range}</div>`;
-    bank.appendChild(hdr);
+        if (step === -1) {
+            setStatus('Ready — click Next Step to begin.');
+            vis(infoPanel, false);
+            for(let i=0; i<n; i++) {
+                const oc = document.getElementById(`oc-${i}`);
+                if(oc) {
+                    oc.classList.remove('landed');
+                    document.getElementById(`onv-${i}`).textContent = ' ';
+                    oc.style.borderColor = 'rgba(34,211,110,0.08)';
+                    oc.style.color = 'transparent';
+                }
+            }
+            prevStepBtn.disabled = true;
+            nextStepBtn.disabled = false;
+            isAnimating = false;
+            return;
+        }
 
-    const grid = document.createElement('div');
-    grid.className = 'lockers-grid';
-    g.chars.split('').forEach((ch,i) => {
-      const lk = document.createElement('div');
-      lk.className = 'locker';
-      lk.id = `lk-${g.id}-${i}`;
-      lk.innerHTML = `<span class="lk-ch">${ch === '.' ? '.' : ch === '?' ? '?' : ch === '!' ? '!' : ch === ',' ? ',' : ch}</span><span class="lk-num">${g.base+i}</span>`;
-      grid.appendChild(lk);
+        vis(infoPanel, false);
+
+        for (let i = 0; i < step; i++) {
+            const r = results[i];
+            const pkg = document.getElementById(`pkg-${i}`);
+            if (pkg) pkg.classList.add('done');
+            const oc = document.getElementById(`oc-${i}`);
+            if (oc && r.group) {
+                oc.classList.add('landed');
+                document.getElementById(`onv-${i}`).textContent = r.code;
+                oc.style.color = r.group.col;
+                oc.style.borderColor = r.group.col.replace('var(--col-','').replace(')','');
+            } else if (oc && !r.group) {
+                oc.classList.add('landed');
+                document.getElementById(`onv-${i}`).textContent = '?';
+                oc.style.borderColor='rgba(74,96,122,0.3)';
+                oc.style.color='var(--muted)';
+            }
+        }
+
+        if (step >= 0 && step < n) {
+            const r = results[step];
+            const pkgEl = document.getElementById(`pkg-${step}`);
+            if (pkgEl) pkgEl.classList.add('active');
+
+            if (!r.group) {
+                setStatus(`"${r.ch}" — not in the codebook, skipping…`);
+                const oc = document.getElementById(`oc-${step}`);
+                const onv = document.getElementById(`onv-${step}`);
+                if (oc && onv) { onv.textContent = '?'; oc.classList.add('landed'); oc.style.borderColor='rgba(74,96,122,0.3)'; oc.style.color='var(--muted)'; }
+                if (pkgEl) { pkgEl.classList.remove('active'); pkgEl.classList.add('done'); }
+            } else {
+                const bankEl = document.getElementById(`bank-${r.group.id}`);
+                if (bankEl) {
+                  bankEl.classList.add('bank-glow');
+                  bankEl.style.boxShadow = `0 0 22px ${r.group.glow}`;
+                }
+
+                setStatus(`"${r.ch === ' ' ? 'SPACE' : r.ch}" → checking ${r.group.name} bank…`);
+                await sleep(150);
+
+                const lockerEl = document.getElementById(`lk-${r.group.id}-${r.idx}`);
+                if (pkgEl && lockerEl) {
+                  await animateDrop(pkgEl, lockerEl, r.ch, r.group.col);
+                }
+
+                setStatus(`Scanning ${r.group.name}… looking for "${r.ch === ' ' ? 'SPACE' : r.ch}"`);
+                await scanToLocker(r.group, r.idx);
+
+                if (lockerEl) lockerEl.classList.add('lk-open');
+                setStatus(`Locker found! "${r.ch === ' ' ? 'SPACE' : r.ch}" = code ${r.code} 🔓`);
+                await sleep(200);
+
+                const outEl = document.getElementById(`oc-${step}`);
+                if (lockerEl && outEl) {
+                  await animateEject(lockerEl, outEl, r.code, r.group.col);
+                }
+
+                const onv = document.getElementById(`onv-${step}`);
+                if (outEl && onv) {
+                  onv.textContent = String(r.code);
+                  outEl.classList.add('landed');
+                  outEl.style.color = r.group.col;
+                  outEl.style.borderColor = r.group.col.replace('var(--col-','').replace(')','');
+                }
+
+                await sleep(200);
+                if (pkgEl) { pkgEl.classList.remove('active'); pkgEl.classList.add('done'); }
+            }
+        } else if (step === n) {
+            for (let i = 0; i < n; i++) {
+                const r = results[i];
+                const pkg = document.getElementById(`pkg-${i}`);
+                if (pkg) pkg.classList.add('done');
+                const oc = document.getElementById(`oc-${i}`);
+                if (oc && r.group) {
+                    oc.classList.add('landed');
+                    document.getElementById(`onv-${i}`).textContent = r.code;
+                    oc.style.color = r.group.col;
+                    oc.style.borderColor = r.group.col.replace('var(--col-','').replace(')','');
+                }
+            }
+            
+            const outStr = results.map(r => r.code).join(' ');
+            setStatus(`All encoded! "${raw}" → [ ${outStr} ]`);
+            
+            const usedGroups = {};
+            results.forEach(r => { if(r.group) usedGroups[r.group.name] = (usedGroups[r.group.name]||0)+1; });
+            const groupSummary = Object.entries(usedGroups).map(([k,v])=>`${k}: ${v}`).join(' · ');
+
+            infoGrid.innerHTML = `
+              <div class="irow">
+                <div class="irow-lbl">INPUT</div>
+                <div class="irow-val" style="color:var(--yellow);font-size:11px">${raw}</div>
+              </div>
+              <div class="irow">
+                <div class="irow-lbl">OUTPUT CODES</div>
+                <div class="irow-val" style="color:var(--green);font-size:10px;letter-spacing:.04em">${outStr}</div>
+              </div>
+              <div class="irow">
+                <div class="irow-lbl">GROUPS USED</div>
+                <div class="irow-val" style="color:var(--cyan);font-size:9px">${groupSummary||'—'}</div>
+              </div>
+              <div class="irow">
+                <div class="irow-lbl">CHARACTERS</div>
+                <div class="irow-val" style="color:var(--muted);font-size:10px">${results.map(r=>`${r.ch==' '?'␣':r.ch}→${r.code}`).join('  ')}</div>
+              </div>
+              <div class="formula">
+                <em>How it works:</em> Every character has a <strong>permanent locker number</strong>. No shifting, no mirror — just one fixed address.<br>
+                <span class="gr">0–9 → 0–9</span> &nbsp;·&nbsp; <em>a–z → 10–35</em> &nbsp;·&nbsp; <strong>A–Z → 36–61</strong> &nbsp;·&nbsp; <span style="color:var(--orange)">.?!, → 62–65</span><br>
+                Formula: find the <em>group base</em> + position inside the group = final code.
+              </div>
+            `;
+            vis(infoPanel, true);
+        }
+
+        prevStepBtn.disabled = (step === -1);
+        nextStepBtn.disabled = (step === n);
+        isAnimating = false;
+    }
+
+    prevStepBtn.addEventListener('click', () => {
+        if (currentStep > -1 && !isAnimating) {
+            currentStep--;
+            renderStep(currentStep);
+        }
     });
-    bank.appendChild(grid);
-    banksRow.appendChild(bank);
-  });
-}
 
-/* ── Build packages on belt ── */
-function buildPackages(chars) {
-  pkgList.innerHTML = '';
-  outChips.innerHTML = '';
-  chars.forEach((ch,i) => {
-    const pkg = document.createElement('div');
-    pkg.className = 'pkg';
-    pkg.id = `pkg-${i}`;
-    const enc = encodeChar(ch);
-    pkg.innerHTML = `<span>${ch === ' ' ? '␣' : ch}</span><span class="pidx">[${i}]</span>`;
-    if (!enc) pkg.style.opacity = '.3'; // unknown char
-    pkgList.appendChild(pkg);
-
-    const oc = document.createElement('div');
-    oc.className = 'oc';
-    oc.id = `oc-${i}`;
-    oc.innerHTML = `<span class="onumval" id="onv-${i}"> </span><span class="ochara">${ch === ' ' ? '␣' : ch}</span>`;
-    outChips.appendChild(oc);
-  });
-}
-
-/* ── Animate drop: from pkg element down to locker element ── */
-async function animateDrop(pkgEl, lockerEl, ch, col) {
-  const pkgRect    = pkgEl.getBoundingClientRect();
-  const lockerRect = lockerEl.getBoundingClientRect();
-
-  dropPkg.textContent = ch === ' ' ? '␣' : ch;
-  dropPkg.style.display = 'flex';
-  dropPkg.style.width  = '44px';
-  dropPkg.style.height = '44px';
-  dropPkg.style.borderRadius = '8px';
-  dropPkg.style.border = `2px solid ${col}`;
-  dropPkg.style.color  = col;
-  dropPkg.style.boxShadow = `0 0 18px ${col}`;
-  dropPkg.style.background = 'rgba(5,8,15,0.95)';
-  dropPkg.style.alignItems = 'center';
-  dropPkg.style.justifyContent = 'center';
-  dropPkg.style.fontFamily = 'Share Tech Mono, monospace';
-  dropPkg.style.fontSize = '18px';
-  dropPkg.style.fontWeight = '700';
-  dropPkg.style.position = 'fixed';
-  dropPkg.style.zIndex = '100';
-  dropPkg.style.pointerEvents = 'none';
-  dropPkg.style.transition = 'none';
-
-  // Start at pkg position
-  dropPkg.style.left = pkgRect.left + pkgRect.width/2 - 22 + 'px';
-  dropPkg.style.top  = pkgRect.top  + 'px';
-
-  await sleep(40); if (ct.cancelled) { dropPkg.style.display='none'; return; }
-
-  // Target: center on locker
-  const tx = lockerRect.left + lockerRect.width/2 - 22;
-  const ty = lockerRect.top  + lockerRect.height/2 - 22;
-
-  const dx = tx - (pkgRect.left + pkgRect.width/2 - 22);
-  const dy = ty - pkgRect.top;
-  const dist = Math.sqrt(dx*dx + dy*dy);
-  const ms = 350 + dist * 0.5;
-
-  dropPkg.style.transition = `left ${ms}ms cubic-bezier(0.4,0,1,1), top ${ms}ms cubic-bezier(0.4,0,1,1), opacity ${ms}ms`;
-  dropPkg.style.left = tx + 'px';
-  dropPkg.style.top  = ty + 'px';
-  dropPkg.style.opacity = '0.7';
-
-  await sleep(ms); if (ct.cancelled) { dropPkg.style.display='none'; return; }
-  dropPkg.style.display = 'none';
-}
-
-/* ── Eject number from locker to output chip ── */
-async function animateEject(lockerEl, outEl, code, col) {
-  const lkRect  = lockerEl.getBoundingClientRect();
-  const outRect = outEl.getBoundingClientRect();
-
-  ejectedNum.textContent = String(code);
-  ejectedNum.style.color = col;
-  ejectedNum.style.border = `1.5px solid ${col}`;
-  ejectedNum.style.background = 'rgba(5,8,15,0.95)';
-  ejectedNum.style.borderRadius = '8px';
-  ejectedNum.style.padding = '5px 10px';
-  ejectedNum.style.boxShadow = `0 0 16px ${col}`;
-  ejectedNum.style.transition = 'none';
-  ejectedNum.style.opacity = '1';
-
-  // Start at locker center
-  const sx = lkRect.left  + lkRect.width/2  - 24;
-  const sy = lkRect.top   + lkRect.height/2 - 16;
-  ejectedNum.style.left = sx + 'px';
-  ejectedNum.style.top  = sy + 'px';
-
-  await sleep(40); if (ct.cancelled) { ejectedNum.style.opacity='0'; return; }
-
-  // Move to output chip
-  const tx = outRect.left + outRect.width/2  - 24;
-  const ty = outRect.top  + outRect.height/2 - 16;
-
-  const dx = tx - sx; const dy = ty - sy;
-  const dist = Math.sqrt(dx*dx+dy*dy);
-  const ms = 300 + dist * 0.4;
-
-  ejectedNum.style.transition = `left ${ms}ms cubic-bezier(0.25,0.1,0.25,1), top ${ms}ms cubic-bezier(0.25,0.1,0.25,1), opacity ${ms}ms`;
-  ejectedNum.style.left = tx + 'px';
-  ejectedNum.style.top  = ty + 'px';
-  ejectedNum.style.opacity = '0';
-
-  await sleep(ms);
-}
-
-/* ── Scan through lockers in a bank (highlight one by one up to target) ── */
-async function scanToLocker(group, targetIdx) {
-  const total = group.chars.length;
-  const scanMs = Math.max(28, Math.min(60, 800 / total));
-  for (let i = 0; i <= targetIdx; i++) {
-    if (ct.cancelled) return;
-    const lk = document.getElementById(`lk-${group.id}-${i}`);
-    if (!lk) continue;
-    // Briefly highlight as scan passes
-    lk.classList.add('lk-scan');
-    if (i > 0) {
-      const prev = document.getElementById(`lk-${group.id}-${(i-1)}`);
-      if (prev && !prev.classList.contains('lk-open')) prev.classList.remove('lk-scan');
-    }
-    await sleep(scanMs);
-    if (ct.cancelled) return;
-  }
-}
-
-/* ── Main ── */
-async function runDemo() {
-  if (running) { ct.cancelled = true; await new Promise(r => setTimeout(r, 120)); }
-  ct = { cancelled: false };
-  running = true;
-  isPaused = false;
-  if (document.getElementById('pauseResumeBtn')) document.getElementById('pauseResumeBtn').textContent = 'Pause';
-  goBtn.disabled = true;
-
-  const raw = 'CIPHER';
-  wordInput.value = raw;
-  const chars = raw.split('');
-  const n     = chars.length;
-
-  // Reset UI
-  vis(infoPanel, false);
-  outLabel.classList.remove('vis');
-  infoGrid.innerHTML = '';
-  dropPkg.style.display = 'none';
-  ejectedNum.style.opacity = '0';
-
-  // Clear locker states
-  document.querySelectorAll('.locker').forEach(l => l.classList.remove('lk-open','lk-scan'));
-  document.querySelectorAll('.bank').forEach(b => { b.classList.remove('bank-glow'); b.style.boxShadow=''; });
-
-  buildBanks();
-  buildPackages(chars);
-
-  setStatus('Loading packages onto conveyor belt…');
-  vis(beltSec, true);
-  vis(banksWrap, true);
-  vis(outLabel, true);
-  await sleep(400); if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
-
-  // Reveal packages one by one
-  for (let i = 0; i < n; i++) {
-    if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
-    const pkg = document.getElementById(`pkg-${i}`);
-    if (pkg) pkg.classList.add('loaded');
-    await sleep(110);
-  }
-  await sleep(600); if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
-  await waitForPlaybackStep(ct);
-  if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
-
-  /* ── Process each character ── */
-  const results = [];
-
-  for (let i = 0; i < n; i++) {
-    if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
-
-    const ch  = chars[i];
-    const enc = encodeChar(ch);
-
-    // Activate package
-    document.querySelectorAll('.pkg').forEach(p => p.classList.remove('active','done'));
-    const pkgEl = document.getElementById(`pkg-${i}`);
-    if (pkgEl) pkgEl.classList.add('active');
-
-    if (!enc) {
-      // Unknown char
-      setStatus(`"${ch}" — not in the codebook, skipping…`);
-      const oc = document.getElementById(`oc-${i}`);
-      const onv = document.getElementById(`onv-${i}`);
-      if (oc && onv) { onv.textContent = '?'; oc.classList.add('landed'); oc.style.borderColor='rgba(74,96,122,0.3)'; oc.style.color='var(--muted)'; }
-      if (pkgEl) { pkgEl.classList.remove('active'); pkgEl.classList.add('done'); }
-      results.push({ ch, code:'?', group:null });
-      await sleep(600);
-      await waitForPlaybackStep(ct);
-      continue;
-    }
-
-    const { code, group, idx } = enc;
-    results.push({ ch, code, group });
-
-    // Light up the correct bank
-    document.querySelectorAll('.bank').forEach(b => { b.classList.remove('bank-glow'); b.style.boxShadow=''; });
-    const bankEl = document.getElementById(`bank-${group.id}`);
-    if (bankEl) {
-      bankEl.classList.add('bank-glow');
-      bankEl.style.boxShadow = `0 0 22px ${group.glow}`;
-    }
-
-    setStatus(`"${ch === ' ' ? 'SPACE' : ch}" → checking ${group.name} bank…`);
-    await sleep(450); if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
-
-    // Drop package animation from pkg to locker
-    const lockerEl = document.getElementById(`lk-${group.id}-${idx}`);
-    if (pkgEl && lockerEl) {
-      await animateDrop(pkgEl, lockerEl, ch, group.col);
-      if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
-    }
-
-    // Scan through the lockers to find the right one
-    setStatus(`Scanning ${group.name}… looking for "${ch === ' ' ? 'SPACE' : ch}"`);
-    await scanToLocker(group, idx);
-    if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
-
-    // POP the locker open!
-    if (lockerEl) lockerEl.classList.add('lk-open');
-    setStatus(`Locker found! "${ch === ' ' ? 'SPACE' : ch}" = code ${code} 🔓`);
-    await sleep(380); if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
-
-    // Eject number to output
-    const outEl = document.getElementById(`oc-${i}`);
-    if (lockerEl && outEl) {
-      await animateEject(lockerEl, outEl, code, group.col);
-      if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
-    }
-
-    // Land output chip
-    const onv = document.getElementById(`onv-${i}`);
-    if (outEl && onv) {
-      onv.textContent = String(code);
-      outEl.classList.add('landed');
-      outEl.style.color = group.col;
-      outEl.style.borderColor = group.col.replace('var(--col-','').replace(')','');
-    }
-
-    await sleep(350); if (ct.cancelled) { running=false; goBtn.disabled=false; return; }
-
-    // Mark package done
-    if (pkgEl) { pkgEl.classList.remove('active'); pkgEl.classList.add('done'); }
-    await sleep(180);
-    await waitForPlaybackStep(ct);
-  }
-
-  /* ── Done ── */
-  document.querySelectorAll('.bank').forEach(b => { b.classList.remove('bank-glow'); b.style.boxShadow=''; });
-  const outStr = results.map(r => r.code).join(' ');
-  setStatus(`All encoded! "${raw}" → [ ${outStr} ]`);
-
-  // Pulse all output chips
-  for (let i = 0; i < n; i++) {
-    const oc = document.getElementById(`oc-${i}`);
-    if (oc) { const prev = oc.style.boxShadow; oc.style.boxShadow='0 0 24px rgba(34,211,110,.7)'; }
-  }
-  await sleep(350);
-  for (let i = 0; i < n; i++) {
-    const oc = document.getElementById(`oc-${i}`);
-    if (oc) oc.style.boxShadow='0 0 10px rgba(34,211,110,.22)';
-  }
-
-  // Group tally
-  const usedGroups = {};
-  results.forEach(r => { if(r.group) usedGroups[r.group.name] = (usedGroups[r.group.name]||0)+1; });
-  const groupSummary = Object.entries(usedGroups).map(([k,v])=>`${k}: ${v}`).join(' · ');
-
-  infoGrid.innerHTML = `
-    <div class="irow">
-      <div class="irow-lbl">INPUT</div>
-      <div class="irow-val" style="color:var(--yellow);font-size:11px">${raw}</div>
-    </div>
-    <div class="irow">
-      <div class="irow-lbl">OUTPUT CODES</div>
-      <div class="irow-val" style="color:var(--green);font-size:10px;letter-spacing:.04em">${outStr}</div>
-    </div>
-    <div class="irow">
-      <div class="irow-lbl">GROUPS USED</div>
-      <div class="irow-val" style="color:var(--cyan);font-size:9px">${groupSummary||'—'}</div>
-    </div>
-    <div class="irow">
-      <div class="irow-lbl">CHARACTERS</div>
-      <div class="irow-val" style="color:var(--muted);font-size:10px">${results.map(r=>`${r.ch==' '?'␣':r.ch}→${r.code}`).join('  ')}</div>
-    </div>
-    <div class="formula">
-      <em>How it works:</em> Every character has a <strong>permanent locker number</strong>. No shifting, no mirror — just one fixed address.<br>
-      <span class="gr">0–9 → 0–9</span> &nbsp;·&nbsp; <em>a–z → 10–35</em> &nbsp;·&nbsp; <strong>A–Z → 36–61</strong> &nbsp;·&nbsp; <span style="color:var(--orange)">.?!, → 62–65</span><br>
-      Formula: find the <em>group base</em> + position inside the group = final code.
-    </div>
-  `;
-  vis(infoPanel, true);
-
-  running = false;
-  goBtn.disabled = false;
-}
-
-/* ── Events ── */
-if(goBtn.addEventListener) goBtn.addEventListener('click', runDemo);
-replayBtn.addEventListener('click', runDemo);
-wordInput.addEventListener('keydown', e => { if(e.key==='Enter') runDemo(); });
-document.getElementById('nextBtn').addEventListener('click', () => {
-  window.location.href = "level2.1.html";
-});
-
-const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-if (pauseResumeBtn) {
-    pauseResumeBtn.addEventListener('click', () => {
-        if (!running) return;
-        isPaused = !isPaused;
-        pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+    nextStepBtn.addEventListener('click', () => {
+        if (currentStep < n && !isAnimating) {
+            currentStep++;
+            renderStep(currentStep);
+        }
     });
-}
 
-const speedUp = document.getElementById('speedUp');
-const speedDown = document.getElementById('speedDown');
-const sDisplay = document.getElementById('speedDisplay');
-
-if (speedUp && speedDown && sDisplay) {
-    speedUp.addEventListener("click", () => {
-        if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+    replayBtn.addEventListener('click', () => {
+        if (isAnimating) return;
+        currentStep = -1;
+        renderStep(currentStep);
     });
-    speedDown.addEventListener("click", () => {
-        if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-    });
-}
 
-/* ── Init ── */
-buildBanks();
-vis(beltSec, true);
-vis(banksWrap, true);
-vis(outLabel, true);
-runDemo();
+    btnNext.addEventListener('click', () => {
+        window.location.href = "level2.1.html";
+    });
+
+    window.onload = () => {
+        buildBanks();
+        buildPackages();
+        vis(beltSec, true);
+        vis(banksWrap, true);
+        vis(outLabel, true);
+        setTimeout(() => {
+            renderStep(currentStep);
+        }, 50);
+    };
 </script>
 </body>
 </html>

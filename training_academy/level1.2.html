@@ -733,6 +733,172 @@
             background: rgba(89, 242, 255, 0.12);
             box-shadow: 0 0 14px rgba(89, 242, 255, 0.25);
         }
+    
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    
+        .step-btn {
+            background: #59f2ff !important;
+            color: #000 !important;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px) !important;
+            border: none !important;
+            border-radius: 0 !important;
+            font-weight: 800 !important;
+        }
+        .step-btn:disabled, .shift-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed !important;
+        }
+        .next-cipher-btn {
+            background: #ffdd57 !important;
+            color: #000 !important;
+            border: none !important;
+            font-weight: 800 !important;
+        }
+
+    
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
     </style>
     <script src="global_controls.js"></script>
 </head>
@@ -753,7 +919,7 @@
             <div class="live">Auto Demo</div>
         </div>
 
-        <!-- CONTROLS -->
+                        <!-- CONTROLS -->
         <div class="controls">
             <span class="ctrl-label" style="display:none;">WORD</span>
             <input class="word-input" id="wordInput" type="hidden" value="CIPHER" />
@@ -764,7 +930,11 @@
                 <div class="shift-display" id="shiftDisplay">+3</div>
                 <button class="shift-btn" id="shiftUp">+</button>
             </div>
-            <button class="go-btn" id="goBtn">Start</button>
+            
+            <div style="margin-left:auto; display:flex; align-items:center; gap:12px;">
+                <span class="ctrl-label" style="color:var(--yellow); text-transform:none; font-size:11px;">Select key and click start to proceed →</span>
+                <button class="go-btn step-btn" id="goBtn" style="padding:7px 22px;">Start</button>
+            </div>
         </div>
 
         <!-- STAGE -->
@@ -816,32 +986,35 @@
 
         </div><!-- /stage -->
 
-        <!-- FOOTER -->
+                <!-- FOOTER -->
         <div class="footer">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <button class="foot-btn" id="pauseResumeBtn">Pause</button>
-                <button class="foot-btn" id="replayBtn">↩ Restart</button>
+            <div style="display:flex; gap:12px;">
+                <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+                <button class="foot-btn step-btn" id="nextStep" disabled>Next Step</button>
+                <button class="foot-btn" id="replayBtn">Restart</button>
             </div>
-            <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-                <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-                <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-                <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-            </div>
-            <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
+            <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
         </div>
 
     </div>
 
     <script>
-let speedMultiplier = 1.0;
         /* ── Config ──────────────────────────────────────── */
         const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        // We build a 3x alphabet so the tape can scroll anywhere without gaps
         const TAPE = ALPHA + ALPHA + ALPHA;
         const CELL_W = 60;
         let shift = 3;
-        let running = false;
-        let ct = { cancelled: false };
+        
+        let currentStep = -1;
+        let isAnimating = false;
+        let hasStarted = false;
+        const raw = 'CIPHER';
+        const word = raw.split('');
+        const n = word.length;
+        const results = word.map(ch => {
+            const srcIdx = ALPHA.indexOf(ch);
+            return { ch, srcIdx, dstIdx: 0, dstCh: '' }; // computed later
+        });
 
         /* ── DOM ──────────────────────────────────────────── */
         const wordInput = document.getElementById('wordInput');
@@ -863,18 +1036,12 @@ let speedMultiplier = 1.0;
         const outputChips = document.getElementById('outputChips');
         const infoPanel = document.getElementById('infoPanel');
         const infoGrid = document.getElementById('infoGrid');
+        const prevStepBtn = document.getElementById('prevStep');
+        const nextStepBtn = document.getElementById('nextStep');
 
         /* ── Helpers ──────────────────────────────────────── */
-        let isPaused = false;
         async function sleep(ms) {
-            let elapsed = 0;
-            while (elapsed < (ms / speedMultiplier)) {
-                if (ct.cancelled) return;
-                if (!isPaused) {
-                    elapsed += 20;
-                }
-                await new Promise(r => setTimeout(r, 20));
-            }
+            await new Promise(r => setTimeout(r, ms));
         }
         const vis = (el, on = true) => { if (on) el.classList.add('vis'); else el.classList.remove('vis'); }
         const setStatus = t => { statusTxt.textContent = t; }
@@ -883,9 +1050,13 @@ let speedMultiplier = 1.0;
         function updateShiftDisplay() {
             shiftDisplay.textContent = (shift >= 0 ? '+' : '') + shift;
             journeyShift.textContent = (shift >= 0 ? '+' : '') + shift;
+            results.forEach(r => {
+                r.dstIdx = ((r.srcIdx + shift) % 26 + 26) % 26;
+                r.dstCh = ALPHA[r.dstIdx];
+            });
         }
-        shiftDown.addEventListener('click', () => { if (running) return; if (shift > -25) { shift--; updateShiftDisplay(); } });
-        shiftUp.addEventListener('click', () => { if (running) return; if (shift < 25) { shift++; updateShiftDisplay(); } });
+        shiftDown.addEventListener('click', () => { if (hasStarted) return; if (shift > -25) { shift--; updateShiftDisplay(); } });
+        shiftUp.addEventListener('click', () => { if (hasStarted) return; if (shift < 25) { shift++; updateShiftDisplay(); } });
 
         /* ── Build tape ───────────────────────────────────── */
         function buildTape() {
@@ -894,29 +1065,23 @@ let speedMultiplier = 1.0;
                 const cell = document.createElement('div');
                 cell.className = 'alpha-cell';
                 cell.id = 'tcell' + i;
-                // Position in alphabet (0-25)
                 const pos = i % 26;
                 cell.innerHTML = `<span>${TAPE[i]}</span><span class="alpha-pos">${pos}</span>`;
                 trackInner.appendChild(cell);
             }
-            // Start tape so that ALPHA[0] is centered (tape begins at ALPHA, index 26 = second set)
-            // Center offset: trackOuter center = outerWidth/2, cell 0 should start at index 26 (second ALPHA)
-            const outerCenter = trackOuter.offsetWidth / 2;
             trackInner.style.transform = `translateX(0px)`;
         }
 
-        /* ── Position tape so letter at tapeIdx is centered ── */
         function setTapePos(tapeIdx, animated) {
             const outerCenter = trackOuter.offsetWidth / 2;
             const target = outerCenter - (tapeIdx * CELL_W) - (CELL_W / 2);
             trackInner.style.transition = animated
-                ? `transform ${0.9 + Math.abs(shift) * 0.04}s cubic-bezier(0.25,0.1,0.25,1)`
+                ? `transform ${0.4}s cubic-bezier(0.25,0.1,0.25,1)`
                 : 'none';
             trackInner.style.transform = `translateX(${target}px)`;
         }
 
         function highlightCell(tapeIdx, cls) {
-            // Clear old
             document.querySelectorAll('.alpha-cell').forEach(c => {
                 c.classList.remove('src-lit', 'dst-lit');
             });
@@ -925,19 +1090,18 @@ let speedMultiplier = 1.0;
         }
 
         /* ── Build word chips ─────────────────────────────── */
-        function buildWordChips(word) {
+        function buildWordChips() {
             wordDisplay.innerHTML = '';
             outputChips.innerHTML = '';
-            for (let i = 0; i < word.length; i++) {
-                // Input chip
+            for (let i = 0; i < n; i++) {
                 const chip = document.createElement('div');
                 chip.className = 'letter-chip';
                 chip.id = 'wchip' + i;
                 chip.innerHTML = `<span>${word[i]}</span><span class="ch-idx">[${i}]</span>`;
-                chip.style.opacity = '0';
+                chip.style.opacity = '1';
+                chip.style.transform = 'translateY(0)';
                 wordDisplay.appendChild(chip);
 
-                // Output chip
                 const oc = document.createElement('div');
                 oc.className = 'out-chip';
                 oc.id = 'ochip' + i;
@@ -946,205 +1110,175 @@ let speedMultiplier = 1.0;
             }
         }
 
-        /* ── Main ─────────────────────────────────────────── */
-        async function runDemo() {
-            if (running) { ct.cancelled = true; await new Promise(r => setTimeout(r, 80)); }
-            ct = { cancelled: false };
-            running = true;
-            isPaused = false;
-            if (document.getElementById('pauseResumeBtn')) document.getElementById('pauseResumeBtn').textContent = 'Pause';
-            goBtn.disabled = true;
+        /* ── Render Step ──────────────────────────────────── */
+        async function renderStep(step) {
+            if (isAnimating) return;
+            isAnimating = true;
 
-            const raw = 'CIPHER';
-            wordInput.value = raw;
-            const word = raw.split('');
-            const n = word.length;
-
-            // Reset
-            vis(journeyWrap, false);
-            vis(arrowLine, false);
-            vis(infoPanel, false);
-            outputLabel.classList.remove('vis');
-            infoGrid.innerHTML = '';
+            // Reset active states
+            document.querySelectorAll('.letter-chip').forEach(c => c.classList.remove('active', 'done'));
             arrowLineEl.setAttribute('x2', '0');
+            vis(arrowLine, false);
 
-            buildTape();
-            buildWordChips(raw);
-
-            // ── Fade in input chips staggered
-            setStatus('Initializing encoder…');
-            for (let i = 0; i < n; i++) {
-                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-                await sleep(120);
-                const chip = document.getElementById('wchip' + i);
-                if (chip) {
-                    chip.style.transition = 'opacity .4s, transform .4s';
-                    chip.style.opacity = '1';
-                    chip.style.transform = 'translateY(0)';
+            if (step === -1) {
+                setStatus('Ready to encode');
+                vis(journeyWrap, false);
+                vis(infoPanel, false);
+                outputLabel.classList.remove('vis');
+                infoGrid.innerHTML = '';
+                for(let i=0; i<n; i++) {
+                    const oc = document.getElementById('ochip' + i);
+                    if(oc) {
+                        oc.classList.remove('landed');
+                        document.getElementById('ochr' + i).textContent = ' ';
+                    }
                 }
+                prevStepBtn.disabled = true;
+                nextStepBtn.disabled = true;
+                isAnimating = false;
+                return;
             }
 
-            await sleep(600);
-            if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-            // ── Process each letter
-            const results = [];
             vis(journeyWrap, true);
             vis(outputLabel, true);
+            vis(infoPanel, false);
+            
+            // Mark past as done
+            for (let i = 0; i < step; i++) {
+                document.getElementById('wchip' + i).classList.add('done');
+                const oc = document.getElementById('ochip' + i);
+                oc.classList.add('landed');
+                document.getElementById('ochr' + i).textContent = results[i].dstCh;
+            }
 
-            for (let i = 0; i < n; i++) {
-                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+            if (step >= 0 && step < n) {
+                const r = results[step];
+                const activeChip = document.getElementById('wchip' + step);
+                activeChip.classList.add('active');
 
-                const ch = word[i];
-                const srcIdx = ALPHA.indexOf(ch);           // 0-25
-                const dstIdx = ((srcIdx + shift) % 26 + 26) % 26;
-                const dstCh = ALPHA[dstIdx];
-                results.push({ ch, srcIdx, dstIdx, dstCh });
+                journeyLetter.textContent = `"${r.ch}" (pos ${r.srcIdx})`;
+                setStatus(`Encoding "${r.ch}" → shifting ${shift >= 0 ? '+' : ''}${shift} positions…`);
 
-                // Highlight active input chip
-                document.querySelectorAll('.letter-chip').forEach(c => c.classList.remove('active', 'done'));
-                const activeChip = document.getElementById('wchip' + i);
-                if (activeChip) activeChip.classList.add('active');
-
-                // Update journey label
-                journeyLetter.textContent = `"${ch}" (pos ${srcIdx})`;
-                setStatus(`Encoding "${ch}" → shifting ${shift >= 0 ? '+' : ''}${shift} positions…`);
-
-                // Snap tape to source letter (second ALPHA, so tape index = 26 + srcIdx)
-                const tapeSrcIdx = 26 + srcIdx;
+                const tapeSrcIdx = 26 + r.srcIdx;
                 setTapePos(tapeSrcIdx, false);
-
-                await sleep(60);
-                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-                // Light up source
+                await sleep(50);
                 highlightCell(tapeSrcIdx, 'src-lit');
-                await sleep(500);
-                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
 
-                // Animate tape to destination (tapeDstIdx can go left or right naturally)
+                await sleep(300);
+
                 let tapeDstIdx = tapeSrcIdx + shift;
-                // Wrap within valid range
                 if (tapeDstIdx < 0) tapeDstIdx += 26;
                 if (tapeDstIdx >= TAPE.length) tapeDstIdx -= 26;
 
                 setTapePos(tapeDstIdx, true);
 
-                // Light destination after travel time
-                const travelMs = 900 + Math.min(Math.abs(shift), 13) * 50;
-                await sleep(travelMs);
-                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
+                await sleep(500);
                 highlightCell(tapeDstIdx, 'dst-lit');
-                await sleep(300);
-                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-                // Draw arrow expanding across
+                
+                await sleep(200);
                 vis(arrowLine, true);
-                await sleep(50);
                 const stageW = document.getElementById('stage').offsetWidth - 40;
                 arrowLineEl.setAttribute('x2', stageW);
-                await sleep(700);
-                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-                // Land output letter
-                const oc = document.getElementById('ochip' + i);
-                const ochr = document.getElementById('ochr' + i);
-                if (oc && ochr) {
-                    ochr.textContent = dstCh;
-                    oc.classList.add('landed');
-                }
-
-                await sleep(400);
-                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-                // Shrink arrow back, mark chip done
-                arrowLineEl.setAttribute('x2', '0');
-                vis(arrowLine, false);
-                if (activeChip) { activeChip.classList.remove('active'); activeChip.classList.add('done'); }
 
                 await sleep(300);
-                if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+                const oc = document.getElementById('ochip' + step);
+                document.getElementById('ochr' + step).textContent = r.dstCh;
+                oc.classList.add('landed');
+                
+                await sleep(300);
+                arrowLineEl.setAttribute('x2', '0');
+                vis(arrowLine, false);
+                activeChip.classList.remove('active');
+                activeChip.classList.add('done');
+            } else if (step === n) {
+                for (let i = 0; i < n; i++) {
+                    document.getElementById('wchip' + i).classList.add('done');
+                    const oc = document.getElementById('ochip' + i);
+                    oc.classList.add('landed');
+                    document.getElementById('ochr' + i).textContent = results[i].dstCh;
+                }
+                
+                setStatus(`Encoding complete · "${raw}" → "${results.map(r => r.dstCh).join('')}"`);
+                vis(journeyWrap, false);
+
+                infoGrid.innerHTML = `
+                <div class="info-row">
+                  <div class="info-row-label">INPUT</div>
+                  <div class="info-row-val y">${raw}</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-label">OUTPUT</div>
+                  <div class="info-row-val c">${results.map(r => r.dstCh).join('')}</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-label">SHIFT APPLIED</div>
+                  <div class="info-row-val y">${shift >= 0 ? '+' : ''}${shift} positions</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-label">LETTER MAP</div>
+                  <div class="info-row-val c" style="font-size:10px;letter-spacing:.06em">${results.map(r => `${r.ch}→${r.dstCh}`).join('  ')}</div>
+                </div>
+                <div class="formula">
+                  <em>Formula:</em>&nbsp; encoded = (<strong>letter_pos</strong> + <em>shift</em>) mod 26<br>
+                  <em>Example:</em>&nbsp; '${results[0].ch}' is pos ${results[0].srcIdx} &nbsp;→&nbsp; (${results[0].srcIdx} + ${shift < 0 ? '(' : ''}${shift}${shift < 0 ? ')' : ''}) mod 26 = ${results[0].dstIdx} &nbsp;→&nbsp; '<em>${results[0].dstCh}</em>'
+                </div>
+              `;
+                vis(infoPanel, true);
             }
 
-            /* ── Final summary ── */
-            setStatus(`Encoding complete · "${raw}" → "${results.map(r => r.dstCh).join('')}"`);
-            vis(journeyWrap, false);
-
-            // Pulse all output chips
-            for (let i = 0; i < n; i++) {
-                const oc = document.getElementById('ochip' + i);
-                if (oc) oc.style.boxShadow = '0 0 24px rgba(89,242,255,0.7)';
-            }
-            await sleep(300);
-            for (let i = 0; i < n; i++) {
-                const oc = document.getElementById('ochip' + i);
-                if (oc) oc.style.boxShadow = '0 0 10px rgba(89,242,255,0.25)';
-            }
-
-            // Build info panel
-            infoGrid.innerHTML = `
-    <div class="info-row">
-      <div class="info-row-label">INPUT</div>
-      <div class="info-row-val y">${raw}</div>
-    </div>
-    <div class="info-row">
-      <div class="info-row-label">OUTPUT</div>
-      <div class="info-row-val c">${results.map(r => r.dstCh).join('')}</div>
-    </div>
-    <div class="info-row">
-      <div class="info-row-label">SHIFT APPLIED</div>
-      <div class="info-row-val y">${shift >= 0 ? '+' : ''}${shift} positions</div>
-    </div>
-    <div class="info-row">
-      <div class="info-row-label">LETTER MAP</div>
-      <div class="info-row-val c" style="font-size:10px;letter-spacing:.06em">${results.map(r => `${r.ch}→${r.dstCh}`).join('  ')}</div>
-    </div>
-    <div class="formula">
-      <em>Formula:</em>&nbsp; encoded = (<strong>letter_pos</strong> + <em>shift</em>) mod 26<br>
-      <em>Example:</em>&nbsp; '${results[0].ch}' is pos ${results[0].srcIdx} &nbsp;→&nbsp; (${results[0].srcIdx} + ${shift < 0 ? '(' : ''}${shift}${shift < 0 ? ')' : ''}) mod 26 = ${results[0].dstIdx} &nbsp;→&nbsp; '<em>${results[0].dstCh}</em>'
-    </div>
-  `;
-            vis(infoPanel, true);
-
-            running = false;
-            goBtn.disabled = false;
+            prevStepBtn.disabled = (step === -1);
+            nextStepBtn.disabled = (step === n);
+            isAnimating = false;
         }
 
-        /* ── Events ───────────────────────────────────────── */
-        goBtn.addEventListener('click', () => runDemo());
-        replayBtn.addEventListener('click', () => runDemo());
-        wordInput.addEventListener('keydown', e => { if (e.key === 'Enter') runDemo(); });
-        document.getElementById('nextBtn').addEventListener('click', () => {
+        goBtn.addEventListener('click', () => {
+            if (hasStarted) return;
+            hasStarted = true;
+            shiftDown.disabled = true;
+            shiftUp.disabled = true;
+            goBtn.disabled = true;
+            
+            buildTape();
+            buildWordChips();
+            updateShiftDisplay();
+            
+            currentStep = 0;
+            renderStep(currentStep);
+        });
+
+        prevStepBtn.addEventListener('click', () => {
+            if (!hasStarted) return;
+            if (currentStep > -1 && !isAnimating) {
+                currentStep--;
+                renderStep(currentStep);
+            }
+        });
+
+        nextStepBtn.addEventListener('click', () => {
+            if (!hasStarted) return;
+            if (currentStep < n && !isAnimating) {
+                currentStep++;
+                renderStep(currentStep);
+            }
+        });
+
+        replayBtn.addEventListener('click', () => {
+            if (isAnimating) return;
+            hasStarted = false;
+            shiftDown.disabled = false;
+            shiftUp.disabled = false;
+            goBtn.disabled = false;
+            currentStep = -1;
+            renderStep(currentStep);
+        });
+
+        document.getElementById('btn-next').addEventListener('click', () => {
             window.location.href = "level1.3.html";
         });
 
-        const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-        if (pauseResumeBtn) {
-            pauseResumeBtn.addEventListener('click', () => {
-                if (!running) return;
-                isPaused = !isPaused;
-                pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
-            });
-        }
-
-        const speedUp = document.getElementById('speedUp');
-        const speedDown = document.getElementById('speedDown');
-        const sDisplay = document.getElementById('speedDisplay');
-        
-        if (speedUp && speedDown && sDisplay) {
-            speedUp.addEventListener("click", () => {
-                if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-                sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-            });
-            speedDown.addEventListener("click", () => {
-                if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-                sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-            });
-        }
-
-        /* ── Init ─────────────────────────────────────────── */
         updateShiftDisplay();
+        buildTape();
+        buildWordChips();
 </script>
 </body>
 

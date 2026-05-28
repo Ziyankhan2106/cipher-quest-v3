@@ -65,9 +65,9 @@
 
         .row-label {
             position: absolute;
-            left: -20px;
-            transform: translateX(-100%) translateY(20px);
-            font-size: 10px;
+            left: 0;
+            transform: translateY(30px);
+            font-size: 12px;
             color: var(--accent-primary);
             font-weight: 800;
             letter-spacing: 1px;
@@ -189,6 +189,172 @@
             text-transform: uppercase; letter-spacing: .12em; cursor: pointer;
         }
         .btn:hover { background: rgba(89, 242, 255, 0.12); box-shadow: 0 0 16px rgba(89, 242, 255, 0.25); }
+    
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    
+        .step-btn {
+            background: #59f2ff !important;
+            color: #000 !important;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px) !important;
+            border: none !important;
+            border-radius: 0 !important;
+            font-weight: 800 !important;
+        }
+        .step-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed !important;
+        }
+        .next-cipher-btn {
+            background: #ffdd57 !important;
+            color: #000 !important;
+            border: none !important;
+            font-weight: 800 !important;
+        }
+
+    
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
     </style>
     <script src="global_controls.js"></script>
 </head>
@@ -240,20 +406,16 @@
 
         <footer class="footer">
             <div style="display:flex; align-items:center; gap:12px;">
-                <button class="btn" id="pauseResume">Pause</button>
+                <button class="btn step-btn" id="prevStep" disabled>Prev Step</button>
+                <button class="btn step-btn" id="nextStep">Next Step</button>
                 <button class="btn" id="replay">Restart</button>
             </div>
-            <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-                <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px;">-</button>
-                <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-                <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px;">+</button>
-            </div>
-            <button class="btn" id="nextBtn">Next →</button>
+            <button class="btn next-cipher-btn" id="nextBtn">Next Cipher →</button>
         </footer>
     </div>
 
+    
     <script>
-        let speedMultiplier = 1.0;
         const word = "CIPHER";
         const inputGrid = document.getElementById('inputGrid');
         const outputGrid = document.getElementById('outputGrid');
@@ -261,33 +423,19 @@
         const robotTitle = document.getElementById('robotTitle');
         const robotText = document.getElementById('robotText');
         const replayBtn = document.getElementById('replay');
-        const pauseResumeBtn = document.getElementById('pauseResume');
         const nextBtn = document.getElementById('nextBtn');
-        const speedUp = document.getElementById('speedUp');
-        const speedDown = document.getElementById('speedDown');
-        const sDisplay = document.getElementById('speedDisplay');
+        const prevStepBtn = document.getElementById('prevStep');
+        const nextStepBtn = document.getElementById('nextStep');
 
-        let isAnimating = false;
-        let isPaused = false;
-        let isCancelled = false;
+        let currentStep = -1;
+        const maxStep = word.length;
 
         function setRobot(title, text) {
             robotTitle.textContent = title;
             robotText.textContent = text;
         }
 
-        async function mySleep(ms) {
-            let elapsed = 0;
-            while (elapsed < (ms / speedMultiplier)) {
-                if (isCancelled) throw new Error("cancelled");
-                if (!isPaused) {
-                    elapsed += 20;
-                }
-                await new Promise(r => setTimeout(r, 20));
-            }
-        }
-
-        function init() {
+        function initDOM() {
             inputGrid.innerHTML = '';
             outputGrid.innerHTML = '';
             arrowLayer.innerHTML = '';
@@ -306,93 +454,110 @@
             });
         }
 
-        async function startProtocol() {
-            if (isAnimating) return;
-            isAnimating = true;
-            isCancelled = false;
-            isPaused = false;
-            pauseResumeBtn.textContent = "Pause";
-            init();
+        function renderStep(step) {
+            const inputs = inputGrid.children;
+            const outputs = outputGrid.children;
+            const n = word.length;
             
-            try {
-                setRobot("Analyzing Input", "Calculating the mirror axis. For length 6, Index 0 maps to 5.");
-                await mySleep(1200);
+            arrowLayer.innerHTML = ''; // clear arrows
 
-                const inputs = inputGrid.children;
-                const outputs = outputGrid.children;
-                const n = word.length;
+            if (step === -1) {
+                setRobot("System Idle", "Standing by. Initiating index comparison protocol...");
+                for(let i=0; i<n; i++) {
+                    outputs[i].textContent = '?';
+                    outputs[i].style.opacity = '0.1';
+                    outputs[i].classList.remove('active');
+                    inputs[i].classList.remove('active');
+                }
+                prevStepBtn.disabled = true;
+                nextStepBtn.disabled = false;
+                return;
+            }
 
-                for (let i = 0; i < n; i++) {
-                    const sourceBox = inputs[i];
-                    const targetIdx = (n - 1) - i;
-                    const targetBox = outputs[targetIdx];
+            if (step >= 0 && step < n) {
+                setRobot("Mapping Index " + step, `Transporting '${word[step]}' to position ${(n - 1) - step}.`);
+            } else if (step === n) {
+                setRobot("Success", "Transformation complete. The original structure is preserved at the top for verification.");
+            }
 
-                    sourceBox.classList.add('active');
-                    setRobot("Mapping Index " + i, `Transporting '${word[i]}' to position ${targetIdx}.`);
+            for (let i = 0; i < n; i++) {
+                const sourceBox = inputs[i];
+                const targetIdx = (n - 1) - i;
+                const targetBox = outputs[targetIdx];
 
-                    const sRect = sourceBox.getBoundingClientRect();
-                    const tRect = targetBox.getBoundingClientRect();
-                    const layerRect = arrowLayer.getBoundingClientRect();
+                sourceBox.classList.remove('active');
+                targetBox.classList.remove('active');
 
-                    const x1 = (sRect.left + sRect.width / 2) - layerRect.left;
-                    const y1 = (sRect.bottom) - layerRect.top;
-                    const x2 = (tRect.left + tRect.width / 2) - layerRect.left;
-                    const y2 = (tRect.top) - layerRect.top;
-
-                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                    const cp1y = y1 + 40;
-                    const cp2y = y2 - 40;
-                    const d = `M ${x1} ${y1} C ${x1} ${cp1y}, ${x2} ${cp2y}, ${x2} ${y2}`;
-
-                    path.setAttribute("d", d);
-                    path.setAttribute("class", "mapping-arrow");
-                    path.style.animation = `drawArrow ${0.8 / speedMultiplier}s forwards ease-out`;
-                    arrowLayer.appendChild(path);
-
-                    await mySleep(400);
-
+                if (i <= step && step !== n) {
                     targetBox.textContent = word[i];
                     targetBox.style.opacity = '1';
-                    targetBox.classList.add('active');
-
-                    await mySleep(400);
-                    sourceBox.classList.remove('active');
-                    targetBox.classList.remove('active');
+                } else if (step === n) {
+                    targetBox.textContent = word[i];
+                    targetBox.style.opacity = '1';
+                } else {
+                    targetBox.textContent = '?';
+                    targetBox.style.opacity = '0.1';
                 }
-
-                setRobot("Success", "Transformation complete. The original structure is preserved at the top for verification.");
-            } catch(e) {
-                // Cancelled
             }
-            isAnimating = false;
+
+            // Draw lines for past steps
+            for (let i = 0; i <= step; i++) {
+                if (i === n) break;
+                
+                const sourceBox = inputs[i];
+                const targetIdx = (n - 1) - i;
+                const targetBox = outputs[targetIdx];
+
+                const sRect = sourceBox.getBoundingClientRect();
+                const tRect = targetBox.getBoundingClientRect();
+                const layerRect = arrowLayer.getBoundingClientRect();
+
+                const x1 = (sRect.left + sRect.width / 2) - layerRect.left;
+                const y1 = (sRect.bottom) - layerRect.top;
+                const x2 = (tRect.left + tRect.width / 2) - layerRect.left;
+                const y2 = (tRect.top) - layerRect.top;
+
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                const cp1y = y1 + 40;
+                const cp2y = y2 - 40;
+                const d = `M ${x1} ${y1} C ${x1} ${cp1y}, ${x2} ${cp2y}, ${x2} ${y2}`;
+
+                path.setAttribute("d", d);
+                path.setAttribute("class", "mapping-arrow");
+                
+                if (i === step) {
+                    path.style.animation = `drawArrow 0.4s forwards ease-out`;
+                    sourceBox.classList.add('active');
+                    targetBox.classList.add('active');
+                } else {
+                    path.style.strokeDashoffset = "0";
+                    path.style.animation = "none";
+                }
+                
+                arrowLayer.appendChild(path);
+            }
+
+            prevStepBtn.disabled = (step === -1);
+            nextStepBtn.disabled = (step === n);
         }
 
+        prevStepBtn.addEventListener('click', () => {
+            if (currentStep > -1) {
+                currentStep--;
+                renderStep(currentStep);
+            }
+        });
+
+        nextStepBtn.addEventListener('click', () => {
+            if (currentStep < maxStep) {
+                currentStep++;
+                renderStep(currentStep);
+            }
+        });
+
         replayBtn.addEventListener('click', () => {
-            isCancelled = true;
-            isAnimating = false;
-            setTimeout(startProtocol, 50);
-        });
-
-        pauseResumeBtn.addEventListener('click', () => {
-            if (!isAnimating) return;
-            isPaused = !isPaused;
-            pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
-            
-            // pause css animation
-            const arrows = document.querySelectorAll('.mapping-arrow');
-            arrows.forEach(a => {
-                a.style.animationPlayState = isPaused ? 'paused' : 'running';
-            });
-        });
-
-        speedUp.addEventListener("click", () => {
-            if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-        });
-
-        speedDown.addEventListener("click", () => {
-            if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+            currentStep = -1;
+            renderStep(currentStep);
         });
 
         nextBtn.addEventListener("click", () => {
@@ -400,10 +565,14 @@
         });
 
         window.onload = () => {
-            init();
-            setTimeout(startProtocol, 100);
+            initDOM();
+            // Need a slight delay so client rects are correct
+            setTimeout(() => {
+                renderStep(currentStep);
+            }, 50);
         };
-</script>
+    </script>
+
 </body>
 
 </html>

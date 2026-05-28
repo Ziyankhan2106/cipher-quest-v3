@@ -361,7 +361,152 @@ body::after{
   .explain{grid-template-columns:1fr 1fr}
   .final{align-items:flex-start;flex-direction:column}
 }
-</style>
+
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
+    </style>
     <script src="global_controls.js"></script>
 </head>
 <body>
@@ -415,18 +560,16 @@ body::after{
     </div>
   </section>
 
-  <footer class="footer">
-    <div style="display:flex; align-items:center; gap:12px;">
-        <button class="btn" id="pauseResumeBtn">Pause</button>
-        <button class="btn" id="replayBtn">↩ Restart</button>
+  
+    <div class="footer">
+        <div style="display:flex;gap:12px">
+            <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+            <button class="foot-btn step-btn" id="nextStep" disabled>Next Step</button>
+            <button class="foot-btn" id="replayBtn">Restart</button>
+        </div>
+        <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
     </div>
-    <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-        <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-        <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-    </div>
-    <button class="btn" style="color:var(--green); border-color:var(--green);" id="nextBtn">Next Cipher →</button>
-  </footer>
+
 </main>
 
 <script>
@@ -524,168 +667,161 @@ function clearBoxes() {
   });
 }
 
-function reset() {
-  token.stop = true;
-  token = { stop: false };
-  clearInterval(timer);
-  build();
-  clearBoxes();
-  drawPath(-1, -1);
-  $("fly").style.opacity = 0;
-  $("status").textContent = "Number the cards first: CIPHER is position 1 to 6";
-  $("finalText").textContent = "CIPHER -> ------";
-  if ($("timer")) $("timer").textContent = "Looping demo";
-}
 
-async function revealCards(runToken) {
-  for (const card of document.querySelectorAll(".input-card")) {
-    if (runToken.stop) return;
-    card.classList.add("show");
-    await wait(120);
+  function reset() {
+    build();
+    clearBoxes();
+    drawPath(-1, -1);
+    $("fly").style.opacity = 0;
+    $("status").textContent = "Number the cards first: CIPHER is position 1 to 6";
+    $("finalText").textContent = "CIPHER -> ------";
   }
-}
-
-async function moveOne(step, runToken) {
-  const oldPosition = RULE[step];
-  const letter = WORD[oldPosition - 1];
-  const input = document.querySelectorAll(".input-card");
-  const rules = document.querySelectorAll(".rule-card");
-  const output = document.querySelectorAll(".out-card");
-  const source = input[oldPosition - 1];
-  const rule = rules[step];
-  const target = output[step];
-  const fly = $("fly");
-  const base = $("workspace");
-  const start = center(source, base);
-  const end = center(target, base);
-
-  $("status").textContent = `Step ${step + 1}: pick card ${oldPosition}, the letter ${letter}, and place it in new slot ${step + 1}`;
-  setBox("bStep", step + 1);
-  await wait(300);
-  if (runToken.stop) return;
-
-  setBox("bPick", oldPosition);
-  source.classList.add("active");
-  rule.classList.add("active");
-  drawPath(oldPosition - 1, step);
-  await wait(500);
-  if (runToken.stop) return;
-
-  setBox("bLetter", letter);
-  fly.textContent = letter;
-  fly.style.opacity = 1;
-  fly.style.transform = `translate(${start.x - 29}px, ${start.y - 29}px) scale(1)`;
-  await wait(300);
-  if (runToken.stop) return;
-
-  target.classList.add("active");
-  setBox("bPlace", step + 1);
-  const animation = fly.animate([
-    { transform: `translate(${start.x - 29}px, ${start.y - 29}px) scale(1)` },
-    { transform: `translate(${(start.x + end.x) / 2 - 29}px, ${(start.y + end.y) / 2 - 90}px) scale(1.16)`, offset: .55 },
-    { transform: `translate(${end.x - 29}px, ${end.y - 29}px) scale(1)` }
-  ], { duration: 1350, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
-
-  await animation.finished;
-  if (runToken.stop) return;
-
-  fly.style.opacity = 0;
-  target.querySelector(".out-letter").textContent = letter;
-  target.classList.add("filled");
-  source.classList.remove("active");
-  source.classList.add("used");
-  rule.classList.remove("active");
-  rule.classList.add("done");
-  target.classList.remove("active");
-  drawPath(-1, -1);
-
-  const partial = [...output].map((slot) => slot.querySelector(".out-letter").textContent || "-").join("");
-  $("finalText").textContent = `CIPHER -> ${partial}`;
-  await wait(500);
-}
-
-async function run() {
-  if (running) return;
-  running = true;
-  isPaused = false;
-  const pb = $('pauseResumeBtn'); if(pb) pb.textContent = 'Pause';
-  reset();
-  const runToken = token;
-  await wait(300);
-  await revealCards(runToken);
-  if (runToken.stop) { running = false; return; }
-
-  $("status").textContent = "Rule 1 3 5 2 4 6 means: even-index chars first, then odd-index chars";
-  await waitForPlaybackStep(runToken);
-
-  for (let step = 0; step < RULE.length; step += 1) {
-    if (runToken.stop) { running = false; return; }
-    await moveOne(step, runToken);
-    await waitForPlaybackStep(runToken);
+  
+  function fastForward(upToStep) {
+    build();
+    for (const card of document.querySelectorAll(".input-card")) {
+        card.classList.add("show");
+    }
+    const input = document.querySelectorAll(".input-card");
+    const rules = document.querySelectorAll(".rule-card");
+    const output = document.querySelectorAll(".out-card");
+    
+    for (let i = 0; i <= upToStep; i++) {
+        const oldPosition = RULE[i];
+        const letter = WORD[oldPosition - 1];
+        
+        input[oldPosition - 1].classList.add("used");
+        rules[i].classList.add("done");
+        output[i].querySelector(".out-letter").textContent = letter;
+        output[i].classList.add("filled");
+    }
+    const partial = [...output].map((slot) => slot.querySelector(".out-letter").textContent || "-").join("");
+    $("finalText").textContent = `CIPHER -> ${partial}`;
   }
 
-  clearBoxes();
-  $("status").textContent = `Done: CIPHER becomes ${RESULT}`;
-  $("finalText").textContent = `CIPHER -> ${RESULT}`;
-  startLoop(runToken);
-  running = false;
-}
+  let currentStep = -1;
+  let isAnimating = false;
 
-function startLoop(runToken) {
-  let left = 2;
-  if ($("timer")) $("timer").textContent = `Replay in ${left}s`;
-  timer = setInterval(() => {
-    if (runToken.stop) {
-      clearInterval(timer);
-      return;
-    }
-    left -= 1;
-    if ($("timer")) $("timer").textContent = left > 0 ? `Replay in ${left}s` : "Looping demo";
-    if (left <= 0) {
-      clearInterval(timer);
-      run();
-    }
-  }, 1000 / speedMultiplier);
-}
+  async function renderStep(step) {
+      if (isAnimating) return;
+      isAnimating = true;
 
-const replayBtn = document.getElementById('replayBtn');
-if (replayBtn) replayBtn.addEventListener("click", () => {
-  running = false;
-  run();
-});
+      const prevBtn = $('prevStep');
+      const nextBtn = $('nextStep');
 
-const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-if (pauseResumeBtn) {
-    pauseResumeBtn.addEventListener('click', () => {
-        isPaused = !isPaused;
-        pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
-    });
-}
+      if (step === -1) {
+          reset();
+          for (const card of document.querySelectorAll(".input-card")) {
+              card.classList.add("show");
+          }
+          if (prevBtn) prevBtn.disabled = true;
+          if (nextBtn) nextBtn.disabled = false;
+          isAnimating = false;
+          return;
+      }
 
-window.addEventListener("resize", () => drawPath(-1, -1));
-window.addEventListener("load", run);
+      if (step >= 0 && step < RULE.length) {
+          fastForward(step - 1);
+          
+          const oldPosition = RULE[step];
+          const letter = WORD[oldPosition - 1];
+          const input = document.querySelectorAll(".input-card");
+          const rules = document.querySelectorAll(".rule-card");
+          const output = document.querySelectorAll(".out-card");
+          const source = input[oldPosition - 1];
+          const rule = rules[step];
+          const target = output[step];
+          const fly = $("fly");
+          const base = $("workspace");
+          
+          const start = center(source, base);
+          const end = center(target, base);
+        
+          $("status").textContent = `Step ${step + 1}: pick card ${oldPosition}, the letter ${letter}, and place it in new slot ${step + 1}`;
+          setBox("bStep", step + 1);
+          await wait(200);
+        
+          setBox("bPick", oldPosition);
+          source.classList.add("active");
+          rule.classList.add("active");
+          drawPath(oldPosition - 1, step);
+          await wait(300);
+        
+          setBox("bLetter", letter);
+          fly.textContent = letter;
+          fly.style.opacity = 1;
+          fly.style.transform = `translate(${start.x - 29}px, ${start.y - 29}px) scale(1)`;
+          await wait(200);
+        
+          target.classList.add("active");
+          setBox("bPlace", step + 1);
+          const animation = fly.animate([
+            { transform: `translate(${start.x - 29}px, ${start.y - 29}px) scale(1)` },
+            { transform: `translate(${(start.x + end.x) / 2 - 29}px, ${(start.y + end.y) / 2 - 90}px) scale(1.16)`, offset: .55 },
+            { transform: `translate(${end.x - 29}px, ${end.y - 29}px) scale(1)` }
+          ], { duration: 800, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+        
+          await animation.finished;
+        
+          fly.style.opacity = 0;
+          target.querySelector(".out-letter").textContent = letter;
+          target.classList.add("filled");
+          source.classList.remove("active");
+          source.classList.add("used");
+          rule.classList.remove("active");
+          rule.classList.add("done");
+          target.classList.remove("active");
+          drawPath(-1, -1);
+        
+          const partial = [...output].map((slot) => slot.querySelector(".out-letter").textContent || "-").join("");
+          $("finalText").textContent = `CIPHER -> ${partial}`;
+      }
 
-const speedUp = document.getElementById('speedUp');
-const speedDown = document.getElementById('speedDown');
-const sDisplay = document.getElementById('speedDisplay');
+      if (step === RULE.length) {
+          fastForward(RULE.length - 1);
+          clearBoxes();
+          $("status").textContent = `Done: CIPHER becomes ${RESULT}`;
+          $("finalText").textContent = `CIPHER -> ${RESULT}`;
+      }
 
-if (speedUp && speedDown && sDisplay) {
-    speedUp.addEventListener("click", () => {
-        if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-    });
-    speedDown.addEventListener("click", () => {
-        if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-    });
-}
+      if (prevBtn) prevBtn.disabled = step < 0;
+      if (nextBtn) nextBtn.disabled = step >= RULE.length;
+      isAnimating = false;
+  }
 
-const nextBtn = document.getElementById('nextBtn');
-if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-        window.location.href = "level3.5.html";
-    });
-}
+  const replayBtn = $('replayBtn');
+  if (replayBtn) replayBtn.addEventListener('click', () => {
+      currentStep = -1;
+      renderStep(currentStep);
+  });
+
+  const prevStepBtn = $('prevStep');
+  if (prevStepBtn) prevStepBtn.addEventListener('click', () => {
+      if (currentStep > -1) {
+          currentStep--;
+          renderStep(currentStep);
+      }
+  });
+
+  const nextStepBtn = $('nextStep');
+  if (nextStepBtn) nextStepBtn.addEventListener('click', () => {
+      if (currentStep < RULE.length) {
+          currentStep++;
+          renderStep(currentStep);
+      }
+  });
+
+  const nextBtn = $('btn-next');
+  if (nextBtn) nextBtn.addEventListener('click', () => {
+      window.location.href = "level3.5.html";
+  });
+
+  window.addEventListener("resize", () => drawPath(-1, -1));
+  window.addEventListener("load", () => {
+      currentStep = -1;
+      renderStep(currentStep);
+  });
+
 </script>
 </body>
 </html>

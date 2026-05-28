@@ -250,100 +250,8 @@
         color: #c084fc !important;
       }
 
-      .speed-controls,
-      footer:has(#speedDisplay) > div:has(#speedDisplay),
-      .footer:has(#speedDisplay) > div:has(#speedDisplay) {
-        display: flex !important;
-        align-items: center !important;
-        gap: 8px !important;
-        min-height: 34px !important;
-        padding: 4px 8px !important;
-        border: 1px solid rgba(89, 242, 255, 0.34) !important;
-        border-radius: 999px !important;
-        background: rgba(2, 6, 23, 0.66) !important;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
-      }
 
-      #speedDown,
-      #speedUp {
-        width: 28px !important;
-        height: 26px !important;
-        display: inline-grid !important;
-        place-items: center !important;
-        padding: 0 !important;
-        border: 1px solid rgba(89, 242, 255, 0.36) !important;
-        border-radius: 999px !important;
-        background: rgba(89, 242, 255, 0.08) !important;
-        color: #59f2ff !important;
-        font-size: 14px !important;
-        font-weight: 900 !important;
-        line-height: 1 !important;
-        cursor: pointer !important;
-        transition: background .18s ease, box-shadow .18s ease, transform .18s ease !important;
-      }
 
-      #speedDown:hover,
-      #speedUp:hover {
-        background: rgba(89, 242, 255, 0.16) !important;
-        box-shadow: 0 0 14px rgba(89, 242, 255, 0.24) !important;
-        transform: translateY(-1px) !important;
-      }
-
-      #speedDisplay {
-        min-width: 44px !important;
-        color: #dffbff !important;
-        font-variant-numeric: tabular-nums !important;
-        text-align: center !important;
-        font-family: "SF Mono", "Fira Code", Consolas, monospace !important;
-        font-size: 11px !important;
-        font-weight: 800 !important;
-        letter-spacing: .08em !important;
-      }
-
-      #btn-play,
-      #btn-step,
-      #btn-next,
-      #replay,
-      #replayBtn,
-      #replayNow,
-      #nextBtn,
-      .btn,
-      .foot-btn {
-        min-height: 34px !important;
-        border-radius: 999px !important;
-        text-transform: uppercase !important;
-        letter-spacing: .1em !important;
-        font-size: 11px !important;
-        font-weight: 800 !important;
-      }
-
-      #btn-play,
-      #replay,
-      #replayBtn,
-      #replayNow {
-        border: 1px solid rgba(89, 242, 255, 0.46) !important;
-        background: rgba(89, 242, 255, 0.10) !important;
-        color: #59f2ff !important;
-      }
-
-      #btn-next,
-      #btn-step,
-      #nextBtn,
-      .foot-btn.primary {
-        border: 1px solid rgba(255, 221, 87, 0.46) !important;
-        background: rgba(255, 221, 87, 0.10) !important;
-        color: #ffdd57 !important;
-      }
-
-      #btn-play:hover,
-      #btn-step:hover,
-      #btn-next:hover,
-      #replay:hover,
-      #replayBtn:hover,
-      #replayNow:hover,
-      #nextBtn:hover {
-        box-shadow: 0 0 16px rgba(89, 242, 255, 0.22) !important;
-      }
 
       @media (max-width: 640px) {
         .cq-level-header {
@@ -381,17 +289,7 @@
     }
     enhanceHeader();
 
-    const speedDown = document.getElementById("speedDown");
-    const speedUp = document.getElementById("speedUp");
-    if (speedDown) speedDown.setAttribute("aria-label", "Slow down animation");
-    if (speedUp) speedUp.setAttribute("aria-label", "Speed up animation");
 
-    normalizePlayText(document.getElementById("play-text"));
-    const playText = document.getElementById("play-text");
-    if (playText) {
-      const observer = new MutationObserver(() => normalizePlayText(playText));
-      observer.observe(playText, { childList: true, characterData: true, subtree: true });
-    }
   }
 
   if (document.readyState === "loading") {

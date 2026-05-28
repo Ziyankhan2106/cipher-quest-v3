@@ -855,6 +855,176 @@
                 opacity: .2
             }
         }
+    
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    .step-btn {
+      border-radius: 6px !important;
+      background: rgba(89, 242, 255, 0.1) !important;
+      border: 1px solid rgba(89, 242, 255, 0.4) !important;
+      color: #59f2ff !important;
+    }
+    .step-btn:hover:not(:disabled) {
+      background: rgba(89, 242, 255, 0.2) !important;
+      box-shadow: 0 0 10px rgba(89, 242, 255, 0.3) !important;
+    }
+    .step-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .next-cipher-btn {
+      background: #ffdd57 !important;
+      color: #000 !important;
+      border: none !important;
+      border-radius: 999px !important;
+      font-weight: 800 !important;
+    }
+    .next-cipher-btn:hover {
+      box-shadow: 0 0 16px rgba(255, 221, 87, 0.6) !important;
+    }
+    
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
     </style>
     <script src="global_controls.js"></script>
 </head>
@@ -921,16 +1091,12 @@
 
         <!-- FOOTER -->
         <div class="footer">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <button class="foot-btn" id="pauseResumeBtn">Pause</button>
-                <button class="foot-btn" id="replayBtn">↩ Restart</button>
+            <div style="display:flex; gap:12px;">
+                <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+                <button class="foot-btn step-btn" id="nextStep" disabled>Next Step</button>
+                <button class="foot-btn" id="replayBtn">Restart</button>
             </div>
-            <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-                <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-                <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-                <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-            </div>
-            <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
+            <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
         </div>
     </div>
 
@@ -940,7 +1106,6 @@
     <div class="particle" id="particle2"></div>
 
     <script>
-let speedMultiplier = 1.0;
         const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const WORD = 'CIPHER';
 
@@ -951,31 +1116,21 @@ let speedMultiplier = 1.0;
         /* Colors per vowel for variety */
         const VOWEL_COLOR = { A: '#ff9f43', E: '#ffdd57', I: '#ff5f6d', O: '#b97fff', U: '#59f2ff' };
 
-        let running = false, ct = { cancelled: false }, replayTimer = null, countdown = 2;
-        let isPlaying = true, stepRequested = false;
+        let currentStep = -1;
+        let n = 0;
+        let result = [], encoded = '';
+        let vowelResults = [];
 
         const $ = id => document.getElementById(id);
 
-        let isPaused = false;
-        async function sleep(ms) {
-            let elapsed = 0;
-            while (elapsed < (ms / speedMultiplier)) {
-                if (ct.cancelled) return;
-                if (!isPaused) elapsed += 20;
-                await new Promise(r => setTimeout(r, 20));
-            }
-        }
-
         const vis = (el, on = true) => el.classList.toggle('vis', on);
         const setStatus = (t, danger = false) => {
-            $('statusTxt').textContent = t;
-            $('status').classList.toggle('danger', danger);
+            if ($('statusTxt')) $('statusTxt').textContent = t;
+            if ($('status')) $('status').classList.toggle('danger', danger);
         };
 
-        async function waitForPlaybackStep() {
-            if (ct.cancelled) return;
-            await sleep(1000);
-        }
+        const prevStepBtn = $('prevStep'), nextStepBtn = $('nextStep'), btnNext = $('btn-next');
+
 
         /* ── Build vowel map pills ── */
         function buildMapPills() {
@@ -1025,128 +1180,8 @@ let speedMultiplier = 1.0;
         }
 
         /* ── Fly particle from srcEl to dstEl ── */
-        async function flyParticle(pid, srcEl, dstEl, text, col, glow) {
-            const p = $(pid);
-            if (!srcEl || !dstEl || !p) return;
-            const sr = srcEl.getBoundingClientRect(), dr = dstEl.getBoundingClientRect();
-            p.textContent = text; p.style.color = col;
-            p.style.border = `2px solid ${col}`; p.style.boxShadow = `0 0 18px ${glow}`;
-            p.style.transition = 'none'; p.style.opacity = '1';
-            p.style.left = (sr.left + sr.width / 2 - 22) + 'px';
-            p.style.top = (sr.top + sr.height / 2 - 22) + 'px';
-            await sleep(40); if (ct.cancelled) { p.style.opacity = '0'; return; }
-            const tx = dr.left + dr.width / 2 - 22, ty = dr.top + dr.height / 2 - 22;
-            const dist = Math.hypot(tx - (sr.left + sr.width / 2 - 22), ty - (sr.top + sr.height / 2 - 22));
-            const ms = 250 + dist * 0.55;
-            p.style.transition = `left ${ms}ms cubic-bezier(0.4,0,0.2,1),top ${ms}ms cubic-bezier(0.4,0,0.2,1)`;
-            p.style.left = tx + 'px'; p.style.top = ty + 'px';
-            await sleep(ms);
-            p.style.opacity = '0';
-        }
-
-        /* ── Animate scanner laser sweeping across ── */
-        async function sweepScanner() {
-            const wrap = $('scannerWrap');
-            const laser = $('scannerLine');
-            const row = $('wordRow');
-            const n = WORD.length;
-
-            const rowRect = row.getBoundingClientRect();
-            const wrapRect = wrap.getBoundingClientRect();
-
-            laser.style.opacity = '1';
-
-            const startX = 0;
-            const endX = wrapRect.width;
-
-            laser.style.left = '0px';
-            laser.style.transition = 'none';
-            await sleep(40);
-
-            laser.style.transition = `left ${n * 260}ms linear`;
-            laser.style.left = endX + 'px';
-
-            /* As laser sweeps, flash each chip */
+        function sweepScanner() {
             for (let i = 0; i < n; i++) {
-                if (ct.cancelled) { laser.style.opacity = '0'; return; }
-                await sleep(240);
-                const chip = $(`chip-${i}`);
-                chip?.classList.add('scanning');
-                await sleep(80);
-                chip?.classList.remove('scanning');
-            }
-            await sleep(200);
-            laser.style.opacity = '0';
-        }
-
-        /* ── Replay countdown ── */
-        function startReplayCountdown() {
-            countdown = 2; $('rcd').textContent = `Replaying in ${countdown}s…`;
-            replayTimer = setInterval(() => {
-                countdown--;
-                if (countdown > 0) { $('rcd').textContent = `Replaying in ${countdown}s…`; }
-                else { clearInterval(replayTimer); $('rcd').textContent = 'Replaying…'; kickDemo(); }
-            }, 1000 / speedMultiplier);
-        }
-        function cancelReplay() { if (replayTimer) { clearInterval(replayTimer); replayTimer = null; } $('rcd').textContent = ''; }
-
-        /* ══ MAIN ANIMATION ══ */
-        async function runDemo() {
-            if (running) { ct.cancelled = true; await new Promise(r => setTimeout(r, 130)); }
-            ct = { cancelled: false }; running = true;
-            isPaused = false;
-            const pauseBtn = document.getElementById('pauseResumeBtn');
-            if (pauseBtn) pauseBtn.textContent = 'Pause';
-
-            const n = WORD.length;
-            const result = WORD.split('').map((ch, i) => {
-                const isVowel = VOWELS.has(ch);
-                return { ch, i, isVowel, symbol: isVowel ? VOWEL_MAP[ch] : ch, col: isVowel ? (VOWEL_COLOR[ch] || '#ff5f6d') : null };
-            });
-            const encoded = result.map(r => r.symbol).join('');
-            const vowelResults = result.filter(r => r.isVowel);
-
-            /* ── Reset ── */
-            vis($('infoPanel'), false); vis($('outputSection'), false);
-            vis($('extractedRow'), false); vis($('mapTable'), false);
-            $('infoGrid').innerHTML = ''; $('extChips').innerHTML = '';
-            $('particle1').style.opacity = '0'; $('particle2').style.opacity = '0';
-            $('scannerLine').style.opacity = '0';
-
-            buildMapPills();
-            buildWordChips();
-            buildOutput();
-            document.querySelectorAll('.mpill').forEach(p => p.classList.remove('active-pill'));
-
-            setStatus('Loading word into scanner…', false);
-            await sleep(500); if (ct.cancelled) { running = false; return; }
-
-            /* ── Stagger chips in ── */
-            for (let i = 0; i < n; i++) {
-                if (ct.cancelled) { running = false; return; }
-                const chip = $(`chip-${i}`);
-                chip.style.opacity = '0'; chip.style.transform = 'translateY(14px)';
-                chip.style.transition = 'opacity .4s,transform .4s';
-                await sleep(20); chip.style.opacity = '1'; chip.style.transform = 'translateY(0)';
-                await sleep(130);
-            }
-            await sleep(400); if (ct.cancelled) { running = false; return; }
-            await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
-
-            /* ── Show map table ── */
-            vis($('mapTable'), true);
-            await sleep(600); if (ct.cancelled) { running = false; return; }
-
-            /* ── SWEEP SCANNER ── */
-            setStatus('Scanning for vowels…', true);
-            await sweepScanner();
-            if (ct.cancelled) { running = false; return; }
-            await sleep(300);
-
-            /* ── Identify vowels vs consonants ── */
-            setStatus('Identifying vowels…', true);
-            for (let i = 0; i < n; i++) {
-                if (ct.cancelled) { running = false; return; }
                 const r = result[i];
                 const chip = $(`chip-${i}`);
                 const role = $(`role-${i}`);
@@ -1157,185 +1192,147 @@ let speedMultiplier = 1.0;
                     chip.classList.add('safe');
                     role.classList.add('consonant');
                 }
-                await sleep(160);
             }
-            await sleep(700); if (ct.cancelled) { running = false; return; }
-            await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
+        }
 
-            /* ── Extract + replace vowels one by one ── */
-            setStatus('Extracting vowels · injecting symbols…', true);
+        function resetDemo() {
+            n = WORD.length;
+            result = WORD.split('').map((ch, i) => {
+                const isVowel = VOWELS.has(ch);
+                return { ch, i, isVowel, symbol: isVowel ? VOWEL_MAP[ch] : ch, col: isVowel ? (VOWEL_COLOR[ch] || '#ff5f6d') : null };
+            });
+            encoded = result.map(r => r.symbol).join('');
+            vowelResults = result.filter(r => r.isVowel);
+            
+            vis($('infoPanel'), false); vis($('outputSection'), false);
+            vis($('extractedRow'), false); vis($('mapTable'), true);
+            
+            if ($('infoGrid')) $('infoGrid').innerHTML = ''; 
+            if ($('extChips')) $('extChips').innerHTML = '';
+            
+            buildMapPills();
+            buildWordChips();
+            buildOutput();
+            document.querySelectorAll('.mpill').forEach(p => p.classList.remove('active-pill'));
 
-            for (let idx = 0; idx < vowelResults.length; idx++) {
-                if (ct.cancelled) { running = false; return; }
-                const r = vowelResults[idx];
+            setStatus('Loading word into scanner…', false);
+            
+            for (let i = 0; i < n; i++) {
+                const chip = $(`chip-${i}`);
+                if (chip) {
+                    chip.style.opacity = '1'; 
+                    chip.style.transform = 'translateY(0)';
+                }
+            }
+            
+            currentStep = -1;
+            updateButtons();
+        }
+
+        function updateButtons() {
+            if (prevStepBtn) prevStepBtn.disabled = currentStep < 0;
+            if (nextStepBtn) nextStepBtn.disabled = currentStep > vowelResults.length;
+        }
+
+        function renderStep(step) {
+            if (step < -1) return;
+            if (step > vowelResults.length + 1) return;
+            
+            currentStep = step;
+            updateButtons();
+            
+            // Reset to clean state (after init)
+            for (let i = 0; i < n; i++) {
+                const chip = $(`chip-${i}`);
+                const role = $(`role-${i}`);
+                const charEl = $(`char-${i}`);
+                
+                chip.classList.remove('targeted', 'safe', 'extracted', 'landed');
+                role.className = 'chip-role';
+                role.textContent = result[i].isVowel ? 'vowel' : 'consonant';
+                if (charEl) charEl.textContent = result[i].ch;
+                chip.style.boxShadow = '';
+            }
+            $('extChips').innerHTML = '';
+            vis($('extractedRow'), false);
+            document.querySelectorAll('.mpill').forEach(p => p.classList.remove('active-pill'));
+            vis($('infoPanel'), false); 
+            vis($('outputSection'), false);
+            
+            if (currentStep === -1) {
+                setStatus('Loading word into scanner…', false);
+                return;
+            }
+            
+            if (currentStep >= 0) {
+                setStatus('Identifying vowels…', true);
+                sweepScanner();
+            }
+            
+            for (let i = 0; i < currentStep && i < vowelResults.length; i++) {
+                const r = vowelResults[i];
                 const chip = $(`chip-${r.i}`);
-                const charEl = $(`char-${r.i}`);
                 const role = $(`role-${r.i}`);
-                const pillId = `pill-${r.ch === '  ' ? 'SP' : r.ch}`;
-                const col = r.col || '#ff5f6d';
-
-                /* Flash matching codebook pill */
-                document.querySelectorAll('.mpill').forEach(p => p.classList.remove('active-pill'));
-                $(pillId)?.classList.add('active-pill');
-
-                setStatus(`Extracting "${r.ch}" at [${r.i}] → injecting "${r.symbol}"`, true);
-                await sleep(350); if (ct.cancelled) { running = false; return; }
-
-                /* Target shake intensifies */
-                chip.classList.add('targeted');
-                await sleep(300); if (ct.cancelled) { running = false; return; }
-
-                /* Fly vowel UP & out */
-                const dummyAbove = document.createElement('div');
-                dummyAbove.style.cssText = 'position:fixed;left:0;top:-60px;width:44px;height:44px;';
-                document.body.appendChild(dummyAbove);
-                const chipRect = chip.getBoundingClientRect();
-                dummyAbove.style.left = (chipRect.left + chipRect.width / 2 - 22) + 'px';
-
-                await flyParticle('particle1', chip, dummyAbove, r.ch, col, `${col}bb`);
-                document.body.removeChild(dummyAbove);
-                if (ct.cancelled) { running = false; return; }
-
-                /* Chip now empty */
+                const charEl = $(`char-${r.i}`);
+                
                 chip.classList.remove('targeted', 'safe');
-                chip.classList.add('extracted');
-                if (charEl) charEl.textContent = '·';
-                await sleep(180); if (ct.cancelled) { running = false; return; }
-
-                /* Add to extracted row */
+                chip.classList.add('landed');
+                if (charEl) charEl.textContent = r.symbol;
+                role.className = 'chip-role symbol';
+                role.textContent = 'symbol';
+                
                 const extChip = document.createElement('div');
                 extChip.className = 'ext-chip';
                 extChip.innerHTML = `<span class="ext-from">${r.ch}</span><span class="ext-arr">→</span><span class="ext-to">${r.symbol}</span><span class="ext-pos">[${r.i}]</span>`;
                 $('extChips').appendChild(extChip);
                 vis($('extractedRow'), true);
-                await sleep(200); if (ct.cancelled) { running = false; return; }
-
-                /* Create drop-in point above chip */
-                const dropAbove = document.createElement('div');
-                dropAbove.style.cssText = `position:fixed;top:${chipRect.top - 80}px;left:${chipRect.left}px;width:${chipRect.width}px;height:44px;`;
-                document.body.appendChild(dropAbove);
-
-                /* Fly symbol DOWN into chip */
-                await flyParticle('particle2', dropAbove, chip, r.symbol, '#ffdd57', 'rgba(255,221,87,0.8)');
-                document.body.removeChild(dropAbove);
-                if (ct.cancelled) { running = false; return; }
-
-                /* Land the symbol */
-                if (charEl) charEl.textContent = r.symbol;
-                chip.classList.remove('extracted');
-                chip.classList.add('landed');
-                role.className = 'chip-role symbol';
-                role.textContent = 'symbol';
-                await sleep(450); if (ct.cancelled) { running = false; return; }
-                await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
-            }
-
-            document.querySelectorAll('.mpill').forEach(p => p.classList.remove('active-pill'));
-
-            /* ── Finale ── */
-            setStatus(`Scramble complete · CIPHER → ${encoded}`, false);
-            $('status').style.color = 'var(--ag)';
-            await sleep(400); if (ct.cancelled) { running = false; return; }
-
-            /* Pulse all chips */
-            for (let i = 0; i < n; i++) {
-                const chip = $(`chip-${i}`);
-                if (chip) {
-                    const isV = result[i].isVowel;
-                    chip.style.boxShadow = isV ? '0 0 28px rgba(255,221,87,.85)' : '0 0 16px rgba(89,242,255,.5)';
+                
+                if (i === currentStep - 1) {
+                    const pillId = `pill-${r.ch === ' ' ? 'SP' : r.ch}`;
+                    $(pillId)?.classList.add('active-pill');
+                    setStatus(`Extracting "${r.ch}" at [${r.i}] → injecting "${r.symbol}"`, true);
                 }
             }
-            await sleep(400);
-            for (let i = 0; i < n; i++) {
-                const chip = $(`chip-${i}`);
-                if (chip) { chip.style.boxShadow = result[i].isVowel ? '0 0 10px rgba(255,221,87,.22)' : '0 0 8px rgba(89,242,255,.15)'; }
+            
+            if (currentStep === vowelResults.length + 1) {
+                setStatus(`Scramble complete · CIPHER → ${encoded}`, false);
+                if ($('status')) $('status').style.color = 'var(--ag)';
+                
+                vis($('outputSection'), true);
+                for (let i = 0; i < n; i++) {
+                    $(`outl-${i}`)?.classList.add('show');
+                    const chip = $(`chip-${i}`);
+                    if (chip) chip.style.boxShadow = result[i].isVowel ? '0 0 10px rgba(255,221,87,.22)' : '0 0 8px rgba(89,242,255,.15)';
+                }
+                
+                $('infoGrid').innerHTML = `
+                  <div class="irow"><div class="irow-lbl">Input</div><div class="irow-val fm">CIPHER</div></div>
+                  <div class="irow"><div class="irow-lbl">Output</div><div class="irow-val fy">${encoded}</div></div>
+                  <div class="irow"><div class="irow-lbl">Vowels found</div><div class="irow-val fr">${vowelResults.map(r => r.ch).join(', ')} (${vowelResults.length} of ${n})</div></div>
+                  <div class="irow"><div class="irow-lbl">Symbols injected</div><div class="irow-val fy">${vowelResults.map(r => `${r.ch}→${r.symbol}`).join('  ')}</div></div>
+                  <div class="formula">
+                  <span class="fm">Codebook :</span>
+                    <span class="fr">A</span>→<span class="fy">1</span>  <span class="fr">E</span>→<span class="fy">2</span>  <span class="fr">I</span>→<span class="fy">3</span>  <span class="fr">O</span>→<span class="fy">4</span>  <span class="fr">U</span>→<span class="fy">5</span>
+                  
+                  <span class="fm">CIPHER has ${vowelResults.length} vowels.</span>
+                    Consonants C, P, H, R are <span class="fc">untouched</span>.
+                  <span class="fg">Result :</span> <span class="fm">C</span><span class="fy">3</span><span class="fm">PH</span><span class="fy">2</span><span class="fm">R</span>
+                  <span class="fg">Why harder?</span> <span class="fm">Looks like leet-speak — harder to read quickly, and vowels carry the most information in any word.</span></div>`;
+                vis($('infoPanel'), true);
             }
-
-            /* Output word */
-            vis($('outputSection'), true);
-            await sleep(200); if (ct.cancelled) { running = false; return; }
-            for (let i = 0; i < n; i++) {
-                $(`outl-${i}`)?.classList.add('show');
-                await sleep(100);
-            }
-            await sleep(350); if (ct.cancelled) { running = false; return; }
-
-            /* Info panel */
-            $('infoGrid').innerHTML = `
-    <div class="irow">
-      <div class="irow-lbl">Input</div>
-      <div class="irow-val fm">CIPHER</div>
-    </div>
-    <div class="irow">
-      <div class="irow-lbl">Output</div>
-      <div class="irow-val fy">${encoded}</div>
-    </div>
-    <div class="irow">
-      <div class="irow-lbl">Vowels found</div>
-      <div class="irow-val fr">${vowelResults.map(r => r.ch).join(', ')} (${vowelResults.length} of ${n})</div>
-    </div>
-    <div class="irow">
-      <div class="irow-lbl">Symbols injected</div>
-      <div class="irow-val fy">${vowelResults.map(r => `${r.ch}→${r.symbol}`).join('  ')}</div>
-    </div>
-    <div class="formula">
-<span class="fm">Codebook :</span>
-  <span class="fr">A</span>→<span class="fy">@</span>  <span class="fr">E</span>→<span class="fy">3</span>  <span class="fr">I</span>→<span class="fy">1</span>  <span class="fr">O</span>→<span class="fy">0</span>  <span class="fr">U</span>→<span class="fy">^</span>  <span class="fr">␣</span>→<span class="fy">_</span>
-
-<span class="fm">CIPHER has 2 vowels at positions [1] and [4].</span>
-  <span class="fr">I</span> → <span class="fy">1</span>   and   <span class="fr">E</span> → <span class="fy">3</span>
-  Consonants C, P, H, R are <span class="fc">untouched</span>.
-
-<span class="fg">Result :</span>  <span class="fm">C</span><span class="fy">1</span><span class="fm">PH</span><span class="fy">3</span><span class="fm">R</span>
-
-<span class="fg">Why harder?</span> <span class="fm">Looks like leet-speak — harder to read quickly,
-and vowels carry the most information in any word.</span></div>
-  `;
-            vis($('infoPanel'), true);
-
-            await sleep(800);
-            running = false;
-            startReplayCountdown();
         }
 
-        function kickDemo() { cancelReplay(); runDemo(); }
-        
-        const replayBtn = document.getElementById('replayBtn');
-        if (replayBtn) replayBtn.addEventListener('click', kickDemo);
-
-        const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-        if (pauseResumeBtn) {
-            pauseResumeBtn.addEventListener('click', () => {
-                if (!running) return;
-                isPaused = !isPaused;
-                pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
-            });
-        }
-
-        const speedUp = document.getElementById('speedUp');
-        const speedDown = document.getElementById('speedDown');
-        const sDisplay = document.getElementById('speedDisplay');
-
-        if (speedUp && speedDown && sDisplay) {
-            speedUp.addEventListener("click", () => {
-                if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-                sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-            });
-            speedDown.addEventListener("click", () => {
-                if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-                sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-            });
-        }
-
-        const nextBtn = document.getElementById('nextBtn');
-        if (nextBtn) {
-            nextBtn.addEventListener('click', () => {
+        if (prevStepBtn) prevStepBtn.addEventListener('click', () => renderStep(currentStep - 1));
+        if (nextStepBtn) nextStepBtn.addEventListener('click', () => renderStep(currentStep + 1));
+        const replayBtn = $('replayBtn');
+        if (replayBtn) replayBtn.addEventListener('click', resetDemo);
+        if (btnNext) {
+            btnNext.addEventListener('click', () => {
                 window.location.href = "level2.5.html";
             });
         }
 
-        buildMapPills(); buildWordChips(); buildOutput();
-        runDemo();
+        resetDemo();
 </script>
 </body>
 

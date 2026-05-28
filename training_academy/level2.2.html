@@ -1009,7 +1009,177 @@
       background: rgba(89, 242, 255, 0.2);
       box-shadow: 0 0 10px rgba(89, 242, 255, 0.3);
     }
-  </style>
+  
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    .step-btn {
+      border-radius: 6px !important;
+      background: rgba(89, 242, 255, 0.1) !important;
+      border: 1px solid rgba(89, 242, 255, 0.4) !important;
+      color: #59f2ff !important;
+    }
+    .step-btn:hover:not(:disabled) {
+      background: rgba(89, 242, 255, 0.2) !important;
+      box-shadow: 0 0 10px rgba(89, 242, 255, 0.3) !important;
+    }
+    .step-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .next-cipher-btn {
+      background: #ffdd57 !important;
+      color: #000 !important;
+      border: none !important;
+      border-radius: 999px !important;
+      font-weight: 800 !important;
+    }
+    .next-cipher-btn:hover {
+      box-shadow: 0 0 16px rgba(255, 221, 87, 0.6) !important;
+    }
+    
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
+    </style>
     <script src="global_controls.js"></script>
 </head>
 
@@ -1039,7 +1209,10 @@
         <div class="shift-num sy" id="yVal">−2</div>
         <button class="shift-btn sy" id="yUp">+</button>
       </div>
-      <button class="go-btn" id="goBtn" style="margin-left:12px;">Start</button>
+      <div style="margin-left:auto; display:flex; align-items:center; gap:12px;">
+        <span class="ctrl-lbl" style="color:#59f2ff; text-transform:none; font-size:11px;">Select key and click start to proceed →</span>
+        <button class="go-btn step-btn" id="goBtn" style="padding:7px 22px;">Start</button>
+      </div>
     </div>
     <div class="stage">
       <div class="status"><span id="statusTxt">Initializing…</span><span class="blink"> ▌</span></div>
@@ -1047,13 +1220,13 @@
       <div class="beat-meter">
         <div class="beat-block" id="bx">
           <div class="beat-dot"></div>
-          <div class="beat-text">Even · X</div>
+          <div class="beat-text">Even </div>
           <div class="beat-shift" id="bxv">+3</div>
         </div>
         <div class="beat-sep" id="bsep">⟷</div>
         <div class="beat-block" id="by">
           <div class="beat-dot"></div>
-          <div class="beat-text">Odd · Y</div>
+          <div class="beat-text">Odd </div>
           <div class="beat-shift" id="byv">−2</div>
         </div>
       </div>
@@ -1076,9 +1249,9 @@
       <div class="output-wrap">
         <div class="out-header">
           <span>Output</span>
-          <span class="opill px">+X even</span>
+          <span class="opill px">Even</span>
           <span style="color:var(--mu);font-size:11px">alternates with</span>
-          <span class="opill py">+Y odd</span>
+          <span class="opill py">Odd</span>
           <span style="color:var(--mu);font-size:11px">=</span>
           <span class="opill pf">encoded</span>
         </div>
@@ -1091,26 +1264,23 @@
       </div>
     </div>
     <div class="footer">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <button class="foot-btn" id="pauseResumeBtn">Pause</button>
-        <button class="foot-btn" id="replayBtn">↩ Restart</button>
+      <div style="display:flex; gap:12px;">
+        <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+        <button class="foot-btn step-btn" id="nextStep" disabled>Next Step</button>
+        <button class="foot-btn" id="replayBtn">Restart</button>
       </div>
-      <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-        <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-        <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-      </div>
-      <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
+      <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
     </div>
   </div>
   <div id="flyer"
     style="position:fixed;z-index:400;pointer-events:none;width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'SF Mono','Fira Code',monospace;font-size:20px;font-weight:700;background:rgba(2,6,23,0.95);opacity:0;">
   </div>
   <script>
-let speedMultiplier = 1.0;
     const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', WORD = 'CIPHER', TW = 40;
-    let shiftX = 3, shiftY = -2, running = false, ct = { cancelled: false }, replayTimer = null, countdown = 2;
-    let isPlaying = true, stepRequested = false;
+    let shiftX = 3, shiftY = -2;
+    let currentStep = -1, n = 0;
+    let result = [], encoded = '';
+    
     const $ = id => document.getElementById(id);
     const xDown = $('xDown'), xUp = $('xUp'), xVal = $('xVal');
     const yDown = $('yDown'), yUp = $('yUp'), yVal = $('yVal');
@@ -1119,44 +1289,33 @@ let speedMultiplier = 1.0;
     const wordRow = $('wordRow'), outChips = $('outChips'), mapRow = $('mapRow');
     const infoPanel = $('infoPanel'), infoGrid = $('infoGrid'), statusTxt = $('statusTxt');
     const flyer = $('flyer'), replayBtn = $('replayBtn'), goBtn = $('goBtn');
-
-    let isPaused = false;
-    async function sleep(ms) {
-        let elapsed = 0;
-        while (elapsed < (ms / speedMultiplier)) {
-            if (ct.cancelled) return;
-            if (!isPaused) {
-                elapsed += 20;
-            }
-            await new Promise(r => setTimeout(r, 20));
-        }
-    }
+    const prevStepBtn = $('prevStep'), nextStepBtn = $('nextStep'), btnNext = $('btn-next');
     const vis = (el, on = true) => el.classList.toggle('vis', on);
     const setStatus = t => statusTxt.textContent = t;
 
-    async function waitForPlaybackStep() {
-      if (ct.cancelled) return;
-      await sleep(1000);
-    }
-
     function updateDisplays() {
-      xVal.textContent = (shiftX >= 0 ? '+' : '') + shiftX;
-      yVal.textContent = (shiftY >= 0 ? '+' : '') + shiftY;
-      bxv.textContent = (shiftX >= 0 ? '+' : '') + shiftX;
-      byv.textContent = (shiftY >= 0 ? '+' : '') + shiftY;
+      if (xVal) xVal.textContent = (shiftX >= 0 ? '+' : '') + shiftX;
+      if (yVal) yVal.textContent = (shiftY >= 0 ? '+' : '') + shiftY;
+      if (bxv) bxv.textContent = (shiftX >= 0 ? '+' : '') + shiftX;
+      if (byv) byv.textContent = (shiftY >= 0 ? '+' : '') + shiftY;
     }
+    
     function mkShift(axis, dir) {
       return () => {
-        if (running) return;
+        if (currentStep >= 0) return;
         if (axis === 'x') { if (dir > 0 && shiftX < 25) shiftX++; else if (dir < 0 && shiftX > -25) shiftX--; }
         else { if (dir > 0 && shiftY < 25) shiftY++; else if (dir < 0 && shiftY > -25) shiftY--; }
-        updateDisplays(); cancelReplay();
+        updateDisplays();
       };
     }
-    xDown.addEventListener('click', mkShift('x', -1)); xUp.addEventListener('click', mkShift('x', 1));
-    yDown.addEventListener('click', mkShift('y', -1)); yUp.addEventListener('click', mkShift('y', 1));
+    
+    if (xDown) xDown.addEventListener('click', mkShift('x', -1));
+    if (xUp) xUp.addEventListener('click', mkShift('x', 1));
+    if (yDown) yDown.addEventListener('click', mkShift('y', -1));
+    if (yUp) yUp.addEventListener('click', mkShift('y', 1));
 
     function buildTape(inner) {
+      if (!inner) return;
       inner.innerHTML = '';
       for (let rep = 0; rep < 3; rep++)
         for (let i = 0; i < 26; i++) {
@@ -1166,23 +1325,32 @@ let speedMultiplier = 1.0;
           inner.appendChild(c);
         }
     }
-    function setTapePos(outer, inner, idx, anim, ms) {
+    
+    function setTapePos(outer, inner, idx) {
+      if (!outer || !inner) return;
       const w = outer.offsetWidth || 500;
       const x = w / 2 - idx * TW - TW / 2;
-      inner.style.transition = anim ? `transform ${ms || 900}ms cubic-bezier(0.25,0.1,0.25,1)` : 'none';
+      inner.style.transition = 'none';
       inner.style.transform = `translateX(${x}px)`;
     }
-    function clearHL(inner) { inner.querySelectorAll('.tcell').forEach(c => c.classList.remove('tsrc-x', 'tsrc-y', 'tdst-x', 'tdst-y')); }
+    
+    function clearHL(inner) { 
+       if (!inner) return;
+       inner.querySelectorAll('.tcell').forEach(c => c.classList.remove('tsrc-x', 'tsrc-y', 'tdst-x', 'tdst-y')); 
+    }
 
     function buildWordChips() {
+      if (!wordRow) return;
       wordRow.innerHTML = '';
       WORD.split('').forEach((ch, i) => {
         const c = document.createElement('div'); c.className = 'wchip'; c.id = 'wc-' + i;
-        c.innerHTML = `<span class="wletter" id="wl-${i}">${ch}</span><span class="widx">[${i}] ${i % 2 === 0 ? 'even' : 'odd'}</span><span class="wtrack">${i % 2 === 0 ? 'X' : 'Y'}</span>`;
+        c.innerHTML = `<span class="wletter" id="wl-${i}">${ch}</span><span class="widx">[${i}] ${i % 2 === 0 ? 'even' : 'odd'}</span>`;
         wordRow.appendChild(c);
       });
     }
+    
     function buildOutChips() {
+      if (!outChips) return;
       outChips.innerHTML = '';
       WORD.split('').forEach((_, i) => {
         const c = document.createElement('div'); c.className = 'ochip'; c.id = 'oc-' + i;
@@ -1191,211 +1359,194 @@ let speedMultiplier = 1.0;
       });
     }
 
-    async function fly(srcEl, dstEl, letter, isX) {
-      if (!srcEl || !dstEl) return;
-      const col = isX ? '#59f2ff' : '#ffdd57', glow = isX ? 'rgba(89,242,255,0.75)' : 'rgba(255,221,87,0.75)';
-      const sr = srcEl.getBoundingClientRect(), dr = dstEl.getBoundingClientRect();
-      flyer.textContent = letter; flyer.style.color = col;
-      flyer.style.border = `2px solid ${col}`; flyer.style.boxShadow = `0 0 18px ${glow}`;
-      flyer.style.transition = 'none'; flyer.style.opacity = '1';
-      flyer.style.left = (sr.left + sr.width / 2 - 22) + 'px'; flyer.style.top = (sr.top + sr.height / 2 - 22) + 'px';
-      await sleep(50); if (ct.cancelled) { flyer.style.opacity = '0'; return; }
-      const tx = dr.left + dr.width / 2 - 22, ty = dr.top + dr.height / 2 - 22;
-      const dist = Math.hypot(tx - (sr.left + sr.width / 2 - 22), ty - (sr.top + sr.height / 2 - 22));
-      const ms = 260 + dist * 0.55;
-      flyer.style.transition = `left ${ms}ms cubic-bezier(0.4,0,0.2,1),top ${ms}ms cubic-bezier(0.4,0,0.2,1)`;
-      flyer.style.left = tx + 'px'; flyer.style.top = ty + 'px';
-      await sleep(ms); flyer.style.opacity = '0';
-    }
-
-    function startReplayCountdown() {
-      countdown = 2; rcd.textContent = `Replaying in ${countdown}s…`;
-      replayTimer = setInterval(() => {
-        countdown--;
-        if (countdown > 0) { rcd.textContent = `Replaying in ${countdown}s…`; }
-        else { clearInterval(replayTimer); rcd.textContent = 'Replaying…'; kickDemo(); }
-      }, 1000 / speedMultiplier);
-    }
-    function cancelReplay() { if (replayTimer) { clearInterval(replayTimer); replayTimer = null; } rcd.textContent = ''; }
-
-    async function runDemo() {
-      if (running) { ct.cancelled = true; await new Promise(r => setTimeout(r, 130)); }
-      ct = { cancelled: false }; running = true;
-      isPaused = false;
-      if (document.getElementById('pauseResumeBtn')) document.getElementById('pauseResumeBtn').textContent = 'Pause';
-      if (goBtn) goBtn.disabled = true;
-      const n = WORD.length;
-      const result = WORD.split('').map((ch, i) => {
+    function resetDemo() {
+      n = WORD.length;
+      result = WORD.split('').map((ch, i) => {
         const s = i % 2 === 0 ? shiftX : shiftY, src = ALPHA.indexOf(ch), dst = ((src + s) % 26 + 26) % 26;
         return { ch, src, dst, enc: ALPHA[dst], isX: i % 2 === 0, s };
       });
-      const encoded = result.map(r => r.enc).join('');
+      encoded = result.map(r => r.enc).join('');
 
       vis(infoPanel, false); vis(mapRow, false);
-      infoGrid.innerHTML = ''; mapRow.innerHTML = ''; flyer.style.opacity = '0';
-      bx.className = 'beat-block'; by.className = 'beat-block'; bsep.className = 'beat-sep';
-      toX.classList.remove('atx'); toY.classList.remove('aty');
+      if (infoGrid) infoGrid.innerHTML = ''; 
+      if (mapRow) mapRow.innerHTML = ''; 
+      if (flyer) flyer.style.opacity = '0';
+      if (bx) bx.className = 'beat-block'; 
+      if (by) by.className = 'beat-block'; 
+      if (bsep) bsep.className = 'beat-sep';
+      if (toX) toX.classList.remove('atx'); 
+      if (toY) toY.classList.remove('aty');
 
       buildTape(tiX); buildTape(tiY);
-      setTapePos(toX, tiX, 26, false); setTapePos(toY, tiY, 26, false);
+      setTapePos(toX, tiX, 26); setTapePos(toY, tiY, 26);
       buildWordChips(); buildOutChips(); updateDisplays();
 
-      setStatus('CIPHER · loading onto encoder…');
-      await sleep(500); if (ct.cancelled) { running = false; return; }
-      await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
-
-      /* Stagger-in chips */
+      setStatus('CIPHER · loaded onto encoder…');
+      
       for (let i = 0; i < n; i++) {
-        if (ct.cancelled) { running = false; return; }
         const wc = document.getElementById('wc-' + i);
-        wc.style.opacity = '0'; wc.style.transform = 'translateY(14px)'; wc.style.transition = 'opacity .4s,transform .4s';
-        await sleep(30); wc.style.opacity = '1'; wc.style.transform = 'translateY(0)';
-        await sleep(130);
+        if (wc) {
+          wc.style.opacity = '1';
+          wc.style.transform = 'translateY(0)';
+        }
       }
-      await sleep(500); if (ct.cancelled) { running = false; return; }
-
-      /* Flash even (cyan) */
-      setStatus('Even positions → Track X');
-      for (let i = 0; i < n; i += 2) { document.getElementById('wc-' + i)?.classList.add('active-x'); await sleep(130); }
-      bx.className = 'beat-block on-x'; bsep.className = 'beat-sep fx';
-      await sleep(600);
-      for (let i = 0; i < n; i += 2)document.getElementById('wc-' + i)?.classList.remove('active-x');
-      bx.className = 'beat-block'; bsep.className = 'beat-sep';
-      if (ct.cancelled) { running = false; return; }
-
-      await sleep(200);
-
-      /* Flash odd (yellow) */
-      setStatus('Odd positions → Track Y');
-      for (let i = 1; i < n; i += 2) { document.getElementById('wc-' + i)?.classList.add('active-y'); await sleep(130); }
-      by.className = 'beat-block on-y'; bsep.className = 'beat-sep fy';
-      await sleep(600);
-      for (let i = 1; i < n; i += 2)document.getElementById('wc-' + i)?.classList.remove('active-y');
-      by.className = 'beat-block'; bsep.className = 'beat-sep';
-      if (ct.cancelled) { running = false; return; }
-      await sleep(500);
-      await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
-
-      /* Encode each letter */
-      for (let i = 0; i < n; i++) {
-        if (ct.cancelled) { running = false; return; }
-        const r = result[i], isX = r.isX;
-        const wc = document.getElementById('wc-' + i);
-        const outer = isX ? toX : toY, inner = isX ? tiX : tiY;
-
-        bx.className = isX ? 'beat-block on-x' : 'beat-block';
-        by.className = isX ? 'beat-block' : 'beat-block on-y';
-        bsep.className = isX ? 'beat-sep fx' : 'beat-sep fy';
-        outer.classList.add(isX ? 'atx' : 'aty');
-        wc?.classList.add(isX ? 'active-x' : 'active-y');
-        setStatus(`[${i}] "${r.ch}" pos ${r.src} · ${isX ? 'Track X' : 'Track Y'} · shift ${r.s >= 0 ? '+' : ''}${r.s} → "${r.enc}"`);
-
-        const tapeSrc = 26 + r.src;
-        setTapePos(outer, inner, tapeSrc, false);
-        clearHL(inner);
-        inner.querySelector('#' + inner.id + '-' + tapeSrc)?.classList.add(isX ? 'tsrc-x' : 'tsrc-y');
-        await sleep(400); if (ct.cancelled) { running = false; return; }
-
-        await fly(wc, outer, r.ch, isX); if (ct.cancelled) { running = false; return; }
-
-        let tapeDst = tapeSrc + r.s;
-        if (tapeDst < 0) tapeDst += 26; if (tapeDst >= 78) tapeDst -= 26;
-        const tMs = 780 + Math.abs(r.s) * 28;
-        setTapePos(outer, inner, tapeDst, true, tMs);
-        await sleep(tMs + 80); if (ct.cancelled) { running = false; return; }
-
-        clearHL(inner);
-        const dstCell = inner.querySelector('#' + inner.id + '-' + (26 + r.dst)) || inner.querySelector('#' + inner.id + '-' + r.dst);
-        dstCell?.classList.add(isX ? 'tdst-x' : 'tdst-y');
-        await sleep(300); if (ct.cancelled) { running = false; return; }
-
-        const oc = document.getElementById('oc-' + i);
-        await fly(outer, oc, r.enc, isX); if (ct.cancelled) { running = false; return; }
-
-        const ocv = document.getElementById('ocv-' + i);
-        if (oc && ocv) { ocv.textContent = r.enc; oc.classList.add(isX ? 'lx' : 'ly'); }
-
-        const wl = document.getElementById('wl-' + i);
-        if (wl) wl.textContent = r.enc;
-        wc?.classList.remove('active-x', 'active-y');
-        wc?.classList.add(isX ? 'enc-x' : 'enc-y');
-        outer.classList.remove('atx', 'aty');
-        await sleep(320);
-        await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
+      
+      currentStep = -1;
+      updateButtons();
+    }
+    
+    function updateButtons() {
+      if (prevStepBtn) prevStepBtn.disabled = currentStep < 0;
+      if (nextStepBtn) nextStepBtn.disabled = currentStep >= n;
+      
+      if(currentStep >= 0) {
+        if (xDown) xDown.disabled = true;
+        if (xUp) xUp.disabled = true;
+        if (yDown) yDown.disabled = true;
+        if (yUp) yUp.disabled = true;
+      } else {
+        if (xDown) xDown.disabled = false;
+        if (xUp) xUp.disabled = false;
+        if (yDown) yDown.disabled = false;
+        if (yUp) yUp.disabled = false;
       }
+    }
 
-      bx.className = 'beat-block'; by.className = 'beat-block'; bsep.className = 'beat-sep';
-      flyer.style.opacity = '0';
-      setStatus(`Complete · CIPHER → ${encoded}`);
+    function renderStep(step) {
+      if (step < -1) return;
+      if (step > n) return;
+      
+      currentStep = step;
+      updateButtons();
+      
+      // Reset all visuals first
+      clearHL(tiX); clearHL(tiY);
+      for(let i=0; i<n; i++) {
+         const wc = document.getElementById('wc-' + i);
+         if (wc) wc.classList.remove('active-x', 'active-y', 'enc-x', 'enc-y');
+         const oc = document.getElementById('oc-' + i);
+         if (oc) oc.classList.remove('lx', 'ly');
+         const ocv = document.getElementById('ocv-' + i);
+         if (ocv) ocv.textContent = ' ';
+         const wl = document.getElementById('wl-' + i);
+         if (wl) wl.textContent = result[i].ch;
+      }
+      if (toX) toX.classList.remove('atx');
+      if (toY) toY.classList.remove('aty');
+      if (bx) bx.className = 'beat-block';
+      if (by) by.className = 'beat-block';
+      if (bsep) bsep.className = 'beat-sep';
+      
+        if (currentStep === -1) {
+            setStatus('CIPHER · loaded onto encoder…');
+            setTapePos(toX, tiX, 26);
+            setTapePos(toY, tiY, 26);
+            vis(infoPanel, false); vis(mapRow, false);
+            if (prevStepBtn) prevStepBtn.disabled = true;
+            if (nextStepBtn) nextStepBtn.disabled = true;
+            return;
+        }
+      
+      if (currentStep === n) {
+          setStatus(`Complete · CIPHER → ${encoded}`);
+          vis(mapRow, true);
+          if (mapRow) {
+             mapRow.innerHTML = '';
+             result.forEach(r => {
+                const p = document.createElement('div'); p.className = `map-pill ${r.isX ? 'mx' : 'my'}`;
+                p.innerHTML = `<span class="mp-from">${r.ch}</span><span class="mp-arr">→</span><span class="${r.isX ? 'mp-to-x' : 'mp-to-y'}">${r.enc}</span><span class="mp-shift">${r.s >= 0 ? '+' : ''}${r.s}</span>`;
+                mapRow.appendChild(p);
+             });
+          }
+          if (infoGrid) {
+              infoGrid.innerHTML = `
+                <div class="irow"><div class="irow-lbl">Input</div><div class="irow-val fm">CIPHER</div></div>
+                <div class="irow"><div class="irow-lbl">Output</div><div class="irow-val fg">${encoded}</div></div>
+                <div class="irow"><div class="irow-lbl">Shift X · even</div><div class="irow-val fx">${shiftX >= 0 ? '+' : ''}${shiftX} steps</div></div>
+                <div class="irow"><div class="irow-lbl">Shift Y · odd</div><div class="irow-val fy">${shiftY >= 0 ? '+' : ''}${shiftY} steps</div></div>
+                <div class="formula">
+            <span class="fm">Rule :</span>  even [0,2,4] → Track <span class="fx">X (${shiftX >= 0 ? '+' : ''}${shiftX})</span>   ·   odd [1,3,5] → Track <span class="fy">Y (${shiftY >= 0 ? '+' : ''}${shiftY})</span>
+            
+            <span class="fm">Same letter, different position = different output.</span>
+            <span class="fg">Why harder?</span> <span class="fm">Two keys needed. Knowing just one shift
+            won't crack it — you need both X and Y to decode.</span></div>`;
+          }
+          vis(infoPanel, true);
+          
+          for (let i=0; i<n; i++) {
+             const r = result[i];
+             const oc = document.getElementById('oc-' + i);
+             const ocv = document.getElementById('ocv-' + i);
+             if (ocv) ocv.textContent = r.enc;
+             if (oc) oc.classList.add(r.isX ? 'lx' : 'ly');
+             const wc = document.getElementById('wc-' + i);
+             if (wc) wc.classList.add(r.isX ? 'enc-x' : 'enc-y');
+             const wl = document.getElementById('wl-' + i);
+             if (wl) wl.textContent = r.enc;
+          }
+          return;
+      }
+      
+      // Render intermediate steps
+      vis(infoPanel, false); vis(mapRow, false);
+      for(let i=0; i <= currentStep; i++) {
+          const r = result[i];
+          const oc = document.getElementById('oc-' + i);
+          const ocv = document.getElementById('ocv-' + i);
+          const wc = document.getElementById('wc-' + i);
+          const wl = document.getElementById('wl-' + i);
+          
+          if (i < currentStep) {
+              if (ocv) ocv.textContent = r.enc;
+              if (oc) oc.classList.add(r.isX ? 'lx' : 'ly');
+              if (wc) wc.classList.add(r.isX ? 'enc-x' : 'enc-y');
+              if (wl) wl.textContent = r.enc;
+          } else if (i === currentStep) {
+              const outer = r.isX ? toX : toY, inner = r.isX ? tiX : tiY;
+              if (bx) bx.className = r.isX ? 'beat-block on-x' : 'beat-block';
+              if (by) by.className = r.isX ? 'beat-block' : 'beat-block on-y';
+              if (bsep) bsep.className = r.isX ? 'beat-sep fx' : 'beat-sep fy';
+              if (outer) outer.classList.add(r.isX ? 'atx' : 'aty');
+              if (wc) wc.classList.add(r.isX ? 'active-x' : 'active-y');
+              setStatus(`[${i}] "${r.ch}" pos ${r.src} · ${r.isX ? 'Track X' : 'Track Y'} · shift ${r.s >= 0 ? '+' : ''}${r.s} → "${r.enc}"`);
+              
+              let tapeDst = 26 + r.src + r.s;
+              setTapePos(outer, inner, tapeDst);
+              const dstCell = inner.querySelector('#' + inner.id + '-' + tapeDst);
+              if (dstCell) dstCell.classList.add(r.isX ? 'tdst-x' : 'tdst-y');
+              
+              if (ocv) ocv.textContent = r.enc;
+              if (oc) oc.classList.add(r.isX ? 'lx' : 'ly');
+              if (wl) wl.textContent = r.enc;
+          }
+      }
+    }
 
-      /* Pulse output */
-      for (let i = 0; i < n; i++) { const oc = document.getElementById('oc-' + i); if (oc) oc.style.boxShadow = `0 0 28px ${result[i].isX ? 'rgba(89,242,255,.9)' : 'rgba(255,221,87,.9)'}`; }
-      await sleep(380);
-      for (let i = 0; i < n; i++) { const oc = document.getElementById('oc-' + i); if (oc) oc.style.boxShadow = `0 0 10px ${result[i].isX ? 'rgba(89,242,255,.22)' : 'rgba(255,221,87,.22)'}`; }
-
-      result.forEach(r => {
-        const p = document.createElement('div'); p.className = `map-pill ${r.isX ? 'mx' : 'my'}`;
-        p.innerHTML = `<span class="mp-from">${r.ch}</span><span class="mp-arr">→</span><span class="${r.isX ? 'mp-to-x' : 'mp-to-y'}">${r.enc}</span><span class="mp-shift">${r.s >= 0 ? '+' : ''}${r.s}</span>`;
-        mapRow.appendChild(p);
+    if (goBtn) {
+       goBtn.addEventListener('click', () => {
+          if (currentStep === -1) {
+             goBtn.disabled = true;
+             renderStep(0);
+          }
+       });
+    }
+    if (replayBtn) {
+       replayBtn.addEventListener('click', () => {
+          if (goBtn) goBtn.disabled = false;
+          resetDemo();
+       });
+    }
+    
+    if (prevStepBtn) prevStepBtn.addEventListener('click', () => { if(currentStep > -1) renderStep(currentStep - 1); });
+    if (nextStepBtn) nextStepBtn.addEventListener('click', () => { if(currentStep > -1) renderStep(currentStep + 1); });
+    
+    if (btnNext) {
+      btnNext.addEventListener('click', () => {
+        window.location.href = "level2.3.html";
       });
-      vis(mapRow, true);
-      await sleep(350); if (ct.cancelled) { running = false; return; }
-
-      infoGrid.innerHTML = `
-    <div class="irow"><div class="irow-lbl">Input</div><div class="irow-val fm">CIPHER</div></div>
-    <div class="irow"><div class="irow-lbl">Output</div><div class="irow-val fg">${encoded}</div></div>
-    <div class="irow"><div class="irow-lbl">Shift X · even</div><div class="irow-val fx">${shiftX >= 0 ? '+' : ''}${shiftX} steps</div></div>
-    <div class="irow"><div class="irow-lbl">Shift Y · odd</div><div class="irow-val fy">${shiftY >= 0 ? '+' : ''}${shiftY} steps</div></div>
-    <div class="formula">
-<span class="fm">Rule :</span>  even [0,2,4] → Track <span class="fx">X (${shiftX >= 0 ? '+' : ''}${shiftX})</span>   ·   odd [1,3,5] → Track <span class="fy">Y (${shiftY >= 0 ? '+' : ''}${shiftY})</span>
-
-<span class="fm">Same letter, different position = different output.</span>
-<span class="fg">Why harder?</span> <span class="fm">Two keys needed. Knowing just one shift
-won't crack it — you need both X and Y to decode.</span></div>`;
-      vis(infoPanel, true);
-
-      await sleep(800);
-      if (goBtn) goBtn.disabled = false;
-      running = false;
     }
 
-    function kickDemo() { cancelReplay(); runDemo(); }
-    if (goBtn) goBtn.addEventListener('click', runDemo);
-    if (replayBtn) replayBtn.addEventListener('click', runDemo);
-
-    const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-    if (pauseResumeBtn) {
-        pauseResumeBtn.addEventListener('click', () => {
-            if (!running) return;
-            isPaused = !isPaused;
-            pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
-        });
-    }
-
-    const speedUp = document.getElementById('speedUp');
-    const speedDown = document.getElementById('speedDown');
-    const sDisplay = document.getElementById('speedDisplay');
-
-    if (speedUp && speedDown && sDisplay) {
-        speedUp.addEventListener("click", () => {
-            if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-        });
-        speedDown.addEventListener("click", () => {
-            if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-        });
-    }
-
-    const nextBtn = document.getElementById('nextBtn');
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            window.location.href = "level2.3.html";
-        });
-    }
-
-    buildTape(tiX); buildTape(tiY);
-    buildWordChips(); buildOutChips();
+    resetDemo();
 </script>
 </body>
 

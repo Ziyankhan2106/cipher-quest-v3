@@ -633,6 +633,176 @@
                 font-size:42px;
             }
         }
+    
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    .step-btn {
+      border-radius: 6px !important;
+      background: rgba(89, 242, 255, 0.1) !important;
+      border: 1px solid rgba(89, 242, 255, 0.4) !important;
+      color: #59f2ff !important;
+    }
+    .step-btn:hover:not(:disabled) {
+      background: rgba(89, 242, 255, 0.2) !important;
+      box-shadow: 0 0 10px rgba(89, 242, 255, 0.3) !important;
+    }
+    .step-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .next-cipher-btn {
+      background: #ffdd57 !important;
+      color: #000 !important;
+      border: none !important;
+      border-radius: 999px !important;
+      font-weight: 800 !important;
+    }
+    .next-cipher-btn:hover {
+      box-shadow: 0 0 16px rgba(255, 221, 87, 0.6) !important;
+    }
+    
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
     </style>
     <script src="global_controls.js"></script>
 </head>
@@ -743,16 +913,12 @@
         </div>
 
         <div class="footer">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <button class="foot-btn" id="pauseResumeBtn">Pause</button>
-                <button class="foot-btn" id="replayBtn">↩ Restart</button>
+            <div style="display:flex; gap:12px;">
+                <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+                <button class="foot-btn step-btn" id="nextStep" disabled>Next Step</button>
+                <button class="foot-btn" id="replayBtn">Restart</button>
             </div>
-            <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-                <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-                <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-                <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-            </div>
-            <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
+            <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
         </div>
 
     </div>
@@ -778,99 +944,42 @@ will-change:transform,left,top;
 "></div>
 
     <script>
-let speedMultiplier = 1.0;
-
         const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const WORD = 'CIPHER';
         const KEY = 'XIATUV';
+        
+        let currentStep = -1;
+        let cipherAlpha = [];
+        let encoded = [];
 
         const $ = id => document.getElementById(id);
-        const rcd = $('rcd');
-        let replayTimer = null;
-        let countdown = 2;
-        let isPlaying = true;
-        let stepRequested = false;
-        let runToken = 0;
-
-        let isPaused = false;
-        async function sleep(ms) {
-            let elapsed = 0;
-            while (elapsed < (ms / speedMultiplier)) {
-                if (!isPaused) elapsed += 20;
-                await new Promise(r => setTimeout(r, 20));
-            }
-        }
-
-        async function waitForPlaybackStep(activeToken) {
-            if (activeToken !== runToken) return false;
-            await sleep(1000);
-            return activeToken === runToken;
-        }
-
-        function startReplayCountdown() {
-            countdown = 2;
-            rcd.textContent = `Replaying in ${countdown}s…`;
-            replayTimer = setInterval(() => {
-                countdown--;
-                if (countdown > 0) {
-                    rcd.textContent = `Replaying in ${countdown}s…`;
-                } else {
-                    clearInterval(replayTimer);
-                    rcd.textContent = 'Replaying…';
-                    kickDemo();
-                }
-            }, 1000 / speedMultiplier);
-        }
-
-        function cancelReplay() {
-            if (replayTimer) {
-                clearInterval(replayTimer);
-                replayTimer = null;
-            }
-            rcd.textContent = '';
-        }
-
-        function kickDemo() {
-            cancelReplay();
-            runDemo();
-        }
+        const prevStepBtn = $('prevStep'), nextStepBtn = $('nextStep'), btnNext = $('btn-next'), replayBtn = $('replayBtn');
 
         function setStatus(txt, color) {
-            $('statusTxt').textContent = txt;
-            $('status').style.color = color;
+            if ($('statusTxt')) $('statusTxt').textContent = txt;
+            if ($('status')) $('status').style.color = color;
         }
 
         function buildCipherAlpha(key) {
-
             const seen = new Set();
             const out = [];
-
             for (const ch of key) {
-
-                if (!seen.has(ch)) {
-                    seen.add(ch);
-                    out.push(ch);
-                }
+                if (!seen.has(ch)) { seen.add(ch); out.push(ch); }
             }
-
             for (const ch of ALPHA) {
-
-                if (!seen.has(ch)) {
-                    seen.add(ch);
-                    out.push(ch);
-                }
+                if (!seen.has(ch)) { seen.add(ch); out.push(ch); }
             }
-
             return out;
         }
 
-        async function runDemo() {
-            const activeToken = ++runToken;
-            isPaused = false;
-            const pauseBtn = document.getElementById('pauseResumeBtn');
-            if (pauseBtn) pauseBtn.textContent = 'Pause';
-
-            const cipherAlpha = buildCipherAlpha(KEY);
+        function resetDemo() {
+            cipherAlpha = buildCipherAlpha(KEY);
+            encoded = [];
+            for (let i = 0; i < WORD.length; i++) {
+                const ch = WORD[i];
+                const idx = ALPHA.indexOf(ch);
+                encoded.push(cipherAlpha[idx]);
+            }
 
             $('keySec').classList.add('vis');
             $('mappingSec').classList.add('vis');
@@ -880,205 +989,142 @@ let speedMultiplier = 1.0;
             $('cipherRow').innerHTML = '';
             $('wordChips').innerHTML = '';
             $('outWord').innerHTML = '';
-
-            /* build rows */
+            
+            $('outputSec').classList.remove('vis');
+            $('infoPanel').classList.remove('vis');
 
             ALPHA.split('').forEach((c, i) => {
-
                 const p = document.createElement('div');
                 p.className = 'acell';
                 p.id = 'p' + i;
                 p.textContent = c;
-
                 $('plainRow').appendChild(p);
 
                 const cc = document.createElement('div');
                 cc.className = 'acell c-empty';
                 cc.id = 'c' + i;
-
                 $('cipherRow').appendChild(cc);
             });
 
-            /* key chips */
-
             $('keyChips').innerHTML = '';
-
             for (let i = 0; i < KEY.length; i++) {
-
                 const k = document.createElement('div');
-
                 k.className = 'kchip';
-
                 k.textContent = KEY[i];
-
                 $('keyChips').appendChild(k);
-
-                await sleep(220);
-
-                k.classList.add('slam');
             }
-
-            await sleep(500);
-            if (!(await waitForPlaybackStep(activeToken))) return;
-
-            setStatus(
-                'Building cipher alphabet...',
-                'var(--orange)'
-            );
-
-            for (let i = 0; i < 26; i++) {
-
-                const cell = $('c' + i);
-
-                cell.textContent = cipherAlpha[i];
-
-                if (i < KEY.length) {
-                    cell.className = 'acell c-key';
-                }
-                else {
-                    cell.className = 'acell c-fill';
-                }
-
-                await sleep(70);
-            }
-
-            await sleep(600);
-            if (!(await waitForPlaybackStep(activeToken))) return;
-
-            /* word chips */
 
             WORD.split('').forEach((c, i) => {
-
                 const w = document.createElement('div');
-
                 w.className = 'wchip';
                 w.id = 'w' + i;
-
-                w.innerHTML = `
-      <div class="wchip-letter" id="wl${i}">
-        ${c}
-      </div>
-
-      <div class="wchip-idx">
-        [${i}]
-      </div>
-    `;
-
+                w.style.opacity = '1';
+                w.innerHTML = `<div class="wchip-letter" id="wl${i}">${c}</div><div class="wchip-idx">[${i}]</div>`;
                 $('wordChips').appendChild(w);
-
-                setTimeout(() => {
-                    w.style.opacity = '1';
-                }, 100 * i);
             });
 
-            await sleep(800);
+            currentStep = -1;
+            updateButtons();
+            setStatus('Initializing...', 'var(--ag)');
+        }
 
-            /* encode */
+        function updateButtons() {
+            if (prevStepBtn) prevStepBtn.disabled = currentStep < 0;
+            if (nextStepBtn) nextStepBtn.disabled = currentStep > WORD.length;
+        }
 
-            const encoded = [];
+        function renderStep(step) {
+            if (step < -1 || step > WORD.length + 1) return;
+            currentStep = step;
+            updateButtons();
 
+            // Reset visual states
+            for (let i = 0; i < 26; i++) {
+                const cell = $('c' + i);
+                cell.className = 'acell c-empty';
+                cell.textContent = '';
+                $('p' + i).classList.remove('plain-active');
+            }
+            for (let i = 0; i < KEY.length; i++) {
+                const k = $('keyChips').children[i];
+                if (k) k.classList.remove('slam');
+            }
             for (let i = 0; i < WORD.length; i++) {
+                const w = $('w' + i);
+                if (w) {
+                    w.classList.remove('active', 'encoded');
+                    $('wl' + i).textContent = WORD[i];
+                }
+            }
+            $('outWord').innerHTML = '';
+            $('outputSec').classList.remove('vis');
+            $('infoPanel').classList.remove('vis');
 
-                const ch = WORD[i];
-
-                const idx = ALPHA.indexOf(ch);
-
-                const enc = cipherAlpha[idx];
-
-                encoded.push(enc);
-
-                $('p' + idx).classList.add('plain-active');
-                $('c' + idx).classList.add('c-active');
-
-                $('w' + i).classList.add('active');
-
-                setStatus(
-                    `${ch} → ${enc}`,
-                    'var(--ap)'
-                );
-
-                await sleep(700);
-
-                $('wl' + i).textContent = enc;
-
-                $('w' + i).classList.remove('active');
-                $('w' + i).classList.add('encoded');
-
-                $('p' + idx).classList.remove('plain-active');
-                $('c' + idx).classList.remove('c-active');
-
-                const out = document.createElement('div');
-
-                out.className = 'out-letter';
-                out.textContent = enc;
-
-                $('outWord').appendChild(out);
-
-                $('outputSec').classList.add('vis');
-
-                await sleep(100);
-
-                out.classList.add('show');
-
-                await sleep(300);
-                if (!(await waitForPlaybackStep(activeToken))) return;
+            if (currentStep === -1) {
+                setStatus('Initializing...', 'var(--ag)');
+                return;
             }
 
-            const finalWord = encoded.join('');
+            // Step 0: Build cipher alphabet
+            if (currentStep >= 0) {
+                for (let i = 0; i < KEY.length; i++) {
+                    const k = $('keyChips').children[i];
+                    if (k) k.classList.add('slam');
+                }
+                for (let i = 0; i < 26; i++) {
+                    const cell = $('c' + i);
+                    cell.textContent = cipherAlpha[i];
+                    cell.className = i < KEY.length ? 'acell c-key' : 'acell c-fill';
+                }
+                setStatus('Cipher alphabet built.', 'var(--orange)');
+            }
 
-            setStatus(
-                `Encoded → ${finalWord}`,
-                'var(--ag)'
-            );
+            // Steps 1 to WORD.length: Encode letters
+            for (let i = 0; i < currentStep && i < WORD.length; i++) {
+                const ch = WORD[i];
+                const idx = ALPHA.indexOf(ch);
+                const enc = cipherAlpha[idx];
+                
+                const w = $('w' + i);
+                w.classList.add('encoded');
+                $('wl' + i).textContent = enc;
+                
+                const out = document.createElement('div');
+                out.className = 'out-letter show';
+                out.textContent = enc;
+                $('outWord').appendChild(out);
+                
+                $('outputSec').classList.add('vis');
+                
+                if (i === currentStep - 1) {
+                    $('p' + idx).classList.add('plain-active');
+                    $('c' + idx).classList.add('c-active');
+                    w.classList.remove('encoded');
+                    w.classList.add('active');
+                    setStatus(`${ch} → ${enc}`, 'var(--ap)');
+                }
+            }
 
-            $('formulaBox').innerHTML = `
-  KEY: ${KEY}
-
-  Cipher Alphabet:
-  ${cipherAlpha.join(' ')}
-
-  Encoded Word:
-  CIPHER → ${finalWord}
-  `;
-
-            $('infoPanel').classList.add('vis');
-            startReplayCountdown();
+            // Step WORD.length + 1: Completion
+            if (currentStep === WORD.length + 1) {
+                const finalWord = encoded.join('');
+                setStatus(`Encoded → ${finalWord}`, 'var(--ag)');
+                
+                $('formulaBox').innerHTML = `
+                  KEY: ${KEY}<br><br>
+                  Cipher Alphabet:<br>${cipherAlpha.join(' ')}<br><br>
+                  Encoded Word:<br>CIPHER → ${finalWord}
+                `;
+                $('infoPanel').classList.add('vis');
+            }
         }
 
-        const replayBtn = document.getElementById('replayBtn');
-        if (replayBtn) replayBtn.addEventListener('click', kickDemo);
+        if (prevStepBtn) prevStepBtn.addEventListener('click', () => renderStep(currentStep - 1));
+        if (nextStepBtn) nextStepBtn.addEventListener('click', () => renderStep(currentStep + 1));
+        if (replayBtn) replayBtn.addEventListener('click', resetDemo);
+        if (btnNext) btnNext.addEventListener('click', () => window.location.href = "level3.1.html");
 
-        const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-        if (pauseResumeBtn) {
-            pauseResumeBtn.addEventListener('click', () => {
-                isPaused = !isPaused;
-                pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
-            });
-        }
-
-        const speedUp = document.getElementById('speedUp');
-        const speedDown = document.getElementById('speedDown');
-        const sDisplay = document.getElementById('speedDisplay');
-
-        if (speedUp && speedDown && sDisplay) {
-            speedUp.addEventListener("click", () => {
-                if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-                sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-            });
-            speedDown.addEventListener("click", () => {
-                if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-                sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-            });
-        }
-
-        const nextBtn = document.getElementById('nextBtn');
-        if (nextBtn) {
-            nextBtn.addEventListener('click', () => {
-                window.location.href = "level3.1.html";
-            });
-        }
-
-        runDemo();
+        resetDemo();
 </script>
 
 </body>

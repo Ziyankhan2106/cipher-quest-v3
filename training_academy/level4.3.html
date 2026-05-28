@@ -186,7 +186,152 @@ body::after{
             transform-origin: top center;
         }
     }
-</style>
+
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
+    </style>
     <script src="global_controls.js"></script>
 </head>
 <body>
@@ -259,18 +404,16 @@ body::after{
     </div>
   </section>
 
-  <footer class="footer">
-    <div style="display:flex; align-items:center; gap:12px;">
-        <button class="btn" id="pauseResumeBtn">Pause</button>
-        <button class="btn" id="replayBtn">↩ Restart</button>
+  
+    <div class="footer">
+        <div style="display:flex;gap:12px">
+            <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+            <button class="foot-btn step-btn" id="nextStep" disabled>Next Step</button>
+            <button class="foot-btn" id="replayBtn">Restart</button>
+        </div>
+        <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
     </div>
-    <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-        <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-        <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-    </div>
-    <button class="btn" style="color:var(--green); border-color:var(--green);" id="nextBtn">Next Cipher →</button>
-  </footer>
+
 </main>
 
 <script>
@@ -338,187 +481,204 @@ function clearCalc() {
   });
 }
 
-function reset() {
-  token.stop = true;
-  token = { stop: false };
-  clearInterval(loopTimer);
-  renderBlocks($("sourceRow"), SOURCE, "");
-  renderBlocks($("keyRow"), [KEY, KEY], "key ", "key");
-  renderBlocks($("middleRow"), ["----", "----"], "mid ", "mid");
-  renderBlocks($("outputRow"), ["----", "----"], "out ", "out");
-  $("status").textContent = "Start with CIPHER, pad to blocks of 4: CIPH_ERXX";
-  $("midText").textContent = "----_----";
-  $("outText").textContent = "----_----";
-  $("flipBefore").textContent = "----";
-  $("flipAfter").textContent = "----";
-  $("flipArrow").classList.remove("spin");
-  clearCalc();
-  if ($("timer")) $("timer").textContent = "Looping demo";
-  setActive("b1");
-}
+
 
 function getDigitCards(rowId) {
   return [...$(rowId).querySelectorAll(".digit-card")];
 }
 
-function showPartial(rowId, blocks, subPrefix, extra) {
+function showPartial(rowId, blocks, subPrefix, extra = "") {
   renderBlocks($(rowId), blocks, subPrefix, extra);
 }
 
-async function additiveStep(runToken) {
-  const srcCards = getDigitCards("sourceRow");
-  const keyCards = getDigitCards("keyRow");
-  let partial = ["----", "----"];
-  setActive("b2");
-
-  for (let blockIndex = 0; blockIndex < SOURCE.length; blockIndex += 1) {
-    for (let i = 0; i < 4; i += 1) {
-      if (runToken.stop) return;
-      const flat = blockIndex * 4 + i;
-      const ch = SOURCE[blockIndex][i];
-      const d = idx(ch);
-      const k = Number(KEY[i]);
-      const raw = d + k;
-      const resultIndex = raw % 26;
-      const result = ABC[resultIndex];
-
-      srcCards.forEach((card) => card.classList.remove("hot", "dim"));
-      keyCards.forEach((card) => card.classList.remove("hot", "dim"));
-      srcCards.forEach((card, index) => { if (index !== flat) card.classList.add("dim"); });
-      keyCards.forEach((card, index) => { if (index !== flat) card.classList.add("dim"); });
-      srcCards[flat].classList.add("hot");
-      keyCards[flat].classList.add("hot");
-
-      $("status").textContent = `Add ${ch}=${d} with key ${k}: ${d}+${k}=${raw}, so ${resultIndex} becomes ${result}`;
-      $("calcDigit").querySelector(".calc-value").textContent = `${ch}=${d}`;
-      $("calcKey").querySelector(".calc-value").textContent = k;
-      $("calcResult").querySelector(".calc-value").textContent = `${resultIndex}=${result}`;
-      ["calcDigit", "calcKey", "calcResult"].forEach((id) => $(id).classList.add("hot"));
-      setActive("b3");
-
-      partial[blockIndex] = partial[blockIndex].substring(0, i) + result + partial[blockIndex].substring(i + 1);
-      showPartial("middleRow", partial, "mid ", "mid");
-      $("midText").textContent = `${partial[0]}_${partial[1]}`;
-      await wait(750);
-    }
-  }
-
-  srcCards.forEach((card) => card.classList.remove("hot", "dim"));
-  keyCards.forEach((card) => card.classList.remove("hot", "dim"));
-  clearCalc();
-}
-
-async function flipStep(runToken) {
-  let partial = ["----", "----"];
-  setActive("b4");
-
-  for (let blockIndex = 0; blockIndex < MIDDLE.length; blockIndex += 1) {
-    if (runToken.stop) return;
-    const middleBlocks = [...$("middleRow").querySelectorAll(".block")];
-    const outputBlocks = [...$("outputRow").querySelectorAll(".block")];
-    middleBlocks.forEach((block) => block.classList.remove("active"));
-    outputBlocks.forEach((block) => block.classList.remove("active", "flip"));
-
-    const before = MIDDLE[blockIndex];
-    const after = OUTPUT[blockIndex];
-    $("status").textContent = `Flip block ${before}: read it backwards as ${after}`;
-    $("flipBefore").textContent = before;
-    $("flipAfter").textContent = after;
+  function reset() {
+    renderBlocks($("sourceRow"), SOURCE, "");
+    renderBlocks($("keyRow"), [KEY, KEY], "key ", "key");
+    renderBlocks($("middleRow"), ["----", "----"], "mid ", "mid");
+    renderBlocks($("outputRow"), ["----", "----"], "out ", "out");
+    $("status").textContent = "Start with CIPHER, pad to blocks of 4: CIPH_ERXX";
+    $("midText").textContent = "----_----";
+    $("outText").textContent = "----_----";
+    $("flipBefore").textContent = "----";
+    $("flipAfter").textContent = "----";
     $("flipArrow").classList.remove("spin");
-    void $("flipArrow").offsetWidth;
-    $("flipArrow").classList.add("spin");
-    middleBlocks[blockIndex].classList.add("active");
-    outputBlocks[blockIndex].classList.add("active", "flip");
-    await wait(750);
-
-    partial[blockIndex] = after;
-    showPartial("outputRow", partial, "out ", "out filled");
-    $("outText").textContent = `${partial[0]}_${partial[1]}`;
-    await wait(500);
-  }
-}
-
-async function run() {
-  if (running) return;
-  running = true;
-  reset();
-  const runToken = token;
-
-  await wait(300);
-  $("status").textContent = "First machine: add key pattern 1,3,5,7 to every 4-letter block";
-  await wait(750);
-  await additiveStep(runToken);
-  if (runToken.stop) { running = false; return; }
-
-  $("status").textContent = `Additive output is ${MIDDLE.join("_")}`;
-  $("midText").textContent = MIDDLE.join("_");
-  await wait(750);
-  if (runToken.stop) { running = false; return; }
-
-  $("status").textContent = "Second machine: flip every 4-letter block";
-  await wait(750);
-  await flipStep(runToken);
-  if (runToken.stop) { running = false; return; }
-
-  $("status").textContent = `Complete: ${MIDDLE.join("_")} becomes ${OUTPUT.join("_")}`;
-  $("outText").textContent = OUTPUT.join("_");
-  startLoop(runToken);
-  running = false;
-}
-
-function startLoop(runToken) {
-  let left = 2;
-  if ($("timer")) $("timer").textContent = `Replay in ${left}s`;
-  loopTimer = setInterval(() => {
-    if (runToken.stop) {
-      clearInterval(loopTimer);
-      return;
-    }
-    left -= 1;
-    if ($("timer")) $("timer").textContent = left > 0 ? `Replay in ${left}s` : "Looping demo";
-    if (left <= 0) {
-      clearInterval(loopTimer);
-      run();
-    }
-  }, 1000 / speedMultiplier);
-}
-
-  const replayBtn = document.getElementById('replayBtn');
-  if (replayBtn) {
-    replayBtn.addEventListener("click", () => {
-      running = false;
-      run();
-    });
+    clearCalc();
+    setActive("b1");
   }
 
-  const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-  if (pauseResumeBtn) {
-      pauseResumeBtn.addEventListener('click', () => {
-          isPaused = !isPaused;
-          pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
-      });
+  function fastForward(upToStep) {
+      reset();
+      
+      let partialMiddle = ["----", "----"];
+      for (let i = 0; i <= upToStep && i < 8; i++) {
+          const blockIndex = Math.floor(i / 4);
+          const charIndex = i % 4;
+          const ch = SOURCE[blockIndex][charIndex];
+          const k = Number(KEY[charIndex]);
+          const resultIndex = (idx(ch) + k) % 26;
+          const result = ABC[resultIndex];
+          partialMiddle[blockIndex] = partialMiddle[blockIndex].substring(0, charIndex) + result + partialMiddle[blockIndex].substring(charIndex + 1);
+      }
+      
+      if (upToStep >= 0) {
+          showPartial("middleRow", partialMiddle, "mid ", "mid");
+          $("midText").textContent = `${partialMiddle[0]}_${partialMiddle[1]}`;
+      }
+
+      let partialOutput = ["----", "----"];
+      for (let i = 8; i <= upToStep && i < 10; i++) {
+          const blockIndex = i - 8;
+          partialOutput[blockIndex] = OUTPUT[blockIndex];
+      }
+
+      if (upToStep >= 8) {
+          showPartial("outputRow", partialOutput, "out ", "out filled");
+          $("outText").textContent = `${partialOutput[0]}_${partialOutput[1]}`;
+      }
   }
 
-  window.addEventListener("load", run);
+  let currentStep = -1;
+  let isAnimating = false;
+  
+  async function renderStep(step) {
+      if (isAnimating) return;
+      isAnimating = true;
 
-  const sDisplay = document.getElementById("speedDisplay");
-  if (document.getElementById("speedUp")) {
-    document.getElementById("speedUp").addEventListener("click", () => {
-      if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-    });
-    document.getElementById("speedDown").addEventListener("click", () => {
-      if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-    });
+      const prevBtn = $('prevStep');
+      const nextBtn = $('nextStep');
+
+      if (step === -1) {
+          reset();
+          if (prevBtn) prevBtn.disabled = true;
+          if (nextBtn) nextBtn.disabled = false;
+          isAnimating = false;
+          return;
+      }
+
+      if (step >= 0 && step <= 10) {
+          fastForward(step - 1);
+          
+          if (step >= 0 && step < 8) {
+              const srcCards = getDigitCards("sourceRow");
+              const keyCards = getDigitCards("keyRow");
+              let partialMiddle = ["----", "----"];
+              for (let i = 0; i < step; i++) {
+                  const bi = Math.floor(i / 4);
+                  const ci = i % 4;
+                  const result = ABC[(idx(SOURCE[bi][ci]) + Number(KEY[ci])) % 26];
+                  partialMiddle[bi] = partialMiddle[bi].substring(0, ci) + result + partialMiddle[bi].substring(ci + 1);
+              }
+              
+              setActive("b2");
+              const blockIndex = Math.floor(step / 4);
+              const i = step % 4;
+              const flat = step;
+              const ch = SOURCE[blockIndex][i];
+              const d = idx(ch);
+              const k = Number(KEY[i]);
+              const raw = d + k;
+              const resultIndex = raw % 26;
+              const result = ABC[resultIndex];
+
+              srcCards.forEach((card) => card.classList.remove("hot", "dim"));
+              keyCards.forEach((card) => card.classList.remove("hot", "dim"));
+              srcCards.forEach((card, index) => { if (index !== flat) card.classList.add("dim"); });
+              keyCards.forEach((card, index) => { if (index !== flat) card.classList.add("dim"); });
+              srcCards[flat].classList.add("hot");
+              keyCards[flat].classList.add("hot");
+
+              $("status").textContent = `Add ${ch}=${d} with key ${k}: ${d}+${k}=${raw}, so ${resultIndex} becomes ${result}`;
+              $("calcDigit").querySelector(".calc-value").textContent = `${ch}=${d}`;
+              $("calcKey").querySelector(".calc-value").textContent = k;
+              $("calcResult").querySelector(".calc-value").textContent = `${resultIndex}=${result}`;
+              ["calcDigit", "calcKey", "calcResult"].forEach((id) => $(id).classList.add("hot"));
+              setActive("b3");
+
+              partialMiddle[blockIndex] = partialMiddle[blockIndex].substring(0, i) + result + partialMiddle[blockIndex].substring(i + 1);
+              showPartial("middleRow", partialMiddle, "mid ", "mid");
+              $("midText").textContent = `${partialMiddle[0]}_${partialMiddle[1]}`;
+              await wait(750);
+          } else if (step === 8 || step === 9) {
+              const srcCards = getDigitCards("sourceRow");
+              const keyCards = getDigitCards("keyRow");
+              srcCards.forEach((card) => card.classList.remove("hot", "dim"));
+              keyCards.forEach((card) => card.classList.remove("hot", "dim"));
+              clearCalc();
+
+              let partialOutput = ["----", "----"];
+              if (step === 9) partialOutput[0] = OUTPUT[0];
+              
+              setActive("b4");
+              const blockIndex = step - 8;
+              const middleBlocks = [...$("middleRow").querySelectorAll(".block")];
+              const outputBlocks = [...$("outputRow").querySelectorAll(".block")];
+              middleBlocks.forEach((block) => block.classList.remove("active"));
+              outputBlocks.forEach((block) => block.classList.remove("active", "flip"));
+
+              const before = MIDDLE[blockIndex];
+              const after = OUTPUT[blockIndex];
+              $("status").textContent = `Flip block ${before}: read it backwards as ${after}`;
+              $("flipBefore").textContent = before;
+              $("flipAfter").textContent = after;
+              $("flipArrow").classList.remove("spin");
+              void $("flipArrow").offsetWidth;
+              $("flipArrow").classList.add("spin");
+              middleBlocks[blockIndex].classList.add("active");
+              outputBlocks[blockIndex].classList.add("active", "flip");
+              await wait(750);
+
+              partialOutput[blockIndex] = after;
+              showPartial("outputRow", partialOutput, "out ", "out filled");
+              $("outText").textContent = `${partialOutput[0]}_${partialOutput[1]}`;
+              await wait(500);
+          } else if (step === 10) {
+              const srcCards = getDigitCards("sourceRow");
+              const keyCards = getDigitCards("keyRow");
+              srcCards.forEach((card) => card.classList.remove("hot", "dim"));
+              keyCards.forEach((card) => card.classList.remove("hot", "dim"));
+              clearCalc();
+              $("status").textContent = `Complete: ${MIDDLE.join("_")} becomes ${OUTPUT.join("_")}`;
+              $("outText").textContent = OUTPUT.join("_");
+          }
+      }
+
+      if (prevBtn) prevBtn.disabled = step < 0;
+      if (nextBtn) nextBtn.disabled = step >= 10;
+      isAnimating = false;
   }
 
-  const nextBtn = document.getElementById("nextBtn");
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
+  const replayBtn = $('replayBtn');
+  if (replayBtn) replayBtn.addEventListener('click', () => {
+      currentStep = -1;
+      renderStep(currentStep);
+  });
+
+  const prevStepBtn = $('prevStep');
+  if (prevStepBtn) prevStepBtn.addEventListener('click', () => {
+      if (currentStep > -1) {
+          currentStep--;
+          renderStep(currentStep);
+      }
+  });
+
+  const nextStepBtn = $('nextStep');
+  if (nextStepBtn) nextStepBtn.addEventListener('click', () => {
+      if (currentStep <= 10) {
+          currentStep++;
+          renderStep(currentStep);
+      }
+  });
+
+  const nextBtn = $('btn-next');
+  if (nextBtn) nextBtn.addEventListener('click', () => {
       window.location.href = "level4.4.html";
-    });
-  }
+  });
+
+  window.addEventListener("load", () => {
+      currentStep = -1;
+      renderStep(currentStep);
+  });
+
 </script>
 </body>
 </html>

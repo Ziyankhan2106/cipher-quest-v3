@@ -31,7 +31,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
 .kbtn:hover{background:rgba(255,159,67,0.12);}
 .knum{font-family:"SF Mono","Fira Code",monospace;font-size:18px;font-weight:700;min-width:42px;text-align:center;color:var(--orange);}
 .ctrl-hint{font-size:10px;letter-spacing:.14em;color:rgba(255,159,67,.45);margin-left:4px;}
-.stage{padding:20px 20px 18px;display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;min-height:570px;}
+.stage{padding:20px 20px 18px;display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;min-height:auto;}
 .stage::after{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(255,159,67,0.006) 3px,rgba(255,159,67,0.006) 4px);}
 .status{font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:var(--ap);min-height:18px;align-self:flex-start;position:relative;z-index:2;transition:color .3s;}
 .blink{animation:blink .9s step-end infinite;}
@@ -150,7 +150,152 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
 .rtag{font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:var(--mu);display:flex;align-items:center;gap:6px;}
 .rtick{width:5px;height:5px;border-radius:50%;background:rgba(148,163,184,.3);animation:rtick 1s step-end infinite;}
 @keyframes rtick{0%,100%{opacity:1}50%{opacity:.2}}
-</style>
+
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
+    </style>
     <script src="global_controls.js"></script>
 </head>
 <body>
@@ -171,7 +316,12 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
   <div class="knum" id="kv">+7</div>
   <button class="kbtn" id="ku">+</button>
   <span class="ctrl-hint">try keys &gt; 13 to see the portal!</span>
-  <button class="go-btn" id="goBtn">Start</button>
+  
+        <div style="margin-left:auto; display:flex; align-items:center; gap:12px;">
+          <span class="ctrl-lbl" style="color:var(--cyan); text-transform:none; font-size:11px;">Select key and click start to proceed →</span>
+          <button class="go-btn step-btn" id="goBtn" style="padding:7px 22px;">Start</button>
+        </div>
+
 </div>
 <div class="stage">
   <div class="status"><span id="st">Initializing…</span><span class="blink"> ▌</span></div>
@@ -233,17 +383,17 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
     <div class="info-grid" id="ig"></div>
   </div>
 </div>
-<div class="footer">
-    <div style="display:flex; align-items:center; gap:12px;">
-        <button class="foot-btn" id="pauseResumeBtn">Pause</button>
-        <button class="foot-btn" id="replayBtn">↩ Restart</button>
+
+    <div class="footer">
+        <div style="display:flex;gap:12px">
+            <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+            <button class="foot-btn step-btn" id="nextStep" disabled>Next Step</button>
+            <button class="foot-btn" id="replayBtn">Restart</button>
+        </div>
+        <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
     </div>
-    <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-        <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-        <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-    </div>
-    <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
+
+    
 </div>
 </div>
 
@@ -331,231 +481,252 @@ async function flyP(sEl,dEl,txt,col,glow){
 }
 
 /* ── countdown ── */
-function startC(){cdn=2;if($('rcd'))$('rcd').textContent=`Replaying in ${cdn}s…`;rTimer=setInterval(()=>{cdn--;if(cdn>0){if($('rcd'))$('rcd').textContent=`Replaying in ${cdn}s…`;}else{clearInterval(rTimer);if($('rcd'))$('rcd').textContent='Replaying…';kick();}},1000/speedMultiplier);}
-function cancelC(){if(rTimer){clearInterval(rTimer);rTimer=null;}if($('rcd'))$('rcd').textContent='';}
 
-/* ══ MAIN ══ */
-async function run(){
-  if(running){ct.c=true;await new Promise(r => setTimeout(r, 130));}
-  ct={c:false};running=true;
-  isPaused=false;
-  const pb = $('pauseResumeBtn'); if(pb) pb.textContent = 'Pause';
-  const gb = $('goBtn'); if(gb) gb.disabled = true;
-  const n=WD.length;
-  const res=WD.split('').map((ch,i)=>{const idx=AL.indexOf(ch),raw=idx+key,dst=raw%26;return{ch,idx,raw,dst,enc:AL[dst],wraps:raw>=26,i};});
-  const enc=res.map(r=>r.enc).join(''),wc=res.filter(r=>r.wraps).length;
+let currentStep = -1;
+let isAnimating = false;
+let hasStarted = false;
+let res = [];
+let enc = '';
+let wc = 0;
+let n = 0;
 
-  /* reset */
-  vis($('ip'),false);vis($('os'),false);
-  $('ig').innerHTML='';$('wr').innerHTML='';$('oc').innerHTML='';
-  $('fly').style.opacity='0';resetMath();
-  $('nb').style.opacity='0';$('nbr').style.opacity='0';
-  $('pe').classList.remove('lit');$('px').classList.remove('lit');$('plbl').classList.remove('lit');
-  $('nls').classList.remove('vis');
-
-  /* build chips */
-  WD.split('').forEach((ch,i)=>{
-    const c=document.createElement('div');c.className='wchip';c.id='wc'+i;
-    c.innerHTML=`<span class="wchip-letter" id="wl${i}">${ch}</span><span class="wchip-idx">[${i}]</span>`;
-    $('wr').appendChild(c);
-  });
-  res.forEach((r,i)=>{
-    const c=document.createElement('div');c.className='ochip';c.id='ochi'+i;
-    c.innerHTML=`<span id="ocv${i}"> </span><span class="oidx">[${i}]</span>`;
-    $('oc').appendChild(c);
-  });
-
-  /* safe zone width — 0-25 = 25/30 of track */
-  $('zs').style.width=(25/MAXPOS*100)+'%';
-  /* portal entry at position 25 */
-  $('pe').style.left=(25/MAXPOS*100)+'%';
-  $('plbl').style.left=(25/MAXPOS*100)+'%';
-
-  upK();
-  $('st').textContent='CIPHER loading onto the number line…';document.querySelector('.status').style.color='var(--ap)';
-  await slp(500);if(ct.c){running=false;return;}
-
-  /* stagger chips in */
-  for(let i=0;i<n;i++){
-    if(ct.c){running=false;return;}
-    const wc=$('wc'+i);wc.style.opacity='0';wc.style.transform='translateY(12px)';wc.style.transition='opacity .4s,transform .4s';
-    await slp(20);wc.style.opacity='1';wc.style.transform='translateY(0)';await slp(120);
-  }
-  await slp(400);if(ct.c){running=false;return;}
-  $('nls').classList.add('vis');buildTicks(null,null,false);
-  await slp(400);if(ct.c){running=false;return;}
-
-  /* ══ encode each letter ══ */
-  for(let i=0;i<n;i++){
-    if(ct.c){running=false;return;}
-    const r=res[i];
-    document.querySelectorAll('.wchip').forEach(c=>c.classList.remove('active'));
-    $('wc'+i)?.classList.add('active');
-    resetMath();$('pe').classList.remove('lit');$('px').classList.remove('lit');$('plbl').classList.remove('lit');
-    buildTicks(r.idx,r.dst,r.wraps);
-    $('st').textContent=`"${r.ch}" · ${r.idx} + ${key} = ${r.raw}${r.wraps?' → portal! → '+r.dst:''} → "${r.enc}"`;
-    document.querySelector('.status').style.color=r.wraps?'var(--orange)':'var(--ap)';
-
-    /* math steps */
-    actMath(1);$('mv1').textContent=`"${r.ch}"`;
-    await slp(340);if(ct.c){running=false;return;}
-
-    actMath(2);$('mv2').textContent=r.idx;
-    /* ball appears at source */
-    const ball=$('nb'),raw=$('nbr');
-    ball.style.transition='none';ball.style.left=pct(r.idx)+'%';
-    ball.className='nball';ball.textContent=r.ch;ball.style.opacity='1';
-    raw.style.left=pct(r.idx)+'%';raw.textContent='pos '+r.idx;raw.classList.add('vis');
-    await slp(420);if(ct.c){running=false;return;}
-
-    actMath(3);$('mv3').textContent='+'+key;
-    await slp(340);if(ct.c){running=false;return;}
-
-    actMath(4);$('mv4').textContent=r.raw;
-    $('msmod').style.opacity=r.wraps?'1':'.2';
-    raw.textContent=r.raw+' (raw)';raw.style.left=pct(r.raw)+'%';
-
-    if(r.wraps){
-      /* slide ball right into overflow zone */
-      const sMs=420+key*20;
-      ball.style.transition=`left ${sMs}ms cubic-bezier(0.4,0,0.2,1)`;
-      ball.style.left=pct(r.raw)+'%';
-      raw.style.transition=`left ${sMs}ms cubic-bezier(0.4,0,0.2,1)`;
-      raw.style.left=pct(r.raw)+'%';
-      await slp(sMs+80);if(ct.c){running=false;return;}
-
-      /* portal activates */
-      actMath(5);$('m5').style.display='flex';
-      $('mv5').textContent=r.raw+' ≥ 26 → portal!';
-      $('pe').classList.add('lit');$('plbl').classList.add('lit');
-      ball.classList.add('wrap-col');ball.textContent='?';
-      vis($('wp'),true);$('wpt').textContent=r.raw+' − 26 = '+r.dst+' · teleporting to "'+r.enc+'"';
-      await slp(650);if(ct.c){running=false;return;}
-
-      /* teleport — snap to left */
-      $('px').classList.add('lit');
-      ball.style.transition='none';raw.style.transition='none';
-      ball.style.left='0%';raw.style.left='0%';
-      ball.style.opacity='0';raw.style.opacity='0';
-      await slp(120);if(ct.c){running=false;return;}
-      ball.style.opacity='1';ball.textContent=r.enc;
-
-      /* slide to destination */
-      const sMs2=300+r.dst*20;
-      ball.style.transition=`left ${sMs2}ms cubic-bezier(0.25,0.1,0.25,1)`;
-      ball.style.left=pct(r.dst)+'%';
-      raw.textContent=r.enc+' ('+r.dst+')';raw.style.left=pct(r.dst)+'%';raw.style.opacity='1';
-      raw.style.transition=`left ${sMs2}ms cubic-bezier(0.25,0.1,0.25,1)`;
-      await slp(sMs2+80);if(ct.c){running=false;return;}
-      $('pe').classList.remove('lit');$('px').classList.remove('lit');$('plbl').classList.remove('lit');
-      ball.classList.remove('wrap-col');ball.classList.add('land-wrap');
-    } else {
-      /* simple slide */
-      const sMs=500+key*28;
-      ball.style.transition=`left ${sMs}ms cubic-bezier(0.4,0,0.2,1)`;
-      ball.style.left=pct(r.dst)+'%';
-      raw.style.transition=`left ${sMs}ms cubic-bezier(0.4,0,0.2,1)`;
-      raw.style.left=pct(r.dst)+'%';raw.textContent=r.raw+' → '+r.enc;
-      await slp(sMs+80);if(ct.c){running=false;return;}
-      ball.classList.add('land-col');
-    }
-    await slp(260);if(ct.c){running=false;return;}
-
-    actMath(6);$('m6').classList.toggle('wr',r.wraps);$('mv6').textContent=`"${r.enc}"`;
-    for(let j=1;j<6;j++)$('m'+j)?.classList.add('done');
-    await slp(340);if(ct.c){running=false;return;}
-
-    /* fly to output */
-    const ochi=$('ochi'+i);
-    await flyP(ball,ochi,r.enc,r.wraps?'#ff9f43':'#b97fff',r.wraps?'rgba(255,159,67,0.8)':'rgba(185,127,255,0.7)');
-    if(ct.c){running=false;return;}
-
-    const ocv=$('ocv'+i);if(ochi&&ocv){ocv.textContent=r.enc;ochi.classList.add('ln',r.wraps?'dw':'nw');}
-    const wl=$('wl'+i);if(wl)wl.textContent=r.enc;
-    $('wc'+i)?.classList.remove('active');$('wc'+i)?.classList.add(r.wraps?'enc-w':'enc-n');
-    ball.style.opacity='0';raw.style.opacity='0';
-    await slp(320);
-  }
-
-  /* done */
-  $('fly').style.opacity='0';
-  $('st').textContent=`Done · CIPHER → ${enc} · ${wc} portal wrap${wc!==1?'s':''}`;
-  document.querySelector('.status').style.color=wc>0?'var(--orange)':'var(--ag)';
-  res.forEach((r,i)=>{const o=$('ochi'+i);if(o)o.style.boxShadow=r.wraps?'0 0 24px rgba(255,159,67,.75)':'0 0 18px rgba(185,127,255,.55)';});
-  await slp(380);
-  res.forEach((r,i)=>{const o=$('ochi'+i);if(o)o.style.boxShadow='0 0 8px rgba(148,163,184,.1)';});
-  vis($('os'),true);await slp(300);if(ct.c){running=false;return;}
-
-  const wl=res.filter(r=>r.wraps).map(r=>`${r.ch}(${r.idx}+${key}=${r.raw}→${r.dst})`).join(', ')||'none — try a bigger key!';
-  $('ig').innerHTML=`
-    <div class="irow"><div class="irow-lbl">Input</div><div class="irow-val fm">CIPHER</div></div>
-    <div class="irow"><div class="irow-lbl">Output</div><div class="irow-val fk">${enc}</div></div>
-    <div class="irow"><div class="irow-lbl">Key</div><div class="irow-val fk">+${key}</div></div>
-    <div class="irow"><div class="irow-lbl">Portal wraps</div><div class="irow-val fw" style="font-size:${wc>0?'11':'13'}px">${wl}</div></div>
-    <div class="formula">
-<span class="fm">Formula :</span>  encoded = ( index(char) + key ) <span class="fk">mod 26</span>
-
-<span class="fm">Clock analogy — same idea, different loop size:</span>
-  14:00 + 12 hrs = <span class="fc">02:00</span>  (not 26:00) → clocks use <span class="fk">mod 24</span>
-  The alphabet has 26 letters, so it uses  <span class="fk">mod 26</span>  instead.
-
-<span class="fm">Example :</span>
-  "${res[0].ch}" = ${res[0].idx}  →  (${res[0].idx} + ${key}) = ${res[0].raw}  ${res[0].wraps?'≥ 26 · portal → ':'→ '}<span class="${res[0].wraps?'fk':'fp'}">${res[0].dst} = "${res[0].enc}"</span>
-
-<span class="fg">Why mod?</span>  <span class="fm">Without it, adding a big key could push past Z.
-Mod 26 keeps every result inside A–Z, always.
-The portal is just what mod looks like in action.</span></div>`;
-  vis($('ip'),true);
-  await slp(800);running=false;startC();
-  const gb = $('goBtn'); if(gb) gb.disabled = false;
-}
-
-function kick(){cancelC();run();}
-        
-const replayBtn = document.getElementById('replayBtn');
-if (replayBtn) replayBtn.addEventListener('click', kick);
-
-const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-if (pauseResumeBtn) {
-    pauseResumeBtn.addEventListener('click', () => {
-        if (!running) return;
-        isPaused = !isPaused;
-        pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+function resetDemo() {
+    n = WD.length;
+    res = WD.split('').map((ch, i) => {
+        const idx = AL.indexOf(ch), raw = idx + key, dst = raw % 26;
+        return {ch, idx, raw, dst, enc: AL[dst], wraps: raw >= 26, i};
     });
+    enc = res.map(r => r.enc).join('');
+    wc = res.filter(r => r.wraps).length;
+
+    vis($('ip'), false);
+    vis($('os'), true);
+    $('ig').innerHTML = '';
+    $('wr').innerHTML = '';
+    $('oc').innerHTML = '';
+    $('fly').style.opacity = '0';
+    resetMath();
+    $('nb').style.opacity = '0';
+    $('nbr').style.opacity = '0';
+    $('pe').classList.remove('lit');
+    $('px').classList.remove('lit');
+    $('plbl').classList.remove('lit');
+    $('nls').classList.remove('vis');
+
+    // Build chips
+    WD.split('').forEach((ch, i) => {
+        const c = document.createElement('div');
+        c.className = 'wchip';
+        c.id = 'wc' + i;
+        c.innerHTML = `<span class="wchip-letter" id="wl${i}">${ch}</span><span class="wchip-idx">[${i}]</span>`;
+        $('wr').appendChild(c);
+    });
+    res.forEach((r, i) => {
+        const c = document.createElement('div');
+        c.className = 'ochip';
+        c.id = 'ochi' + i;
+        c.innerHTML = `<span id="ocv${i}"> </span><span class="oidx">[${i}]</span>`;
+        $('oc').appendChild(c);
+    });
+
+    $('zs').style.width = (25 / MAXPOS * 100) + '%';
+    $('pe').style.left = (25 / MAXPOS * 100) + '%';
+    $('plbl').style.left = (25 / MAXPOS * 100) + '%';
+
+    upK();
 }
 
-const goBtn = document.getElementById('goBtn');
+async function renderStep(step) {
+    if (isAnimating) return;
+    isAnimating = true;
+    const prevBtn = $('prevStep');
+    const nextBtn = $('nextStep');
+
+    if (step === -1) {
+        $('st').textContent = 'Ready: Set your key and press Start';
+        document.querySelector('.status').style.color = 'var(--ap)';
+        if (prevBtn) prevBtn.disabled = true;
+        if (nextBtn) nextBtn.disabled = true;
+        isAnimating = false;
+        return;
+    }
+
+    $('nls').classList.add('vis');
+
+    if (step >= 0 && step < n) {
+        const r = res[step];
+        document.querySelectorAll('.wchip').forEach(c => c.classList.remove('active'));
+        $('wc' + step)?.classList.add('active');
+        resetMath();
+        $('pe').classList.remove('lit');
+        $('px').classList.remove('lit');
+        $('plbl').classList.remove('lit');
+        buildTicks(r.idx, r.dst, r.wraps);
+        $('st').textContent = `"${r.ch}" → ${r.idx} + ${key} = ${r.raw}${r.wraps ? ' → portal! → ' + r.dst : ''} → "${r.enc}"`;
+        document.querySelector('.status').style.color = r.wraps ? 'var(--orange)' : 'var(--ap)';
+
+        actMath(1); $('mv1').textContent = `"${r.ch}"`;
+        await slp(340);
+
+        actMath(2); $('mv2').textContent = r.idx;
+        const ball = $('nb'), raw = $('nbr');
+        ball.style.transition = 'none'; ball.style.left = pct(r.idx) + '%';
+        ball.className = 'nball'; ball.textContent = r.ch; ball.style.opacity = '1';
+        raw.style.left = pct(r.idx) + '%'; raw.textContent = 'pos ' + r.idx; raw.classList.add('vis');
+        await slp(420);
+
+        actMath(3); $('mv3').textContent = '+' + key;
+        await slp(340);
+
+        actMath(4); $('mv4').textContent = r.raw;
+        $('msmod').style.opacity = r.wraps ? '1' : '.2';
+        raw.textContent = r.raw + ' (raw)'; raw.style.left = pct(r.raw) + '%';
+
+        if (r.wraps) {
+            const sMs = 420 + key * 20;
+            ball.style.transition = `left ${sMs}ms cubic-bezier(0.4,0,0.2,1)`;
+            ball.style.left = pct(r.raw) + '%';
+            raw.style.transition = `left ${sMs}ms cubic-bezier(0.4,0,0.2,1)`;
+            raw.style.left = pct(r.raw) + '%';
+            await slp(sMs + 80);
+
+            actMath(5); $('m5').style.display = 'flex';
+            $('mv5').textContent = r.raw + ' % 26 → portal!';
+            $('pe').classList.add('lit'); $('plbl').classList.add('lit');
+            ball.classList.add('wrap-col'); ball.textContent = '?';
+            vis($('wp'), true); $('wpt').textContent = r.raw + ' % 26 = ' + r.dst + ' → teleporting to "' + r.enc + '"';
+            await slp(650);
+
+            $('px').classList.add('lit');
+            ball.style.transition = 'none'; raw.style.transition = 'none';
+            ball.style.left = '0%'; raw.style.left = '0%';
+            ball.style.opacity = '0'; raw.style.opacity = '0';
+            await slp(120);
+            ball.style.opacity = '1'; ball.textContent = r.enc;
+
+            const sMs2 = 300 + r.dst * 20;
+            ball.style.transition = `left ${sMs2}ms cubic-bezier(0.25,0.1,0.25,1)`;
+            ball.style.left = pct(r.dst) + '%';
+            raw.textContent = r.enc + ' (' + r.dst + ')'; raw.style.left = pct(r.dst) + '%'; raw.style.opacity = '1';
+            raw.style.transition = `left ${sMs2}ms cubic-bezier(0.25,0.1,0.25,1)`;
+            await slp(sMs2 + 80);
+            $('pe').classList.remove('lit'); $('px').classList.remove('lit'); $('plbl').classList.remove('lit');
+            ball.classList.remove('wrap-col'); ball.classList.add('land-wrap');
+        } else {
+            const sMs = 500 + key * 28;
+            ball.style.transition = `left ${sMs}ms cubic-bezier(0.4,0,0.2,1)`;
+            ball.style.left = pct(r.dst) + '%';
+            raw.style.transition = `left ${sMs}ms cubic-bezier(0.4,0,0.2,1)`;
+            raw.style.left = pct(r.dst) + '%'; raw.textContent = r.raw + ' → ' + r.enc;
+            await slp(sMs + 80);
+            ball.classList.add('land-col');
+        }
+        await slp(260);
+
+        actMath(6); $('m6').classList.toggle('wr', r.wraps); $('mv6').textContent = `"${r.enc}"`;
+        for (let j = 1; j < 6; j++) $('m' + j)?.classList.add('done');
+        await slp(340);
+
+        const ochi = $('ochi' + step);
+        await flyP(ball, ochi, r.enc, r.wraps ? '#ff9f43' : '#b97fff', r.wraps ? 'rgba(255,159,67,0.8)' : 'rgba(185,127,255,0.7)');
+
+        const ocv = $('ocv' + step); if (ochi && ocv) { ocv.textContent = r.enc; ochi.classList.add('ln', r.wraps ? 'dw' : 'nw'); }
+        const wl = $('wl' + step); if (wl) wl.textContent = r.enc;
+        $('wc' + step)?.classList.remove('active'); $('wc' + step)?.classList.add(r.wraps ? 'enc-w' : 'enc-n');
+        ball.style.opacity = '0'; raw.style.opacity = '0';
+    }
+
+    if (step === n) {
+        $('fly').style.opacity = '0';
+        $('st').textContent = `Done → CIPHER → ${enc} → ${wc} portal wrap${wc !== 1 ? 's' : ''}`;
+        document.querySelector('.status').style.color = wc > 0 ? 'var(--orange)' : 'var(--ag)';
+        res.forEach((r, i) => { const o = $('ochi' + i); if (o) o.style.boxShadow = r.wraps ? '0 0 24px rgba(255,159,67,.75)' : '0 0 18px rgba(185,127,255,.55)'; });
+        await slp(380);
+        res.forEach((r, i) => { const o = $('ochi' + i); if (o) o.style.boxShadow = '0 0 8px rgba(148,163,184,.1)'; });
+        vis($('os'), true);
+
+        const wl = res.filter(r => r.wraps).map(r => `${r.ch}(${r.idx}+${key}=${r.raw}→${r.dst})`).join(', ') || 'none - try a bigger key!';
+        $('ig').innerHTML = `
+          <div class="irow"><div class="irow-lbl">Input</div><div class="irow-val fm">CIPHER</div></div>
+          <div class="irow"><div class="irow-lbl">Output</div><div class="irow-val fk">${enc}</div></div>
+          <div class="irow"><div class="irow-lbl">Key</div><div class="irow-val fk">+${key}</div></div>
+          <div class="irow"><div class="irow-lbl">Portal wraps</div><div class="irow-val fw" style="font-size:${wc > 0 ? '11' : '13'}px">${wl}</div></div>
+          <div class="formula">
+          <span class="fm">Formula :</span>  encoded = ( index(char) + key ) <span class="fk">mod 26</span>
+          <span class="fm">Clock analogy - same idea, different loop size:</span>
+          14:00 + 12 hrs = <span class="fc">02:00</span>  (not 26:00) → clocks use <span class="fk">mod 24</span>
+          The alphabet has 26 letters, so it uses  <span class="fk">mod 26</span>  instead.
+          <span class="fm">Example :</span>
+          "${res[0].ch}" = ${res[0].idx}  →  (${res[0].idx} + ${key}) = ${res[0].raw}  ${res[0].wraps ? '% 26 → portal → ' : '→ '}<span class="${res[0].wraps ? 'fk' : 'fp'}">${res[0].dst} = "${res[0].enc}"</span>
+          <span class="fg">Why mod?</span>  <span class="fm">Without it, adding a big key could push past Z.
+          Mod 26 keeps every result inside A-Z, always.
+          The portal is just what mod looks like in action.</span></div>`;
+        vis($('ip'), true);
+    }
+
+    if (prevBtn) prevBtn.disabled = step < 0;
+    if (nextBtn) nextBtn.disabled = step >= n;
+    isAnimating = false;
+}
+
+const goBtn = $('goBtn');
 if (goBtn) {
     goBtn.addEventListener('click', () => {
-        if (!running) kick();
+        if (hasStarted) return;
+        hasStarted = true;
+        goBtn.disabled = true;
+        $('kd').disabled = true;
+        $('ku').disabled = true;
+        currentStep = 0;
+        renderStep(currentStep);
     });
 }
 
-upK(); 
-// Do NOT auto run: let user press start
-$('st').textContent='Set your key and press Start';document.querySelector('.status').style.color='var(--ap)';
-
-const speedUp = document.getElementById('speedUp');
-const speedDown = document.getElementById('speedDown');
-const sDisplay = document.getElementById('speedDisplay');
-
-if (speedUp && speedDown && sDisplay) {
-    speedUp.addEventListener("click", () => {
-        if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-    });
-    speedDown.addEventListener("click", () => {
-        if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+const replayBtn = $('replayBtn');
+if (replayBtn) {
+    replayBtn.addEventListener('click', () => {
+        hasStarted = false;
+        if (goBtn) goBtn.disabled = false;
+        $('kd').disabled = false;
+        $('ku').disabled = false;
+        currentStep = -1;
+        resetDemo();
+        renderStep(currentStep);
     });
 }
 
-const nextBtn = document.getElementById('nextBtn');
+const prevStepBtn = $('prevStep');
+if (prevStepBtn) {
+    prevStepBtn.addEventListener('click', () => {
+        if (!hasStarted) return;
+        if (currentStep > -1) {
+            currentStep--;
+            renderStep(currentStep);
+        }
+    });
+}
+
+const nextStepBtn = $('nextStep');
+if (nextStepBtn) {
+    nextStepBtn.addEventListener('click', () => {
+        if (!hasStarted) return;
+        if (currentStep < n) {
+            currentStep++;
+            renderStep(currentStep);
+        }
+    });
+}
+
+const nextBtn = $('btn-next');
 if (nextBtn) {
     nextBtn.addEventListener('click', () => {
         window.location.href = "level3.2.html";
     });
 }
+
+resetDemo();
+renderStep(-1);
+
 </script>
 </body>
 </html>

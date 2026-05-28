@@ -230,7 +230,152 @@ body::after{
             transform-origin: top center;
         }
     }
-</style>
+
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
+    </style>
     <script src="global_controls.js"></script>
 </head>
 <body>
@@ -307,18 +452,16 @@ body::after{
     </div>
   </section>
 
-  <footer class="footer">
-    <div style="display:flex; align-items:center; gap:12px;">
-        <button class="btn" id="pauseResumeBtn">Pause</button>
-        <button class="btn" id="replayBtn">↩ Restart</button>
+  
+    <div class="footer">
+        <div style="display:flex;gap:12px">
+            <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+            <button class="foot-btn step-btn" id="nextStep" disabled>Next Step</button>
+            <button class="foot-btn" id="replayBtn">Restart</button>
+        </div>
+        <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
     </div>
-    <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-        <button class="btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-        <button class="btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-    </div>
-    <button class="btn" style="color:var(--green); border-color:var(--green);" id="nextBtn">Next Cipher →</button>
-  </footer>
+
 </main>
 
 <script>
@@ -378,186 +521,209 @@ function clearHighlights() {
   document.querySelectorAll(".cell").forEach((el) => el.classList.remove("active"));
 }
 
-function reset() {
-  token.stop = true;
-  token = { stop: false };
-  clearInterval(loopTimer);
-  build();
-  $("paperStrip").classList.remove("fold", "unfold");
-  $("reverseRow").classList.remove("show");
-  $("plusMark").classList.remove("show");
-  $("scanner").classList.remove("show");
-  $("scanner").style.left = "0px";
-  $("status").textContent = "Start with CIPHER";
-  $("v1").textContent = "CIPHER";
-  $("v2").textContent = "------";
-  $("v3").textContent = "-";
-  $("v4").textContent = "------";
-  ["calcOriginal", "calcReverse", "calcSum", "calcResult"].forEach((id) => {
-    $(id).classList.remove("hot");
-    $(id).querySelector(".calc-value").textContent = "-";
+
+
+function scannerToColumn(i) {
+  const row = $("originalRow");
+  const cell = row.children[i];
+  if (!cell) return;
+  const left = cell.offsetLeft;
+  const width = cell.offsetWidth;
+  $("scanner").style.left = (left - 5) + "px";
+  $("scanner").style.width = (width + 10) + "px";
+}
+
+  function reset() {
+    build();
+    $("paperStrip").classList.remove("fold", "unfold");
+    $("reverseRow").classList.remove("show");
+    $("plusMark").classList.remove("show");
+    $("scanner").classList.remove("show");
+    $("scanner").style.left = "0px";
+    $("status").textContent = "Start with CIPHER";
+    $("v1").textContent = "CIPHER";
+    $("v2").textContent = "------";
+    $("v3").textContent = "-";
+    $("v4").textContent = "------";
+    ["calcOriginal", "calcReverse", "calcSum", "calcResult"].forEach((id) => {
+      $(id).classList.remove("hot");
+      $(id).querySelector(".calc-value").textContent = "-";
+    });
+    setActive("b1");
+  }
+  
+  function fastForward(upToStep) {
+      build();
+      clearHighlights();
+      $("scanner").classList.remove("show");
+      $("plusMark").classList.remove("show");
+
+      if (upToStep >= 0) {
+          const stripCells = [...$("paperStrip").querySelectorAll(".cell")];
+          const originalCells = [...$("originalRow").querySelectorAll(".cell")];
+          for (let i = 0; i < stripCells.length; i += 1) {
+              stripCells[i].classList.add("show");
+              originalCells[i].classList.add("show");
+          }
+      }
+
+      if (upToStep >= 1) {
+          $("reverseRow").classList.add("show");
+          [...$("reverseRow").querySelectorAll(".cell")].forEach((el) => el.classList.add("show"));
+          $("paperStrip").classList.add("unfold");
+          $("v2").textContent = REVERSE;
+      }
+
+      for (let i = 0; i < WORD.length && i <= upToStep - 2; i++) {
+          const original = WORD[i];
+          const reversed = REVERSE[i];
+          const sum = indexOf(original) + indexOf(reversed);
+          const out = ABC[sum % 26];
+          const wrapped = sum % 26;
+          const outputCell = $("outputRow").children[i];
+          
+          outputCell.querySelector(".letter").textContent = out;
+          outputCell.querySelector(".idx").textContent = wrapped;
+          outputCell.classList.add("filled");
+      }
+      
+      if (upToStep >= 2) {
+          const partial = [...$("outputRow").children].map((el) => el.querySelector(".letter").textContent || "-").join("");
+          $("v4").textContent = partial;
+      }
+  }
+
+  let currentStep = -1;
+  let isAnimating = false;
+  
+  async function renderStep(step) {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      const prevBtn = $('prevStep');
+      const nextBtn = $('nextStep');
+
+      if (step === -1) {
+          reset();
+          if (prevBtn) prevBtn.disabled = true;
+          if (nextBtn) nextBtn.disabled = false;
+          isAnimating = false;
+          return;
+      }
+
+      if (step >= 0 && step <= WORD.length + 1) {
+          fastForward(step - 1);
+          
+          if (step === 0) {
+              const stripCells = [...$("paperStrip").querySelectorAll(".cell")];
+              const originalCells = [...$("originalRow").querySelectorAll(".cell")];
+              for (let i = 0; i < stripCells.length; i += 1) {
+                  stripCells[i].classList.add("show");
+                  originalCells[i].classList.add("show");
+                  await wait(120);
+              }
+          } else if (step === 1) {
+              $("status").textContent = "Fold the strip to create the reverse copy";
+              setActive("b2");
+              $("paperStrip").classList.add("fold");
+              await wait(750);
+              $("reverseRow").classList.add("show");
+              [...$("reverseRow").querySelectorAll(".cell")].forEach((el) => el.classList.add("show"));
+              $("paperStrip").classList.remove("fold");
+              $("paperStrip").classList.add("unfold");
+              $("v2").textContent = REVERSE;
+              await wait(750);
+              $("status").textContent = "Now add each original letter with the reversed letter under it";
+              await wait(500);
+          } else if (step > 1 && step <= WORD.length + 1) {
+              const i = step - 2;
+              const original = WORD[i];
+              const reversed = REVERSE[i];
+              const sum = indexOf(original) + indexOf(reversed);
+              const out = ABC[sum % 26];
+              const originalCell = $("originalRow").children[i];
+              const reverseCell = $("reverseRow").children[i];
+              const outputCell = $("outputRow").children[i];
+              const leftValue = indexOf(original);
+              const rightValue = indexOf(reversed);
+              const wrapped = sum % 26;
+            
+              clearHighlights();
+              scannerToColumn(i);
+              $("scanner").classList.add("show");
+              originalCell.classList.add("active");
+              reverseCell.classList.add("active");
+              $("plusMark").classList.add("show");
+              setActive("b3");
+              $("status").textContent = `${original}=${leftValue} plus ${reversed}=${rightValue}: ${leftValue}+${rightValue}=${sum}, so ${wrapped} becomes ${out}`;
+              $("v3").textContent = `${leftValue}+${rightValue}=${sum} -> ${wrapped}=${out}`;
+              $("calcOriginal").querySelector(".calc-value").textContent = `${original}=${leftValue}`;
+              $("calcReverse").querySelector(".calc-value").textContent = `${reversed}=${rightValue}`;
+              $("calcSum").querySelector(".calc-value").textContent = sum > 25 ? `${sum} mod 26 = ${wrapped}` : `${sum}`;
+              $("calcResult").querySelector(".calc-value").textContent = out;
+              ["calcOriginal", "calcReverse", "calcSum", "calcResult"].forEach((id) => $(id).classList.add("hot"));
+              await wait(750);
+            
+              outputCell.querySelector(".letter").textContent = out;
+              outputCell.querySelector(".idx").textContent = wrapped;
+              outputCell.classList.add("filled");
+              const partial = [...$("outputRow").children].map((el) => el.querySelector(".letter").textContent || "-").join("");
+              $("v4").textContent = partial;
+              setActive("b4");
+              await wait(500);
+          }
+      }
+
+      if (step === WORD.length + 2) {
+          fastForward(WORD.length + 1);
+          clearHighlights();
+          $("scanner").classList.remove("show");
+          $("plusMark").classList.remove("show");
+          $("status").textContent = `Complete: ${WORD} + ${REVERSE} = ${RESULT}`;
+          $("v4").textContent = RESULT;
+      }
+
+      if (prevBtn) prevBtn.disabled = step < 0;
+      if (nextBtn) nextBtn.disabled = step > WORD.length + 1;
+      isAnimating = false;
+  }
+
+  const replayBtn = $('replayBtn');
+  if (replayBtn) replayBtn.addEventListener('click', () => {
+      currentStep = -1;
+      renderStep(currentStep);
   });
-  if ($("timer")) $("timer").textContent = "Looping demo";
-  setActive("b1");
-}
 
-async function revealWord(runToken) {
-  const stripCells = [...$("paperStrip").querySelectorAll(".cell")];
-  const originalCells = [...$("originalRow").querySelectorAll(".cell")];
-  for (let i = 0; i < stripCells.length; i += 1) {
-    if (runToken.stop) return;
-    stripCells[i].classList.add("show");
-    originalCells[i].classList.add("show");
-    await wait(120);
-  }
-}
-
-function scannerToColumn(index) {
-  const grid = $("gridZone").getBoundingClientRect();
-  const target = $("originalRow").children[index].getBoundingClientRect();
-  $("scanner").style.left = `${target.left - grid.left - 5}px`;
-}
-
-async function foldPaper(runToken) {
-  $("status").textContent = "Fold the strip to create the reverse copy";
-  setActive("b2");
-  $("paperStrip").classList.add("fold");
-  await wait(750);
-  if (runToken.stop) return;
-  $("reverseRow").classList.add("show");
-  [...$("reverseRow").querySelectorAll(".cell")].forEach((el) => el.classList.add("show"));
-  $("paperStrip").classList.remove("fold");
-  $("paperStrip").classList.add("unfold");
-  $("v2").textContent = REVERSE;
-  await wait(750);
-}
-
-async function scanColumn(i, runToken) {
-  const original = WORD[i];
-  const reversed = REVERSE[i];
-  const sum = indexOf(original) + indexOf(reversed);
-  const out = ABC[sum % 26];
-  const originalCell = $("originalRow").children[i];
-  const reverseCell = $("reverseRow").children[i];
-  const outputCell = $("outputRow").children[i];
-  const leftValue = indexOf(original);
-  const rightValue = indexOf(reversed);
-  const wrapped = sum % 26;
-
-  clearHighlights();
-  scannerToColumn(i);
-  $("scanner").classList.add("show");
-  originalCell.classList.add("active");
-  reverseCell.classList.add("active");
-  $("plusMark").classList.add("show");
-  setActive("b3");
-  $("status").textContent = `${original}=${leftValue} plus ${reversed}=${rightValue}: ${leftValue}+${rightValue}=${sum}, so ${wrapped} becomes ${out}`;
-  $("v3").textContent = `${leftValue}+${rightValue}=${sum} -> ${wrapped}=${out}`;
-  $("calcOriginal").querySelector(".calc-value").textContent = `${original}=${leftValue}`;
-  $("calcReverse").querySelector(".calc-value").textContent = `${reversed}=${rightValue}`;
-  $("calcSum").querySelector(".calc-value").textContent = sum > 25 ? `${sum} mod 26 = ${wrapped}` : `${sum}`;
-  $("calcResult").querySelector(".calc-value").textContent = out;
-  ["calcOriginal", "calcReverse", "calcSum", "calcResult"].forEach((id) => $(id).classList.add("hot"));
-  await wait(750);
-  if (runToken.stop) return;
-
-  outputCell.querySelector(".letter").textContent = out;
-  outputCell.querySelector(".idx").textContent = wrapped;
-  outputCell.classList.add("filled");
-  const partial = [...$("outputRow").children].map((el) => el.querySelector(".letter").textContent || "-").join("");
-  $("v4").textContent = partial;
-  setActive("b4");
-  await wait(500);
-}
-
-async function run() {
-  if (running) return;
-  running = true;
-  reset();
-  const runToken = token;
-
-  await wait(300);
-  await revealWord(runToken);
-  if (runToken.stop) { running = false; return; }
-
-  await wait(500);
-  await foldPaper(runToken);
-  if (runToken.stop) { running = false; return; }
-
-  $("status").textContent = "Now add each original letter with the reversed letter under it";
-  await wait(750);
-
-  for (let i = 0; i < WORD.length; i += 1) {
-    if (runToken.stop) { running = false; return; }
-    await scanColumn(i, runToken);
-  }
-
-  clearHighlights();
-  $("scanner").classList.remove("show");
-  $("plusMark").classList.remove("show");
-  $("status").textContent = `Complete: ${WORD} + ${REVERSE} = ${RESULT}`;
-  $("v4").textContent = RESULT;
-  startLoop(runToken);
-  running = false;
-}
-
-function startLoop(runToken) {
-  let left = 2;
-  if ($("timer")) $("timer").textContent = `Replay in ${left}s`;
-  loopTimer = setInterval(() => {
-    if (runToken.stop) {
-      clearInterval(loopTimer);
-      return;
-    }
-    left -= 1;
-    if ($("timer")) $("timer").textContent = left > 0 ? `Replay in ${left}s` : "Looping demo";
-    if (left <= 0) {
-      clearInterval(loopTimer);
-      run();
-    }
-  }, 1000 / speedMultiplier);
-}
-
-  const replayBtn = document.getElementById('replayBtn');
-  if (replayBtn) {
-    replayBtn.addEventListener("click", () => {
-      running = false;
-      run();
-    });
-  }
-
-  const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-  if (pauseResumeBtn) {
-      pauseResumeBtn.addEventListener('click', () => {
-          isPaused = !isPaused;
-          pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
-      });
-  }
-
-  window.addEventListener("load", run);
-  window.addEventListener("resize", () => {
-    const scannerVisible = $("scanner").classList.contains("show");
-    if (scannerVisible) $("scanner").classList.remove("show");
+  const prevStepBtn = $('prevStep');
+  if (prevStepBtn) prevStepBtn.addEventListener('click', () => {
+      if (currentStep > -1) {
+          currentStep--;
+          renderStep(currentStep);
+      }
   });
 
-  const sDisplay = document.getElementById("speedDisplay");
-  if (document.getElementById("speedUp")) {
-    document.getElementById("speedUp").addEventListener("click", () => {
-      if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-    });
-    document.getElementById("speedDown").addEventListener("click", () => {
-      if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-      if (sDisplay) sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-    });
-  }
+  const nextStepBtn = $('nextStep');
+  if (nextStepBtn) nextStepBtn.addEventListener('click', () => {
+      if (currentStep <= WORD.length + 1) {
+          currentStep++;
+          renderStep(currentStep);
+      }
+  });
 
-  const nextBtn = document.getElementById("nextBtn");
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
+  const nextBtn = $('btn-next');
+  if (nextBtn) nextBtn.addEventListener('click', () => {
       window.location.href = "level4.3.html";
-    });
-  }
+  });
+
+  window.addEventListener("load", () => {
+      currentStep = -1;
+      renderStep(currentStep);
+  });
+  window.addEventListener("resize", () => {
+      const scannerVisible = $("scanner").classList.contains("show");
+      if (scannerVisible) $("scanner").classList.remove("show");
+  });
+
 </script>
 </body>
 </html>

@@ -33,7 +33,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
 .chips-row{display:flex;gap:8px;justify-content:center;}
 
 /* Message chips */
-.mchip,.kchip,.ochip{font-size:42px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;width:64px;height:70px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;overflow:hidden;transition:all .35s;opacity:0;}
+.mchip,.kchip,.ochip{font-size:42px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;width:64px;height:70px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;overflow:hidden;transition:all .35s;opacity:1;}
 .mchip{background:var(--si);border:1px solid rgba(89,242,255,0.18);}
 .kchip{background:var(--si);border:1px solid rgba(255,221,87,0.18);}
 .ochip{font-size:42px;font-weight:900;line-height:1;font-family:"SF Mono","Fira Code",Consolas,monospace;background:rgba(2,6,23,0.4);border:1px dashed rgba(185,127,255,0.15);}
@@ -137,7 +137,152 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
 .rtick{width:5px;height:5px;border-radius:50%;background:rgba(148,163,184,.3);animation:rtick 1s step-end infinite;}
 @keyframes rtick{0%,100%{opacity:1}50%{opacity:.2}}
 #BL{position:fixed;z-index:500;pointer-events:none;font-family:"SF Mono","Fira Code",monospace;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:12px;opacity:0;}
-</style>
+
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
+    </style>
     <script src="global_controls.js"></script>
 </head>
 <body>
@@ -209,17 +354,17 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;back
     <div class="info-grid" id="ig"></div>
   </div>
 </div>
-<div class="footer">
-    <div style="display:flex; align-items:center; gap:12px;">
-        <button class="foot-btn" id="pauseResumeBtn">Pause</button>
-        <button class="foot-btn" id="replayBtn">↩ Restart</button>
+
+    <div class="footer">
+        <div style="display:flex;gap:12px">
+            <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+            <button class="foot-btn step-btn" id="nextStep" disabled>Next Step</button>
+            <button class="foot-btn" id="replayBtn">Restart</button>
+        </div>
+        <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
     </div>
-    <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-        <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-        <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-    </div>
-    <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
+
+    
 </div>
 </div>
 <div id="BL"></div>
@@ -343,206 +488,217 @@ function resetMath(){
 }
 function actM(s){for(let i=1;i<=7;i++)$('m'+i)?.classList.remove('active');$('m'+s)?.classList.add('active');for(let i=1;i<s;i++)$('m'+i)?.classList.add('done');}
 
-function startC(){cdn=2;$('rcd').textContent=`Replaying in ${cdn}s…`;rTimer=setInterval(()=>{cdn--;if(cdn>0)$('rcd').textContent=`Replaying in ${cdn}s…`;else{clearInterval(rTimer);$('rcd').textContent='Replaying…';kick();}},1000/speedMultiplier);}
-function cancelC(){if(rTimer){clearInterval(rTimer);rTimer=null;}$('rcd').textContent='';}
 
-async function run(){
-  if(running){ct.c=true;await new Promise(r => setTimeout(r, 130));}
-  ct={c:false};running=true;
-  isPaused=false;
-  const pb = $('pauseResumeBtn'); if(pb) pb.textContent = 'Pause';
-  const res=compute();
-  const encoded=res.map(r=>r.enc).join('');
-  const wc=res.filter(r=>r.wraps).length;
+let currentStep = -1;
+let isAnimating = false;
+let res = [];
+let enc = '';
+let wc = 0;
+let n = 0;
 
-  vis($('ip'),false);$('ig').innerHTML='';$('BL').style.opacity='0';
-  $('bM').style.opacity='0';$('bK').style.opacity='0';$('bR').style.display='none';
-  $('pe').classList.remove('lit');$('px').classList.remove('lit');$('plbl').classList.remove('lit');
-  $('nls').classList.remove('vis');$('arcSvg').innerHTML='';
-  resetMath();
-  buildRows(res);
-  $('zs').style.width=(25/MAXP*100)+'%';
-  $('pe').style.left=(25/MAXP*100)+'%';
-  $('plbl').style.left=(25/MAXP*100)+'%';
+function resetDemo() {
+    n = MSG.length;
+    res = MSG.split('').map((ch, i) => {
+        const mi = AL.indexOf(ch), kch = KEY[i % KEY.length], ki = AL.indexOf(kch);
+        const sum = mi + ki, dst = sum % 26;
+        return { ch, mi, kch, ki, sum, dst, enc: AL[dst], wraps: sum >= 26, i };
+    });
+    encoded = res.map(r => r.enc).join('');
+    wc = res.filter(r => r.wraps).length;
 
-  setSt('CIPHER × KITE — both balls land on the line and add up…');
-  await slp(500);if(ct.c){running=false;return;}
+    vis($('ip'), false);
+    $('ig').innerHTML = '';
+    $('msgRow').innerHTML = '';
+    $('keyRow').innerHTML = '';
+    $('outRow').innerHTML = '';
+    $('BL').style.opacity = '0';
+    resetMath();
+    $('bM').style.opacity = '0';
+    $('bK').style.opacity = '0';
+    $('bR').style.display = 'none';
+    $('arcSvg').innerHTML = '';
+    $('pe').classList.remove('lit');
+    $('px').classList.remove('lit');
+    $('plbl').classList.remove('lit');
 
-  // stagger all 3 rows in
-  for(let i=0;i<MSG.length;i++){
-    if(ct.c){running=false;return;}
-    for(const id of ['mc','kc','oc']){
-      const el=$(id+i);el.style.opacity='0';el.style.transform='translateY(-10px)';el.style.transition='opacity .35s,transform .35s';
-    }
-    await slp(20);
-    for(const id of ['mc','kc','oc']){
-      const el=$(id+i);el.style.opacity='1';el.style.transform='translateY(0)';
-    }
-    await slp(100);
-  }
-  await slp(350);if(ct.c){running=false;return;}
-  $('nls').classList.add('vis');
-  await slp(400);if(ct.c){running=false;return;}
+    buildRows(res);
 
-  for(let i=0;i<res.length;i++){
-    if(ct.c){running=false;return;}
-    const r=res[i];
-    const mcEl=$('mc'+i),kcEl=$('kc'+i),ocEl=$('oc'+i);
-
-    document.querySelectorAll('.mchip').forEach(c=>c.classList.remove('mc-active'));
-    document.querySelectorAll('.kchip').forEach(c=>c.classList.remove('kc-active'));
-    mcEl.classList.add('mc-active');kcEl.classList.add('kc-active');
-    resetMath();$('pe').classList.remove('lit');$('px').classList.remove('lit');$('plbl').classList.remove('lit');
-    $('bM').style.opacity='0';$('bK').style.opacity='0';$('bR').style.display='none';$('arcSvg').innerHTML='';
-    buildTicks(r.mi,r.ki,r.dst,r.wraps);
-    setSt(`"${r.ch}"(${r.mi}) + "${r.kch}"(${r.ki}) = ${r.sum}${r.wraps?' → portal! → '+r.dst:''} → "${r.enc}"`,r.wraps?'var(--orange)':'var(--ap)');
-
-    // step 1 msg char
-    actM(1);$('mv1').textContent=`"${r.ch}"`;
-    await slp(300);if(ct.c){running=false;return;}
-
-    // step 2 msg idx — fly msg ball to line
-    actM(2);$('mv2').textContent=r.mi;
-    const tr=$('nt').getBoundingClientRect();
-    const mtx=tr.left+pct(r.mi)/100*tr.width,mty=tr.top+tr.height/2;
-    flyTo(mcEl,mtx,mty,r.ch,'#59f2ff','rgba(89,242,255,.8)');
-    await slp(420);if(ct.c){running=false;return;}
-    $('bM').style.transition='none';$('bM').style.left=pct(r.mi)+'%';$('bM').textContent=r.ch;$('bM').style.opacity='1';
-    await slp(250);if(ct.c){running=false;return;}
-
-    // step 3 key char
-    actM(3);$('mv3').textContent=`"${r.kch}"`;
-    await slp(300);if(ct.c){running=false;return;}
-
-    // step 4 key idx — fly key ball to line
-    actM(4);$('mv4').textContent=r.ki;
-    const ktx=tr.left+pct(r.ki)/100*tr.width,kty=tr.top+tr.height/2;
-    flyTo(kcEl,ktx,kty,r.kch,'#ffdd57','rgba(255,221,87,.8)');
-    await slp(420);if(ct.c){running=false;return;}
-    $('bK').style.transition='none';$('bK').style.left=pct(r.ki)+'%';$('bK').textContent=r.kch;$('bK').style.opacity='1';
-    await slp(280);if(ct.c){running=false;return;}
-
-    // step 5 sum — grow arc
-    actM(5);$('mv5').textContent=`${r.mi}+${r.ki}=${r.sum}`;
-    $('msmod').style.opacity=r.wraps?'1':'.2';
-    for(let s=0;s<=20;s++){if(ct.c){running=false;return;}drawArc(pct(r.mi),pct(r.ki),r.wraps,s/20);await slp(28);}
-    await slp(280);if(ct.c){running=false;return;}
-
-    if(r.wraps){
-      actM(6);$('m6').style.display='flex';$('mv6').textContent=r.sum+'≥26→portal!';
-      $('pe').classList.add('lit');$('plbl').classList.add('lit');
-      $('bM').classList.add('bw');$('bK').classList.add('bw');
-      vis($('wp'),true);$('wpt').textContent=r.sum+' − 26 = '+r.dst+' → "'+r.enc+'"';
-      await slp(600);if(ct.c){running=false;return;}
-      $('px').classList.add('lit');
-      $('bM').style.opacity='0';$('bK').style.opacity='0';$('arcSvg').innerHTML='';
-      await slp(150);if(ct.c){running=false;return;}
-      $('bR').style.display='flex';$('bR').className='nball bw';
-      $('bR').style.width='36px';$('bR').style.height='36px';
-      $('bR').style.transition='none';$('bR').style.left=pct(r.dst)+'%';$('bR').textContent=r.enc;$('bR').style.opacity='1';
-      await slp(200);if(ct.c){running=false;return;}
-      $('pe').classList.remove('lit');$('px').classList.remove('lit');$('plbl').classList.remove('lit');
-    } else {
-      const midP=(pct(r.mi)+pct(r.ki))/2;
-      $('bR').style.display='flex';$('bR').className='nball';$('bR').style.background='rgba(185,127,255,0.12)';
-      $('bR').style.border='2px solid var(--purple)';$('bR').style.color='var(--purple)';$('bR').style.boxShadow='0 0 16px rgba(185,127,255,.5)';
-      $('bR').style.width='36px';$('bR').style.height='36px';$('bR').style.fontSize='13px';
-      $('bR').style.transition='none';$('bR').style.left=midP+'%';$('bR').textContent='?';$('bR').style.opacity='1';
-      $('bM').style.opacity='0';$('bK').style.opacity='0';$('arcSvg').innerHTML='';
-      await slp(80);if(ct.c){running=false;return;}
-      const sMs=380+r.dst*12;
-      $('bR').style.transition=`left ${sMs}ms cubic-bezier(0.25,0.1,0.25,1)`;
-      $('bR').style.left=pct(r.dst)+'%';$('bR').textContent=r.enc;
-      await slp(sMs+80);if(ct.c){running=false;return;}
-    }
-
-    // step 7 result
-    actM(7);$('m7').classList.toggle('wr',r.wraps);$('mv7').textContent=`"${r.enc}"`;
-    for(let j=1;j<7;j++)$('m'+j)?.classList.add('done');
-    await slp(300);if(ct.c){running=false;return;}
-
-    // fly from line to output
-    const col=r.wraps?'#ff9f43':'#b97fff',glow=r.wraps?'rgba(255,159,67,.8)':'rgba(185,127,255,.8)';
-    await flyOut(pct(r.dst),ocEl,r.enc,col,glow);
-    if(ct.c){running=false;return;}
-
-    // slam into output chip
-    ocEl.classList.add('oc-land','filled');
-    if(r.wraps) ocEl.classList.add('oc-wrap');
-    const ol=$('ol'+i);if(ol)ol.textContent=r.enc;
-    mcEl.classList.remove('mc-active');mcEl.classList.add('mc-done');
-    kcEl.classList.remove('kc-active');kcEl.classList.add('kc-done');
-    $('bR').style.opacity='0';
-    await slp(320);
-  }
-
-  $('BL').style.opacity='0';
-  setSt(`Done · CIPHER + KITE = ${encoded}${wc>0?' · '+wc+' portal wrap'+(wc>1?'s':''):''}`,wc>0?'var(--orange)':'var(--ag)');
-  res.forEach((r,i)=>{const o=$('oc'+i);if(o)o.style.boxShadow=r.wraps?'0 0 22px rgba(255,159,67,.7)':'0 0 18px rgba(185,127,255,.5)';});
-  await slp(380);
-  res.forEach((r,i)=>{const o=$('oc'+i);if(o)o.style.boxShadow='';});
-
-  const keyExpanded=MSG.split('').map((_,i)=>KEY[i%KEY.length]).join('');
-  $('ig').innerHTML=`
-    <div class="irow"><div class="irow-lbl">Message</div><div class="irow-val fc">CIPHER</div></div>
-    <div class="irow"><div class="irow-lbl">Key</div><div class="irow-val fk">KITE</div></div>
-    <div class="irow"><div class="irow-lbl">Key expanded</div><div class="irow-val fk">${keyExpanded}</div></div>
-    <div class="irow"><div class="irow-lbl">Encoded</div><div class="irow-val fp">${encoded}</div></div>
-    <div class="formula">
-<span class="fm">Formula :</span>  encoded[i] = ( msg[i] + key[i <span class="fp">mod</span> keyLen] ) <span class="fp">mod 26</span>
-
-<span class="fm">Step 1 ·</span> Expand key to match message length:
-  <span class="fk">K I T E</span> → repeated → <span class="fk">${keyExpanded.split('').join(' ')}</span>
-
-<span class="fm">Step 2 ·</span> Add both positions on the number line:
-${res.map(r=>`  <span class="fc">${r.ch}</span>(${r.mi}) + <span class="fk">${r.kch}</span>(${r.ki}) = ${r.sum}${r.wraps?' mod 26 = '+r.dst:''} → <span class="${r.wraps?'fw':'fp'}">"${r.enc}"</span>`).join('\n')}
-
-<span class="fg">Why harder than Caesar?</span>
-<span class="fm">Caesar uses ONE shift for every letter.
-Vigenère uses a different key letter each time —
-the same "C" in the message can encode to a
-completely different letter based on its position.</span></div>`;
-  vis($('ip'),true);
-  await slp(800);running=false;startC();
+    $('zs').style.width = (25 / MAXP * 100) + '%';
+    $('pe').style.left = (25 / MAXP * 100) + '%';
+    $('plbl').style.left = (25 / MAXP * 100) + '%';
+    buildTicks(null, null, null, false);
+    vis($('nls'), true);
 }
 
-function kick(){cancelC();run();}
-        
-const replayBtn = document.getElementById('replayBtn');
-if (replayBtn) replayBtn.addEventListener('click', kick);
+async function renderStep(step) {
+    if (isAnimating) return;
+    isAnimating = true;
+    const prevBtn = $('prevStep');
+    const nextBtn = $('nextStep');
 
-const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-if (pauseResumeBtn) {
-    pauseResumeBtn.addEventListener('click', () => {
-        if (!running) return;
-        isPaused = !isPaused;
-        pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
+    if (step === -1) {
+        setSt('Vigenère loading onto the number line...', 'var(--ap)');
+        if (prevBtn) prevBtn.disabled = true;
+        if (nextBtn) nextBtn.disabled = false;
+        isAnimating = false;
+        return;
+    }
+
+    $('BL').style.opacity = '1';
+
+    if (step >= 0 && step < n) {
+        const r = res[step];
+        const mcEl = $('mc' + step), kcEl = $('kc' + step), ocEl = $('oc' + step);
+
+        document.querySelectorAll('.mchip').forEach(c => c.classList.remove('mc-active'));
+        document.querySelectorAll('.kchip').forEach(c => c.classList.remove('kc-active'));
+        mcEl.classList.add('mc-active'); kcEl.classList.add('kc-active');
+        resetMath(); $('pe').classList.remove('lit'); $('px').classList.remove('lit'); $('plbl').classList.remove('lit');
+        $('bM').style.opacity = '0'; $('bK').style.opacity = '0'; $('bR').style.display = 'none'; $('arcSvg').innerHTML = '';
+        buildTicks(r.mi, r.ki, r.dst, r.wraps);
+        setSt(`"${r.ch}"(${r.mi}) + "${r.kch}"(${r.ki}) = ${r.sum}${r.wraps ? ' → portal! → ' + r.dst : ''} → "${r.enc}"`, r.wraps ? 'var(--orange)' : 'var(--ap)');
+
+        actM(1); $('mv1').textContent = `"${r.ch}"`;
+        await slp(300);
+
+        actM(2); $('mv2').textContent = r.mi;
+        const tr = $('nt').getBoundingClientRect();
+        const mtx = tr.left + pct(r.mi) / 100 * tr.width, mty = tr.top + tr.height / 2;
+        flyTo(mcEl, mtx, mty, r.ch, '#59f2ff', 'rgba(89,242,255,.8)');
+        await slp(420);
+        $('bM').style.transition = 'none'; $('bM').style.left = pct(r.mi) + '%'; $('bM').textContent = r.ch; $('bM').style.opacity = '1';
+        await slp(250);
+
+        actM(3); $('mv3').textContent = `"${r.kch}"`;
+        await slp(300);
+
+        actM(4); $('mv4').textContent = r.ki;
+        const ktx = tr.left + pct(r.ki) / 100 * tr.width, kty = tr.top + tr.height / 2;
+        flyTo(kcEl, ktx, kty, r.kch, '#ffdd57', 'rgba(255,221,87,.8)');
+        await slp(420);
+        $('bK').style.transition = 'none'; $('bK').style.left = pct(r.ki) + '%'; $('bK').textContent = r.kch; $('bK').style.opacity = '1';
+        await slp(280);
+
+        actM(5); $('mv5').textContent = `${r.mi}+${r.ki}=${r.sum}`;
+        $('msmod').style.opacity = r.wraps ? '1' : '.2';
+        for (let s = 0; s <= 20; s++) { drawArc(pct(r.mi), pct(r.ki), r.wraps, s / 20); await slp(28); }
+        await slp(280);
+
+        if (r.wraps) {
+            actM(6); $('m6').style.display = 'flex'; $('mv6').textContent = r.sum + '%26→portal!';
+            $('pe').classList.add('lit'); $('plbl').classList.add('lit');
+            $('bM').classList.add('bw'); $('bK').classList.add('bw');
+            vis($('wp'), true); $('wpt').textContent = r.sum + ' % 26 = ' + r.dst + ' → "' + r.enc + '"';
+            await slp(600);
+            $('px').classList.add('lit');
+            $('bM').style.opacity = '0'; $('bK').style.opacity = '0'; $('arcSvg').innerHTML = '';
+            await slp(150);
+            $('bR').style.display = 'flex'; $('bR').className = 'nball bw';
+            $('bR').style.width = '36px'; $('bR').style.height = '36px';
+            $('bR').style.transition = 'none'; $('bR').style.left = pct(r.dst) + '%'; $('bR').textContent = r.enc; $('bR').style.opacity = '1';
+            await slp(200);
+            $('pe').classList.remove('lit'); $('px').classList.remove('lit'); $('plbl').classList.remove('lit');
+        } else {
+            const midP = (pct(r.mi) + pct(r.ki)) / 2;
+            $('bR').style.display = 'flex'; $('bR').className = 'nball'; $('bR').style.background = 'rgba(185,127,255,0.12)';
+            $('bR').style.border = '2px solid var(--purple)'; $('bR').style.color = 'var(--purple)'; $('bR').style.boxShadow = '0 0 16px rgba(185,127,255,.5)';
+            $('bR').style.width = '36px'; $('bR').style.height = '36px'; $('bR').style.fontSize = '13px';
+            $('bR').style.transition = 'none'; $('bR').style.left = midP + '%'; $('bR').textContent = '?'; $('bR').style.opacity = '1';
+            $('bM').style.opacity = '0'; $('bK').style.opacity = '0'; $('arcSvg').innerHTML = '';
+            await slp(80);
+            const sMs = 380 + r.dst * 12;
+            $('bR').style.transition = `left ${sMs}ms cubic-bezier(0.25,0.1,0.25,1)`;
+            $('bR').style.left = pct(r.dst) + '%'; $('bR').textContent = r.enc;
+            await slp(sMs + 80);
+        }
+
+        actM(7); $('m7').classList.toggle('wr', r.wraps); $('mv7').textContent = `"${r.enc}"`;
+        for (let j = 1; j < 7; j++) $('m' + j)?.classList.add('done');
+        await slp(300);
+
+        const col = r.wraps ? '#ff9f43' : '#b97fff', glow = r.wraps ? 'rgba(255,159,67,.8)' : 'rgba(185,127,255,.8)';
+        await flyOut(pct(r.dst), ocEl, r.enc, col, glow);
+
+        ocEl.classList.add('oc-land', 'filled');
+        if (r.wraps) ocEl.classList.add('oc-wrap');
+        const ol = $('ol' + step); if (ol) ol.textContent = r.enc;
+        mcEl.classList.remove('mc-active'); mcEl.classList.add('mc-done');
+        kcEl.classList.remove('kc-active'); kcEl.classList.add('kc-done');
+        $('bR').style.opacity = '0';
+        await slp(320);
+    }
+
+    if (step === n) {
+        $('BL').style.opacity = '0';
+        setSt(`Done → CIPHER + KITE = ${encoded}${wc > 0 ? ' → ' + wc + ' portal wrap' + (wc > 1 ? 's' : '') : ''}`, wc > 0 ? 'var(--orange)' : 'var(--ag)');
+        res.forEach((r, i) => { const o = $('oc' + i); if (o) o.style.boxShadow = r.wraps ? '0 0 22px rgba(255,159,67,.7)' : '0 0 18px rgba(185,127,255,.5)'; });
+        await slp(380);
+        res.forEach((r, i) => { const o = $('oc' + i); if (o) o.style.boxShadow = ''; });
+
+        const keyExpanded = MSG.split('').map((_, i) => KEY[i % KEY.length]).join('');
+        $('ig').innerHTML = `
+          <div class="irow"><div class="irow-lbl">Message</div><div class="irow-val fc">CIPHER</div></div>
+          <div class="irow"><div class="irow-lbl">Key</div><div class="irow-val fk">KITE</div></div>
+          <div class="irow"><div class="irow-lbl">Key expanded</div><div class="irow-val fk">${keyExpanded}</div></div>
+          <div class="irow"><div class="irow-lbl">Encoded</div><div class="irow-val fp">${encoded}</div></div>
+          <div class="formula">
+      <span class="fm">Formula :</span>  encoded[i] = ( msg[i] + key[i <span class="fp">mod</span> keyLen] ) <span class="fp">mod 26</span>
+      <span class="fm">Step 1 →</span> Expand key to match message length:
+        <span class="fk">K I T E</span> → repeated → <span class="fk">${keyExpanded.split('').join(' ')}</span>
+      <span class="fm">Step 2 →</span> Add both positions on the number line:
+      ${res.map(r => `  <span class="fc">${r.ch}</span>(${r.mi}) + <span class="fk">${r.kch}</span>(${r.ki}) = ${r.sum}${r.wraps ? ' mod 26 = ' + r.dst : ''} → <span class="${r.wraps ? 'fw' : 'fp'}">"${r.enc}"</span>`).join('<br>')}
+      <span class="fg">Why harder than Caesar?</span>
+      <span class="fm">Caesar uses ONE shift for every letter.
+      Vigenère uses a different key letter each time -
+      the same "C" in the message can encode to a
+      completely different letter based on its position.</span></div>`;
+        vis($('ip'), true);
+    }
+
+    if (prevBtn) prevBtn.disabled = step < 0;
+    if (nextBtn) nextBtn.disabled = step >= n;
+    isAnimating = false;
+}
+
+const replayBtn = $('replayBtn');
+if (replayBtn) {
+    replayBtn.addEventListener('click', () => {
+        currentStep = -1;
+        resetDemo();
+        renderStep(currentStep);
     });
 }
 
-const speedUp = document.getElementById('speedUp');
-const speedDown = document.getElementById('speedDown');
-const sDisplay = document.getElementById('speedDisplay');
-
-if (speedUp && speedDown && sDisplay) {
-    speedUp.addEventListener("click", () => {
-        if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-    });
-    speedDown.addEventListener("click", () => {
-        if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-        sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
+const prevStepBtn = $('prevStep');
+if (prevStepBtn) {
+    prevStepBtn.addEventListener('click', () => {
+        if (currentStep > -1) {
+            currentStep--;
+            renderStep(currentStep);
+        }
     });
 }
 
-const nextBtn = document.getElementById('nextBtn');
+const nextStepBtn = $('nextStep');
+if (nextStepBtn) {
+    nextStepBtn.addEventListener('click', () => {
+        if (currentStep < n) {
+            currentStep++;
+            renderStep(currentStep);
+        }
+    });
+}
+
+const nextBtn = $('btn-next');
 if (nextBtn) {
     nextBtn.addEventListener('click', () => {
-        window.location.href = "level3.4.html"; // Skip 3.3 per prompt structure implied, wait, maybe just go to level3.4.html
+        window.location.href = "level3.3.html";
     });
 }
 
-run();
+resetDemo();
+renderStep(-1);
+
 </script>
 </body>
 </html>

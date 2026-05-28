@@ -1008,7 +1008,153 @@
       background: rgba(89, 242, 255, 0.2);
       box-shadow: 0 0 10px rgba(89, 242, 255, 0.3);
     }
-  </style>
+  
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
+    </style>
     <script src="global_controls.js"></script>
 </head>
 
@@ -1031,13 +1177,16 @@
     <div class="controls">
       <span class="ctrl-label" style="display:none;">WORD</span>
       <input class="word-input" id="wordInput" type="hidden" value="CIPHER" />
-      <span class="ctrl-label" style="margin-left:8px">SHIFT</span>
+      <span class="ctrl-label" style="margin-left:6px">Shift</span>
       <div class="shift-wrap">
         <button class="shift-btn" id="shiftDown">−</button>
         <div class="shift-val" id="shiftVal">+3</div>
         <button class="shift-btn" id="shiftUp">+</button>
       </div>
-      <button class="go-btn" id="goBtn">Start</button>
+      <div style="margin-left:auto; display:flex; align-items:center; gap:12px;">
+        <span class="ctrl-label" style="color:var(--cyan); text-transform:none; font-size:11px;">Select key and click start to proceed →</span>
+        <button class="go-btn step-btn" id="goBtn" style="padding:7px 22px;">Start</button>
+      </div>
     </div>
 
     <!-- STAGE -->
@@ -1108,16 +1257,12 @@
 
     <!-- FOOTER -->
     <div class="footer">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <button class="foot-btn" id="pauseResumeBtn">Pause</button>
-        <button class="foot-btn" id="replayBtn">↩ Restart</button>
+      <div style="display:flex; gap:12px;">
+        <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+        <button class="foot-btn step-btn" id="nextStep" disabled>Next Step</button>
+        <button class="foot-btn" id="replayBtn">Restart</button>
       </div>
-      <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-        <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-        <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-        <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-      </div>
-      <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
+      <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
     </div>
   </div>
 
@@ -1125,11 +1270,11 @@
   <div class="flyer" id="flyer"></div>
 
   <script>
-let speedMultiplier = 1.0;
     const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const TAPE_W = 38;
-    let shift = 3, running = false, ct = { cancelled: false }, dialRot = 0;
-    let isPlaying = true, stepRequested = false;
+    let shift = 3, dialRot = 0;
+    let currentStep = -1, n = 0;
+    let raw = 'CIPHER', rev = '', finalWord = '';
 
     /* ── DOM ── */
     const wordInput = document.getElementById('wordInput');
@@ -1138,6 +1283,9 @@ let speedMultiplier = 1.0;
     const shiftVal = document.getElementById('shiftVal');
     const goBtn = document.getElementById('goBtn');
     const replayBtn = document.getElementById('replayBtn');
+    const prevStepBtn = document.getElementById('prevStep');
+    const nextStepBtn = document.getElementById('nextStep');
+    const btnNext = document.getElementById('btn-next');
     const statusTxt = document.getElementById('statusTxt');
     const inputRow = document.getElementById('inputRow');
     const splitSec = document.getElementById('splitSection');
@@ -1292,22 +1440,12 @@ let speedMultiplier = 1.0;
       flyer.style.opacity = '0';
     }
 
-    /* ── Main ── */
-    async function runDemo() {
-      if (running) { ct.cancelled = true; await new Promise(r => setTimeout(r, 120)); }
-      ct = { cancelled: false };
-      running = true;
-      isPaused = false;
-      if (document.getElementById('pauseResumeBtn')) document.getElementById('pauseResumeBtn').textContent = 'Pause';
-      if (goBtn) goBtn.disabled = true;
-
-      const raw = 'CIPHER';
-      wordInput.value = raw;
-      const n = raw.length;
-      const rev = raw.split('').reverse().join('');
-
-      /* compute final output */
-      const finalWord = rev.split('').map(ch => {
+    function resetDemo() {
+      raw = wordInput.value || 'CIPHER';
+      n = raw.length;
+      rev = raw.split('').reverse().join('');
+      
+      finalWord = rev.split('').map(ch => {
         const idx = ALPHA.indexOf(ch);
         return ALPHA[((idx + shift) % 26 + 26) % 26];
       }).join('');
@@ -1341,241 +1479,210 @@ let speedMultiplier = 1.0;
       setStatus('Initializing dual-stage scrambler…');
       vis(splitSec, true);
       vis(outputSec, true);
-      setTapePos(26, false); // start tape at second ALPHA set, letter A centered
-
-      await sleep(500); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-      /* ── Phase 0: Load input chips ── */
-      setStatus('Loading word onto input belt…');
+      setTapePos(26, false);
+      
       for (let i = 0; i < n; i++) {
-        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
         const ic = document.getElementById(`ic-${i}`);
         if (ic) ic.classList.add('in');
-        await sleep(110);
       }
-      await sleep(500); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-      await waitForPlaybackStep(); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-      /* ══ PHASE 1: REVERSE ══ */
-      setStatus('Stage 1 · Spinning dial back — reversing the word…');
-      leftPanel.classList.add('active-phase');
-      lockLabel1.classList.add('active');
-
-      /* Spin dial backwards dramatically */
-      const reverseSpin = -(720 + n * 14);
-      await spinDial(reverseSpin, 1400);
-      if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-      /* Fly each letter from input to its reversed slot in leftOriginal */
-      for (let i = 0; i < n; i++) {
-        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-        const ic = document.getElementById(`ic-${i}`);
-        const slot = document.getElementById(`lo-${i}`);
-        if (ic) ic.classList.add('active');
-        if (slot) {
-          await flyLetter(ic, slot, raw[i], '#59f2ff', 'rgba(89,242,255,0.7)');
-          if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-          const ch = document.getElementById(`loch-${i}`);
-          if (ch) ch.textContent = raw[i];
-          slot.classList.add('filled-rev');
-        }
-        if (ic) ic.classList.remove('active');
-        await sleep(80);
+      
+      currentStep = -1;
+      updateButtons();
+    }
+    
+    function updateButtons() {
+      if (prevStepBtn) prevStepBtn.disabled = currentStep < 0;
+      if (nextStepBtn) nextStepBtn.disabled = currentStep >= (n * 2) - 1;
+      
+      if(currentStep >= 0) {
+        if (shiftDown) shiftDown.disabled = true;
+        if (shiftUp) shiftUp.disabled = true;
+      } else {
+        if (shiftDown) shiftDown.disabled = false;
+        if (shiftUp) shiftUp.disabled = false;
       }
-      await sleep(500); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-      /* Now show the reversed result in leftReversed — fly from leftOriginal in reverse order */
-      leftDiv.textContent = '↓   mirror positions   ↓';
-      vis(leftDiv, true);
-      leftDiv.classList.add('cyan');
-      await sleep(300); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-      for (let i = 0; i < n; i++) {
-        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-        const srcSlot = document.getElementById(`lo-${n - 1 - i}`); // source: position (n-1-i) in original
-        const dstSlot = document.getElementById(`lr-${i}`);       // lands at position i in reversed row
-        if (srcSlot) srcSlot.classList.add('lit-rev');
-        await sleep(60);
-        if (srcSlot && dstSlot) {
-          await flyLetter(srcSlot, dstSlot, rev[i], '#59f2ff', 'rgba(89,242,255,0.7)');
-          if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-          const ch = document.getElementById(`lrch-${i}`);
-          if (ch) ch.textContent = rev[i];
-          dstSlot.classList.add('filled-rev');
-        }
-        if (srcSlot) srcSlot.classList.remove('lit-rev');
-        await sleep(100);
+    }
+    
+    function renderStep(step) {
+      if(step < -1) return;
+      if(step >= n * 2) return;
+      
+      currentStep = step;
+      updateButtons();
+      
+      /* Phase 1: Reverse (steps 0 to n-1) */
+      if(currentStep >= 0 && currentStep < n) {
+        setStatus(`Stage 1 · Reversing letter ${currentStep+1} of ${n}`);
+        leftPanel.classList.add('active-phase');
+        rightPanel.classList.remove('active-phase');
+        lockLabel1.classList.add('active');
+        lockLabel2.classList.remove('active');
+        
+        dialRot = -(120 + currentStep * 30);
+        dialDisc.style.transition = 'transform 0.4s ease';
+        dialDisc.style.transform = `rotate(${dialRot}deg)`;
       }
-
-      await sleep(600); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-      await waitForPlaybackStep(); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-      /* ══ PHASE 2: CAESAR ══ */
-      setStatus('Stage 2 · Clicking dial forward — applying Caesar shift…');
-      leftPanel.classList.remove('active-phase');
-      lockLabel1.classList.remove('active');
-      rightPanel.classList.add('active-phase');
-      lockLabel2.classList.add('active');
-      lockBadge.textContent = (shift >= 0 ? '+' : '') + shift + ' steps';
-      vis(lockBadge, true);
-      vis(tapeWrap, true);
-      vis(rightDiv, true);
-      rightDiv.textContent = '↓   letter lands below   ↓';
-      rightDiv.classList.add('yellow');
-
-      await sleep(300); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-      for (let i = 0; i < n; i++) {
-        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-        const ch = rev[i];
-        const srcIdx = ALPHA.indexOf(ch);
-        const dstIdx = ((srcIdx + shift) % 26 + 26) % 26;
-        const dstCh = ALPHA[dstIdx];
-
-        /* Highlight reversed chip */
-        document.querySelectorAll('[id^="lr-"]').forEach(c => c.classList.remove('lit-yellow'));
-        const revChip = document.getElementById(`lr-${i}`);
-        if (revChip) revChip.classList.add('lit-yellow');
-
-        setStatus(`"${ch}" (pos ${srcIdx}) + ${shift >= 0 ? '+' : ''}${shift} = pos ${dstIdx} → "${dstCh}"`);
-
-        /* Snap tape to source letter (middle set = rep 1, idx 26+srcIdx) */
-        const tapeSrc = 26 + srcIdx;
-        setTapePos(tapeSrc, false);
-        clearTapeHighlights();
-        document.getElementById(`tc-1-${srcIdx}`)?.classList.add('tape-src');
-
-        await sleep(350); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-        /* Spin dial forward */
+      /* Phase 2: Caesar (steps n to 2n-1) */
+      else if (currentStep >= n) {
+        setStatus(`Stage 2 · Shifting letter ${currentStep - n + 1} of ${n}`);
+        leftPanel.classList.remove('active-phase');
+        rightPanel.classList.add('active-phase');
+        lockLabel1.classList.remove('active');
+        lockLabel2.classList.add('active');
+        lockBadge.textContent = (shift >= 0 ? '+' : '') + shift + ' steps';
+        vis(lockBadge, true);
+        vis(tapeWrap, true);
+        vis(rightDiv, true);
+        rightDiv.textContent = '↓   letter lands below   ↓';
+        rightDiv.classList.add('yellow');
+        
+        const phase2Step = currentStep - n;
         const fwdDeg = (Math.abs(shift) / 26) * 360 * (shift >= 0 ? 1 : -1);
-        const travelMs = 700 + Math.abs(shift) * 30;
-
-        /* Fly letter from reversed chip → tape area while dial spins */
-        const tapeAreaEl = tapeWrap;
-        flyLetter(revChip, tapeAreaEl, ch, '#ffe566', 'rgba(255,229,102,0.7)');
-        spinDial(fwdDeg, travelMs);
-
-        /* Scroll tape to destination */
-        const tapeDst = tapeSrc + shift;
-        setTapePos(tapeDst < 0 ? tapeDst + 26 : tapeDst >= 78 ? tapeDst - 26 : tapeDst, true, travelMs);
-
-        await sleep(travelMs + 100); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-        clearTapeHighlights();
-        document.getElementById(`tc-1-${dstIdx}`)?.classList.add('tape-dst') ||
-          document.getElementById(`tc-0-${dstIdx}`)?.classList.add('tape-dst');
-        await sleep(300); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-        /* Land into right panel shifted row */
-        const dstChip = document.getElementById(`rs-${i}`);
-        if (dstChip) {
-          const tapeCenter = tapeWrap;
-          await flyLetter(tapeCenter, dstChip, dstCh, '#ffe566', 'rgba(255,229,102,0.7)');
-          if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-          const ch2 = document.getElementById(`rsch-${i}`);
-          if (ch2) ch2.textContent = dstCh;
-          dstChip.classList.add('filled-cae');
-        }
-
-        /* Also land in final output row */
-        const oc = document.getElementById(`oc-${i}`);
-        const ocv = document.getElementById(`ocv-${i}`);
-        if (oc && ocv) { ocv.textContent = dstCh; oc.classList.add('landed'); }
-
-        await sleep(350); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-        if (revChip) revChip.classList.remove('lit-yellow');
-        await waitForPlaybackStep(); if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+        dialRot = -(120 + n * 30) + (phase2Step+1) * fwdDeg;
+        dialDisc.style.transform = `rotate(${dialRot}deg)`;
+      } else {
+         leftPanel.classList.remove('active-phase');
+         lockLabel1.classList.remove('active');
+         dialRot = 0;
+         dialDisc.style.transform = `rotate(0deg)`;
       }
-
-      /* ══ DONE ══ */
-      setStatus(`Done! "${raw}" → reversed "${rev}" → encoded "${finalWord}"`);
+      
+      // Clear all state to re-render
       clearTapeHighlights();
-      rightPanel.classList.remove('active-phase');
-      lockLabel2.classList.remove('active');
-      flyer.style.opacity = '0';
-
-      /* Pulse output */
-      for (let i = 0; i < n; i++) {
-        const oc = document.getElementById(`oc-${i}`);
-        if (oc) oc.style.boxShadow = '0 0 26px rgba(34,211,110,.75)';
+      document.querySelectorAll('.pchip, .ochip').forEach(c => {
+         c.className = c.className.replace(/filled-rev|filled-cae|lit-yellow|lit-rev|landed/g, '').trim();
+      });
+      document.querySelectorAll('[id^="loch-"], [id^="lrch-"], [id^="rsch-"], [id^="ocv-"]').forEach(el => el.textContent = '·');
+      document.querySelectorAll('[id^="ocv-"]').forEach(el => el.textContent = ' ');
+      
+      // Render Phase 1 state
+      for(let i = 0; i < n; i++) {
+         if(currentStep >= i) {
+            const slot = document.getElementById(`lo-${i}`);
+            const ch = document.getElementById(`loch-${i}`);
+            if (slot && ch) {
+               ch.textContent = raw[i];
+               slot.classList.add('filled-rev');
+            }
+         }
       }
-      await sleep(320);
-      for (let i = 0; i < n; i++) {
-        const oc = document.getElementById(`oc-${i}`);
-        if (oc) oc.style.boxShadow = '0 0 10px rgba(34,211,110,.22)';
+      
+      if(currentStep >= n - 1) {
+         leftDiv.textContent = '↓   mirror positions   ↓';
+         vis(leftDiv, true);
+         leftDiv.classList.add('cyan');
+         
+         for(let i=0; i<n; i++) {
+            const dstSlot = document.getElementById(`lr-${i}`);
+            const ch = document.getElementById(`lrch-${i}`);
+            if(dstSlot && ch) {
+                ch.textContent = rev[i];
+                dstSlot.classList.add('filled-rev');
+            }
+         }
       }
-
-      /* Info panel */
-      infoGrid.innerHTML = `
-    <div class="irow">
-      <div class="irow-lbl">INPUT</div>
-      <div class="irow-val" style="color:var(--purple)">${raw}</div>
-    </div>
-    <div class="irow">
-      <div class="irow-lbl">AFTER REVERSE</div>
-      <div class="irow-val" style="color:var(--cyan)">${rev}</div>
-    </div>
-    <div class="irow">
-      <div class="irow-lbl">SHIFT APPLIED</div>
-      <div class="irow-val" style="color:var(--yellow)">${shift >= 0 ? '+' : ''}${shift} positions</div>
-    </div>
-    <div class="irow">
-      <div class="irow-lbl">FINAL OUTPUT</div>
-      <div class="irow-val" style="color:var(--green)">${finalWord}</div>
-    </div>
-    <div class="formula">
-      <span class="pu">Step 1 · Spin back:</span> Read the word backwards — last letter becomes first.<br>
-      &nbsp;&nbsp;<em>${raw}</em> → <strong>${rev}</strong><br><br>
-      <span class="pu">Step 2 · Click forward:</span> Each reversed letter shifts by <strong>${shift >= 0 ? '+' : ''}${shift}</strong> in the alphabet.<br>
-      &nbsp;&nbsp;<em>${rev}</em> → <span class="gr">${finalWord}</span><br><br>
-      <span class="pu">Why two steps?</span> Reversing alone is easy to crack. Shifting alone is easy to crack. Together, <span class="gr">the combo is much harder</span> — like a padlock that needs both the spin and the click.
-    </div>
-  `;
-      vis(infoPanel, true);
-
-      running = false;
-      goBtn.disabled = false;
+      
+      // Render Phase 2 state
+      let lastSrc = null, lastDst = null;
+      for(let i=0; i < n; i++) {
+         if(currentStep >= n + i) {
+             const ch = rev[i];
+             const srcIdx = ALPHA.indexOf(ch);
+             const dstIdx = ((srcIdx + shift) % 26 + 26) % 26;
+             const dstCh = ALPHA[dstIdx];
+             
+             const dstChip = document.getElementById(`rs-${i}`);
+             const ch2 = document.getElementById(`rsch-${i}`);
+             if (dstChip && ch2) {
+               ch2.textContent = dstCh;
+               dstChip.classList.add('filled-cae');
+             }
+             
+             const oc = document.getElementById(`oc-${i}`);
+             const ocv = document.getElementById(`ocv-${i}`);
+             if (oc && ocv) { ocv.textContent = dstCh; oc.classList.add('landed'); }
+             
+             if(currentStep === n + i) {
+                 lastSrc = srcIdx;
+                 lastDst = dstIdx;
+                 const revChip = document.getElementById(`lr-${i}`);
+                 if (revChip) revChip.classList.add('lit-yellow');
+                 setStatus(`"${ch}" (pos ${srcIdx}) + ${shift >= 0 ? '+' : ''}${shift} = pos ${dstIdx} → "${dstCh}"`);
+             }
+         }
+      }
+      
+      if(lastSrc !== null && lastDst !== null) {
+          const tapeDst = 26 + lastSrc + shift;
+          setTapePos(tapeDst < 0 ? tapeDst + 26 : tapeDst >= 78 ? tapeDst - 26 : tapeDst, true, 300);
+          document.getElementById(`tc-1-${lastDst}`)?.classList.add('tape-dst') || document.getElementById(`tc-0-${lastDst}`)?.classList.add('tape-dst');
+      }
+      
+      if (currentStep === (n * 2) - 1) {
+         setStatus(`Done! "${raw}" → reversed "${rev}" → encoded "${finalWord}"`);
+         rightPanel.classList.remove('active-phase');
+         lockLabel2.classList.remove('active');
+         
+         infoGrid.innerHTML = `
+        <div class="irow">
+          <div class="irow-lbl">INPUT</div>
+          <div class="irow-val" style="color:var(--purple)">${raw}</div>
+        </div>
+        <div class="irow">
+          <div class="irow-lbl">AFTER REVERSE</div>
+          <div class="irow-val" style="color:var(--cyan)">${rev}</div>
+        </div>
+        <div class="irow">
+          <div class="irow-lbl">SHIFT APPLIED</div>
+          <div class="irow-val" style="color:var(--yellow)">${shift >= 0 ? '+' : ''}${shift} positions</div>
+        </div>
+        <div class="irow">
+          <div class="irow-lbl">FINAL OUTPUT</div>
+          <div class="irow-val" style="color:var(--green)">${finalWord}</div>
+        </div>
+        <div class="formula">
+          <span class="pu">Step 1 · Spin back:</span> Read the word backwards — last letter becomes first.<br>
+          &nbsp;&nbsp;<em>${raw}</em> → <strong>${rev}</strong><br><br>
+          <span class="pu">Step 2 · Click forward:</span> Each reversed letter shifts by <strong>${shift >= 0 ? '+' : ''}${shift}</strong> in the alphabet.<br>
+          &nbsp;&nbsp;<em>${rev}</em> → <span class="gr">${finalWord}</span><br><br>
+          <span class="pu">Why two steps?</span> Reversing alone is easy to crack. Shifting alone is easy to crack. Together, <span class="gr">the combo is much harder</span> — like a padlock that needs both the spin and the click.
+        </div>
+        `;
+        vis(infoPanel, true);
+      } else {
+        vis(infoPanel, false);
+      }
     }
 
     /* ── Events ── */
-    if (goBtn) goBtn.addEventListener('click', runDemo);
-    if (replayBtn) replayBtn.addEventListener('click', runDemo);
-    wordInput.addEventListener('keydown', e => { if (e.key === 'Enter') runDemo(); });
-    document.getElementById('nextBtn').addEventListener('click', () => {
-      window.location.href = "level2.2.html";
-    });
-
-    const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-    if (pauseResumeBtn) {
-        pauseResumeBtn.addEventListener('click', () => {
-            if (!running) return;
-            isPaused = !isPaused;
-            pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
-        });
+    if (goBtn) {
+       goBtn.addEventListener('click', () => {
+          if (currentStep === -1) {
+             goBtn.disabled = true;
+             renderStep(0);
+          }
+       });
     }
-
-    const speedUp = document.getElementById('speedUp');
-    const speedDown = document.getElementById('speedDown');
-    const sDisplay = document.getElementById('speedDisplay');
-
-    if (speedUp && speedDown && sDisplay) {
-        speedUp.addEventListener("click", () => {
-            if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-        });
-        speedDown.addEventListener("click", () => {
-            if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-        });
+    if (replayBtn) {
+       replayBtn.addEventListener('click', () => {
+          if (goBtn) goBtn.disabled = false;
+          resetDemo();
+       });
+    }
+    
+    if (prevStepBtn) prevStepBtn.addEventListener('click', () => { if(currentStep > -1) renderStep(currentStep - 1); });
+    if (nextStepBtn) nextStepBtn.addEventListener('click', () => { if(currentStep > -1) renderStep(currentStep + 1); });
+    
+    wordInput.addEventListener('keydown', e => { if (e.key === 'Enter') resetDemo(); });
+    if (btnNext) {
+      btnNext.addEventListener('click', () => {
+        window.location.href = "level2.2.html";
+      });
     }
 
     /* ── Init ── */
     updateShift();
-    buildTape();
-    vis(splitSec, true);
-    vis(outputSec, true);
+    resetDemo();
 </script>
 </body>
 

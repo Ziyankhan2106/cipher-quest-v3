@@ -877,7 +877,177 @@
             transform-origin: top center;
         }
     }
-</style>
+
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    .step-btn {
+      border-radius: 6px !important;
+      background: rgba(89, 242, 255, 0.1) !important;
+      border: 1px solid rgba(89, 242, 255, 0.4) !important;
+      color: #59f2ff !important;
+    }
+    .step-btn:hover:not(:disabled) {
+      background: rgba(89, 242, 255, 0.2) !important;
+      box-shadow: 0 0 10px rgba(89, 242, 255, 0.3) !important;
+    }
+    .step-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .next-cipher-btn {
+      background: #ffdd57 !important;
+      color: #000 !important;
+      border: none !important;
+      border-radius: 999px !important;
+      font-weight: 800 !important;
+    }
+    .next-cipher-btn:hover {
+      box-shadow: 0 0 16px rgba(255, 221, 87, 0.6) !important;
+    }
+    
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
+    </style>
     <script src="global_controls.js"></script>
 </head>
 
@@ -944,16 +1114,12 @@
 
         <!-- FOOTER -->
         <div class="footer">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <button class="foot-btn" id="pauseResumeBtn">Pause</button>
-                <button class="foot-btn" id="replayBtn">↩ Restart</button>
+            <div style="display:flex; gap:12px;">
+                <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+                <button class="foot-btn step-btn" id="nextStep" disabled>Next Step</button>
+                <button class="foot-btn" id="replayBtn">Restart</button>
             </div>
-            <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-                <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-                <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-                <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-            </div>
-            <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
+            <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
         </div>
     </div>
 
@@ -968,35 +1134,19 @@
 "></div>
 
     <script>
-let speedMultiplier = 1.0;
         const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const WORD = 'CIPHER';
         const TW = 42;   // tape cell width
         const BASE = 1;    // shift starts at +1 for position 0
 
-        let running = false, ct = { cancelled: false };
-        let replayTimer = null, countdown = 2;
-        let isPlaying = true, stepRequested = false;
+        let currentStep = -1, n = 0;
+        let result = [], encoded = '';
 
         const $ = id => document.getElementById(id);
-        
-        let isPaused = false;
-        async function sleep(ms) {
-            let elapsed = 0;
-            while (elapsed < (ms / speedMultiplier)) {
-                if (ct.cancelled) return;
-                if (!isPaused) elapsed += 20;
-                await new Promise(r => setTimeout(r, 20));
-            }
-        }
-
         const vis = (el, on = true) => el.classList.toggle('vis', on);
-        const setStatus = t => $('statusTxt').textContent = t;
+        const setStatus = t => { if($('statusTxt')) $('statusTxt').textContent = t; };
 
-        async function waitForPlaybackStep() {
-            if (ct.cancelled) return;
-            await sleep(1000);
-        }
+        const prevStepBtn = $('prevStep'), nextStepBtn = $('nextStep'), btnNext = $('btn-next');
 
         /* ── Build triple alphabet tape ── */
         function buildTape() {
@@ -1078,282 +1228,155 @@ let speedMultiplier = 1.0;
             });
         }
 
-        /* ── Fly particle ── */
-        async function fly(srcEl, dstEl, letter, col, glow) {
-            if (!srcEl || !dstEl) return;
-            const flyer = $('flyer');
-            const sr = srcEl.getBoundingClientRect();
-            const dr = dstEl.getBoundingClientRect();
-            flyer.textContent = letter;
-            flyer.style.color = col;
-            flyer.style.border = `2px solid ${col}`;
-            flyer.style.boxShadow = `0 0 18px ${glow}`;
-            flyer.style.transition = 'none';
-            flyer.style.opacity = '1';
-            flyer.style.left = (sr.left + sr.width / 2 - 23) + 'px';
-            flyer.style.top = (sr.top + sr.height / 2 - 23) + 'px';
-
-            await sleep(50); if (ct.cancelled) { flyer.style.opacity = '0'; return; }
-
-            const tx = dr.left + dr.width / 2 - 23;
-            const ty = dr.top + dr.height / 2 - 23;
-            const dist = Math.hypot(tx - (sr.left + sr.width / 2 - 23), ty - (sr.top + sr.height / 2 - 23));
-            const ms = 260 + dist * 0.5;
-            flyer.style.transition = `left ${ms}ms cubic-bezier(0.4,0,0.2,1),top ${ms}ms cubic-bezier(0.4,0,0.2,1)`;
-            flyer.style.left = tx + 'px'; flyer.style.top = ty + 'px';
-            await sleep(ms);
-            flyer.style.opacity = '0';
-        }
-
-        /* ── Replay countdown ── */
-        function startReplayCountdown() {
-            countdown = 2;
-            $('rcd').textContent = `Replaying in ${countdown}s…`;
-            replayTimer = setInterval(() => {
-                countdown--;
-                if (countdown > 0) { $('rcd').textContent = `Replaying in ${countdown}s…`; }
-                else { clearInterval(replayTimer); $('rcd').textContent = 'Replaying…'; kickDemo(); }
-            }, 1000 / speedMultiplier);
-        }
-        function cancelReplay() {
-            if (replayTimer) { clearInterval(replayTimer); replayTimer = null; }
-            $('rcd').textContent = '';
-        }
-
-        /* ══ MAIN ANIMATION ══ */
-        async function runDemo() {
-            if (running) { ct.cancelled = true; await new Promise(r => setTimeout(r, 130)); }
-            ct = { cancelled: false }; running = true;
-            isPaused = false;
-            const pauseBtn = document.getElementById('pauseResumeBtn');
-            if (pauseBtn) pauseBtn.textContent = 'Pause';
-
-            const n = WORD.length;
-            const result = WORD.split('').map((ch, i) => {
-                const shift = i + BASE;            // +1, +2, +3, +4, +5, +6
+        function resetDemo() {
+            n = WORD.length;
+            result = WORD.split('').map((ch, i) => {
+                const shift = i + BASE;
                 const src = ALPHA.indexOf(ch);
                 const dst = ((src + shift) % 26 + 26) % 26;
                 return { ch, src, dst, enc: ALPHA[dst], shift, i };
             });
-            const encoded = result.map(r => r.enc).join('');
+            encoded = result.map(r => r.enc).join('');
 
-            /* ── Reset UI ── */
             vis($('infoPanel'), false);
             vis($('outputFinal'), false);
             $('tapeInner').innerHTML = '';
-            $('infoGrid').innerHTML = '';
-            $('flyer').style.opacity = '0';
-            $('progWrap').style.opacity = '0';
-            $('progFill').style.width = '0%';
-            $('progPct').textContent = '0%';
-            $('tapeOuter').classList.remove('glow');
-            $('tapeSec').style.opacity = '0';
+            if ($('infoGrid')) $('infoGrid').innerHTML = '';
+            if ($('flyer')) $('flyer').style.opacity = '0';
+            if ($('progWrap')) $('progWrap').style.opacity = '1';
+            if ($('progFill')) $('progFill').style.width = '0%';
+            if ($('progPct')) $('progPct').textContent = '0%';
+            if ($('tapeOuter')) $('tapeOuter').classList.remove('glow');
+            if ($('tapeSec')) $('tapeSec').style.opacity = '1';
 
             buildTape();
             buildStaircase(result);
-            setTapePos(26, false);
+            setTapePos(26);
 
-            /* ── Intro ── */
             setStatus('CIPHER loaded · shifts grow with each position…');
-            await sleep(600); if (ct.cancelled) { running = false; return; }
+            
+            document.querySelectorAll('.stair-row').forEach(row => {
+                row.classList.add('vis');
+                row.classList.remove('active-row');
+            });
+            
+            currentStep = -1;
+            updateButtons();
+        }
 
-            /* Stagger-in stair rows */
-            for (let i = 0; i < n; i++) {
-                if (ct.cancelled) { running = false; return; }
-                $(`sr-${i}`)?.classList.add('vis');
-                await sleep(160);
-            }
-            await sleep(500); if (ct.cancelled) { running = false; return; }
-            await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
+        function updateButtons() {
+            if (prevStepBtn) prevStepBtn.disabled = currentStep < 0;
+            if (nextStepBtn) nextStepBtn.disabled = currentStep >= n;
+        }
 
-            /* Show progress bar */
-            $('progWrap').style.opacity = '1';
-            $('tapeSec').style.opacity = '1';
-            $('tapeOuter').classList.add('glow');
-            await sleep(400); if (ct.cancelled) { running = false; return; }
-            await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
-
-            /* ══ ENCODE EACH LETTER ══ */
-            for (let i = 0; i < n; i++) {
-                if (ct.cancelled) { running = false; return; }
-                const r = result[i];
-
-                /* Activate stair row */
-                document.querySelectorAll('.stair-row').forEach(row => row.classList.remove('active-row'));
-                $(`sr-${i}`)?.classList.add('active-row');
-                $(`si-${i}`)?.classList.add('active');
-
-                /* Update tape label */
-                $('tapeCurrLabel').textContent = `"${r.ch}" at pos ${r.i} · shifting +${r.shift}`;
-                setStatus(`[${r.i}] "${r.ch}" at pos ${r.i} · shift = pos+1 = +${r.shift} → "${r.enc}"`);
-
-                /* Snap tape to source (mid rep) */
-                const tapeSrc = 26 + r.src;
-                setTapePos(tapeSrc, false);
-                clearTapeHL();
-                $(`tc-${tapeSrc}`)?.classList.add('tsrc');
-                await sleep(400); if (ct.cancelled) { running = false; return; }
-
-                /* Fly letter from stair-in to tape */
-                const sinEl = $(`si-${i}`);
-                const tapeEl = $('tapeOuter');
-                await fly(sinEl, tapeEl, r.ch, '#b97fff', 'rgba(185,127,255,0.75)');
-                if (ct.cancelled) { running = false; return; }
-
-                /* ── Animate step marks one by one ── */
-                setStatus(`Counting ${r.shift} steps forward on the tape…`);
-                let tapeDst = tapeSrc;
-                const stepMs = Math.max(60, Math.min(140, 700 / r.shift));
-
-                for (let s = 0; s < r.shift; s++) {
-                    if (ct.cancelled) { running = false; return; }
-                    tapeDst++;
-                    if (tapeDst >= 78) tapeDst -= 26;
-
-                    /* Light up step mark */
-                    $(`sm-${i}-${s}`)?.classList.add('lit');
-
-                    /* Scroll tape one step */
-                    setTapePos(tapeDst, true, stepMs * 1.1);
-                    await sleep(stepMs);
-                }
-                await sleep(200); if (ct.cancelled) { running = false; return; }
-
-                /* Highlight destination */
-                clearTapeHL();
-                $(`tc-${26 + r.dst}`)?.classList.add('tdst') || $(`tc-${r.dst}`)?.classList.add('tdst');
-
-                /* Fill the bar */
-                $(`bf-${i}`)?.classList.add('filled');
-                await sleep(350); if (ct.cancelled) { running = false; return; }
-
-                /* Fly encoded letter from tape to stair-out */
-                const soEl = $(`so-${i}`);
-                await fly(tapeEl, soEl, r.enc, '#59f2ff', 'rgba(89,242,255,0.75)');
-                if (ct.cancelled) { running = false; return; }
-
-                /* Land output */
-                const soeEl = $(`soe-${i}`);
-                if (soEl && soeEl) { soeEl.textContent = r.enc; soEl.classList.add('landed'); }
-
-                /* Mark row done */
-                $(`si-${i}`)?.classList.remove('active');
-                $(`si-${i}`)?.classList.add('done');
-
-                /* Progress bar */
-                const pct = Math.round(((i + 1) / n) * 100);
-                $('progFill').style.width = pct + '%';
-                $('progPct').textContent = pct + '%';
-
-                await sleep(320);
-                await waitForPlaybackStep(); if (ct.cancelled) { running = false; return; }
-            }
-
-            /* ── ALL DONE ── */
-            document.querySelectorAll('.stair-row').forEach(r => r.classList.remove('active-row'));
-            $('flyer').style.opacity = '0';
-            $('tapeCurrLabel').textContent = 'all letters encoded';
-            setStatus(`Complete · CIPHER → ${encoded}`);
+        function renderStep(step) {
+            if (step < -1) return;
+            if (step > n) return;
+            
+            currentStep = step;
+            updateButtons();
+            
+            // Reset state
             clearTapeHL();
-
-            /* Pulse all outputs */
-            document.querySelectorAll('.stair-out').forEach(el => {
-                el.style.boxShadow = '0 0 28px rgba(89,242,255,.85)';
-            });
-            await sleep(380);
-            document.querySelectorAll('.stair-out').forEach(el => {
-                el.style.boxShadow = '0 0 10px rgba(89,242,255,.22)';
-            });
-
-            /* Reveal final output row */
-            vis($('outputFinal'), true);
-            await sleep(300); if (ct.cancelled) { running = false; return; }
+            document.querySelectorAll('.stair-row').forEach(r => r.classList.remove('active-row'));
+            document.querySelectorAll('.stair-in').forEach(s => { s.classList.remove('active', 'done'); });
+            document.querySelectorAll('.stair-out').forEach(s => { s.classList.remove('landed'); });
+            document.querySelectorAll('.stair-bar-fill').forEach(b => b.classList.remove('filled'));
+            document.querySelectorAll('.step-mark').forEach(sm => sm.classList.remove('lit'));
+            document.querySelectorAll('.sout-enc').forEach(se => se.textContent = ' ');
             for (let i = 0; i < n; i++) {
-                $(`ofl-${i}`)?.classList.add('show');
-                await sleep(90);
+                if ($(`ofl-${i}`)) $(`ofl-${i}`).classList.remove('show');
             }
-            await sleep(350); if (ct.cancelled) { running = false; return; }
-
-            /* Info panel */
-            $('infoGrid').innerHTML = `
-    <div class="irow">
-      <div class="irow-lbl">Input</div>
-      <div class="irow-val fm">CIPHER</div>
-    </div>
-    <div class="irow">
-      <div class="irow-lbl">Output</div>
-      <div class="irow-val fx">${encoded}</div>
-    </div>
-    <div class="irow">
-      <div class="irow-lbl">Shift pattern</div>
-      <div class="irow-val fy">+1 +2 +3 +4 +5 +6</div>
-    </div>
-    <div class="irow">
-      <div class="irow-lbl">Letter map</div>
-      <div class="irow-val fx" style="font-size:10px;letter-spacing:.04em">
-        ${result.map(r => `${r.ch}→${r.enc}`).join('  ')}
-      </div>
-    </div>
-    <div class="formula">
-<span class="fm">Rule :</span>  shift[i] = i + 1
-
-<span class="fy">C</span> [0] + 1 = <span class="fx">${result[0].enc}</span>   <span class="fy">I</span> [1] + 2 = <span class="fx">${result[1].enc}</span>   <span class="fy">P</span> [2] + 3 = <span class="fx">${result[2].enc}</span>
-<span class="fy">H</span> [3] + 4 = <span class="fx">${result[3].enc}</span>   <span class="fy">E</span> [4] + 5 = <span class="fx">${result[4].enc}</span>   <span class="fy">R</span> [5] + 6 = <span class="fx">${result[5].enc}</span>
-
-<span class="fg">Why harder?</span> <span class="fm">Every position has a different shift. Even if you
-crack one letter, the others all use different keys.</span></div>
-  `;
-            vis($('infoPanel'), true);
-
-            await sleep(800);
-            running = false;
-            startReplayCountdown();
+            if ($('tapeOuter')) $('tapeOuter').classList.remove('glow');
+            
+            if (currentStep === -1) {
+                setStatus('CIPHER loaded · shifts grow with each position…');
+                setTapePos(26);
+                vis($('infoPanel'), false);
+                vis($('outputFinal'), false);
+                if ($('progFill')) $('progFill').style.width = '0%';
+                if ($('progPct')) $('progPct').textContent = '0%';
+                return;
+            }
+            
+            if (currentStep === n) {
+                $('tapeCurrLabel').textContent = 'all letters encoded';
+                setStatus(`Complete · CIPHER → ${encoded}`);
+                if ($('progFill')) $('progFill').style.width = '100%';
+                if ($('progPct')) $('progPct').textContent = '100%';
+                
+                for (let i = 0; i < n; i++) {
+                    $(`si-${i}`)?.classList.add('done');
+                    $(`bf-${i}`)?.classList.add('filled');
+                    const r = result[i];
+                    for(let s = 0; s < r.shift; s++) $(`sm-${i}-${s}`)?.classList.add('lit');
+                    if ($(`soe-${i}`)) $(`soe-${i}`).textContent = r.enc;
+                    $(`so-${i}`)?.classList.add('landed');
+                    $(`ofl-${i}`)?.classList.add('show');
+                }
+                
+                vis($('outputFinal'), true);
+                if ($('infoGrid')) {
+                    $('infoGrid').innerHTML = `
+                      <div class="irow"><div class="irow-lbl">Input</div><div class="irow-val fm">CIPHER</div></div>
+                      <div class="irow"><div class="irow-lbl">Output</div><div class="irow-val fx">${encoded}</div></div>
+                      <div class="irow"><div class="irow-lbl">Shift pattern</div><div class="irow-val fy">+1 +2 +3 +4 +5 +6</div></div>
+                      <div class="irow"><div class="irow-lbl">Letter map</div><div class="irow-val fx" style="font-size:10px;letter-spacing:.04em">
+                        ${result.map(r => `${r.ch}→${r.enc}`).join('  ')}
+                      </div></div>
+                      <div class="formula"><span class="fm">Rule :</span> shift[i] = i + 1
+                      <span class="fy">C</span> [0] + 1 = <span class="fx">${result[0].enc}</span>   <span class="fy">I</span> [1] + 2 = <span class="fx">${result[1].enc}</span>   <span class="fy">P</span> [2] + 3 = <span class="fx">${result[2].enc}</span>
+                      <span class="fy">H</span> [3] + 4 = <span class="fx">${result[3].enc}</span>   <span class="fy">E</span> [4] + 5 = <span class="fx">${result[4].enc}</span>   <span class="fy">R</span> [5] + 6 = <span class="fx">${result[5].enc}</span>
+                      <span class="fg">Why harder?</span> <span class="fm">Every position has a different shift. Even if you crack one letter, the others all use different keys.</span></div>`;
+                }
+                vis($('infoPanel'), true);
+                return;
+            }
+            
+            // Render intermediate step
+            vis($('infoPanel'), false); vis($('outputFinal'), false);
+            
+            const pct = Math.round(((currentStep + 1) / n) * 100);
+            if ($('progFill')) $('progFill').style.width = pct + '%';
+            if ($('progPct')) $('progPct').textContent = pct + '%';
+            if ($('tapeOuter')) $('tapeOuter').classList.add('glow');
+            
+            for(let i=0; i <= currentStep; i++) {
+                const r = result[i];
+                if (i < currentStep) {
+                    $(`si-${i}`)?.classList.add('done');
+                    $(`bf-${i}`)?.classList.add('filled');
+                    for(let s = 0; s < r.shift; s++) $(`sm-${i}-${s}`)?.classList.add('lit');
+                    if ($(`soe-${i}`)) $(`soe-${i}`).textContent = r.enc;
+                    $(`so-${i}`)?.classList.add('landed');
+                } else if (i === currentStep) {
+                    $(`sr-${i}`)?.classList.add('active-row');
+                    $(`si-${i}`)?.classList.add('active');
+                    if ($('tapeCurrLabel')) $('tapeCurrLabel').textContent = `"${r.ch}" at pos ${r.i} · shifting +${r.shift}`;
+                    setStatus(`[${r.i}] "${r.ch}" at pos ${r.i} · shift = pos+1 = +${r.shift} → "${r.enc}"`);
+                    
+                    let tapeDst = 26 + r.src + r.shift;
+                    setTapePos(tapeDst);
+                    $(`tc-${tapeDst}`)?.classList.add('tdst');
+                    
+                    $(`bf-${i}`)?.classList.add('filled');
+                    for(let s = 0; s < r.shift; s++) $(`sm-${i}-${s}`)?.classList.add('lit');
+                    if ($(`soe-${i}`)) $(`soe-${i}`).textContent = r.enc;
+                    $(`so-${i}`)?.classList.add('landed');
+                }
+            }
         }
 
-        function kickDemo() { cancelReplay(); runDemo(); }
-        
-        const replayBtn = document.getElementById('replayBtn');
-        if (replayBtn) replayBtn.addEventListener('click', kickDemo);
-
-        const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-        if (pauseResumeBtn) {
-            pauseResumeBtn.addEventListener('click', () => {
-                if (!running) return;
-                isPaused = !isPaused;
-                pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
-            });
-        }
-
-        const speedUp = document.getElementById('speedUp');
-        const speedDown = document.getElementById('speedDown');
-        const sDisplay = document.getElementById('speedDisplay');
-
-        if (speedUp && speedDown && sDisplay) {
-            speedUp.addEventListener("click", () => {
-                if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-                sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-            });
-            speedDown.addEventListener("click", () => {
-                if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-                sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-            });
-        }
-
-        const nextBtn = document.getElementById('nextBtn');
-        if (nextBtn) {
-            nextBtn.addEventListener('click', () => {
+        if (prevStepBtn) prevStepBtn.addEventListener('click', () => renderStep(currentStep - 1));
+        if (nextStepBtn) nextStepBtn.addEventListener('click', () => renderStep(currentStep + 1));
+        if (replayBtn) replayBtn.addEventListener('click', resetDemo);
+        if (btnNext) {
+            btnNext.addEventListener('click', () => {
                 window.location.href = "level2.4.html";
             });
         }
 
-        /* ── Boot ── */
-        buildTape();
-        buildStaircase(WORD.split('').map((ch, i) => ({
-            ch, src: ALPHA.indexOf(ch), shift: i + BASE,
-            dst: ((ALPHA.indexOf(ch) + i + BASE) % 26 + 26) % 26,
-            enc: ALPHA[((ALPHA.indexOf(ch) + i + BASE) % 26 + 26) % 26], i
-        })));
-        runDemo();
+        resetDemo();
 </script>
 </body>
 

@@ -733,7 +733,173 @@
       background: rgba(185, 127, 255, 0.12);
       box-shadow: 0 0 14px rgba(185, 127, 255, 0.3);
     }
-  </style>
+  
+        #speedDown,
+        #speedUp {
+            width: 28px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            padding: 0;
+            border: 1px solid rgba(89, 242, 255, 0.36);
+            border-radius: 999px;
+            background: rgba(89, 242, 255, 0.08);
+            color: #59f2ff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+
+        #speedDown:hover,
+        #speedUp:hover {
+            background: rgba(89, 242, 255, 0.16);
+            box-shadow: 0 0 14px rgba(89, 242, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        #speedDisplay {
+            min-width: 44px;
+            color: #dffbff;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        #btn-play,
+        #btn-step,
+        #btn-next,
+        #replay,
+        #replayBtn,
+        #replayNow,
+        #nextBtn,
+        .btn,
+        .foot-btn {
+            min-height: 34px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        #btn-play,
+        #replay,
+        #replayBtn,
+        #replayNow {
+            border: 1px solid rgba(89, 242, 255, 0.46);
+            background: rgba(89, 242, 255, 0.10);
+            color: #59f2ff;
+        }
+
+        #btn-next,
+        #btn-step,
+        #nextBtn,
+        .foot-btn.primary {
+            border: 1px solid rgba(255, 221, 87, 0.46);
+            background: rgba(255, 221, 87, 0.10);
+            color: #ffdd57;
+        }
+
+        #btn-play:hover,
+        #btn-step:hover,
+        #btn-next:hover,
+        #replay:hover,
+        #replayBtn:hover,
+        #replayNow:hover,
+        #nextBtn:hover {
+            box-shadow: 0 0 16px rgba(89, 242, 255, 0.22);
+        }
+
+    
+        .step-btn {
+            background: #59f2ff !important;
+            color: #000 !important;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px) !important;
+            border: none !important;
+            border-radius: 0 !important;
+            font-weight: 800 !important;
+        }
+        .step-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed !important;
+        }
+        .next-cipher-btn {
+            background: #ffdd57 !important;
+            color: #000 !important;
+            border: none !important;
+            font-weight: 800 !important;
+        }
+
+    
+    
+    /* -- PERFECTED BUTTON STYLES -- */
+    .foot-btn, .step-btn, .next-cipher-btn, .go-btn, #goBtn, #replayBtn, #btn-next, #prevStep, #nextStep, #startBtn, #nextBtn {
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        clip-path: none !important;
+        min-height: auto !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
+    }
+
+    /* NEXT STEP & PREV STEP */
+    #prevStep, #nextStep, .step-btn:not(#goBtn):not(#startBtn):not(.go-btn) {
+        background: #59f2ff !important;
+        color: #000 !important;
+        border: 1px solid #59f2ff !important;
+        opacity: 1 !important;
+    }
+
+    #prevStep:disabled, #nextStep:disabled, .step-btn:disabled {
+        background: rgba(89, 242, 255, 0.4) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid transparent !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #prevStep:hover:not(:disabled), #nextStep:hover:not(:disabled), .step-btn:hover:not(:disabled) {
+        box-shadow: 0 0 14px rgba(89, 242, 255, 0.4) !important;
+    }
+
+    /* RESTART & START */
+    #replayBtn, #goBtn, #startBtn, .go-btn, #replay, #replayNow {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    #replayBtn:hover:not(:disabled), #goBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), .go-btn:hover:not(:disabled), #replay:hover:not(:disabled), #replayNow:hover:not(:disabled) {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* NEXT CIPHER */
+    #btn-next, .next-cipher-btn, #nextBtn {
+        background: #ffdd57 !important;
+        color: #000 !important;
+        border: 1px solid #ffdd57 !important;
+    }
+    #btn-next:hover, .next-cipher-btn:hover, #nextBtn:hover {
+        box-shadow: 0 0 16px rgba(255, 221, 87, 0.5) !important;
+    }
+
+    </style>
     <script src="global_controls.js"></script>
 </head>
 
@@ -811,31 +977,39 @@
     </div><!-- /stage -->
 
     <!-- FOOTER -->
-    <div class="footer">
-        <div style="display:flex; align-items:center; gap:12px;">
-            <button class="foot-btn" id="pauseResumeBtn">Pause</button>
-            <button class="foot-btn" id="replayBtn">↩ Restart</button>
+        <div class="footer">
+            <div style="display:flex; gap:12px;">
+                <button class="foot-btn step-btn" id="prevStep" disabled>Prev Step</button>
+                <button class="foot-btn step-btn" id="nextStep">Next Step</button>
+                <button class="foot-btn" id="replayBtn">Restart</button>
+            </div>
+            <button class="foot-btn next-cipher-btn" id="btn-next">Next Cipher →</button>
         </div>
-        <div class="speed-controls" style="display:flex; align-items:center; gap:8px;">
-            <button class="foot-btn" id="speedDown" title="Slower" style="padding:4px 10px; font-weight:900;">-</button>
-            <span class="timer" id="speedDisplay" style="font-variant-numeric: tabular-nums; font-size:12px;">1.00x</span>
-            <button class="foot-btn" id="speedUp" title="Faster" style="padding:4px 10px; font-weight:900;">+</button>
-        </div>
-        <button class="foot-btn primary" id="nextBtn">Next Cipher →</button>
-    </div>
 
   </div>
 
   <script>
-let speedMultiplier = 1.0;
     const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let running = false;
-    let ct = { cancelled: false };
+    
+    let currentStep = -1;
+    let isAnimating = false;
+    const raw = 'CIPHER';
+    const word = raw.split('');
+    const n = word.length;
+    const results = word.map(ch => {
+        const srcIdx = ALPHA.indexOf(ch);
+        const dstIdx = 25 - srcIdx;
+        const dstCh = ALPHA[dstIdx];
+        return { ch, srcIdx, dstIdx, dstCh };
+    });
 
     /* ── DOM ── */
     const wordInput = document.getElementById('wordInput');
-    const goBtn = document.getElementById('goBtn') || { disabled: false, addEventListener: () => {} };
     const replayBtn = document.getElementById('replayBtn');
+    const prevStepBtn = document.getElementById('prevStep');
+    const nextStepBtn = document.getElementById('nextStep');
+    const btnNext = document.getElementById('btn-next');
+    
     const statusTxt = document.getElementById('statusTxt');
     const wordDisplay = document.getElementById('wordDisplay');
     const mirrorSec = document.getElementById('mirrorSection');
@@ -851,16 +1025,8 @@ let speedMultiplier = 1.0;
     const infoGrid = document.getElementById('infoGrid');
 
     /* ── Helpers ── */
-    let isPaused = false;
     async function sleep(ms) {
-        let elapsed = 0;
-        while (elapsed < (ms / speedMultiplier)) {
-            if (ct.cancelled) return;
-            if (!isPaused) {
-                elapsed += 20;
-            }
-            await new Promise(r => setTimeout(r, 20));
-        }
+        await new Promise(r => setTimeout(r, ms));
     }
     const vis = (el, on = true) => el.classList.toggle('vis', on);
     const setStatus = t => statusTxt.textContent = t;
@@ -870,14 +1036,12 @@ let speedMultiplier = 1.0;
       topRow.innerHTML = '';
       botRow.innerHTML = '';
       for (let i = 0; i < 26; i++) {
-        // Top: A-Z
         const t = document.createElement('div');
         t.className = 'alpha-cell';
         t.id = 'top' + i;
         t.innerHTML = `<span>${ALPHA[i]}</span><span class="apos">${i}</span>`;
         topRow.appendChild(t);
 
-        // Bottom: Z-A (mirror)
         const b = document.createElement('div');
         b.className = 'alpha-cell';
         b.id = 'bot' + i;
@@ -895,6 +1059,7 @@ let speedMultiplier = 1.0;
         chip.className = 'letter-chip';
         chip.id = 'wchip' + i;
         chip.innerHTML = `<span>${ch}</span><span class="idx">[${i}]</span>`;
+        chip.style.opacity = '1';
         wordDisplay.appendChild(chip);
 
         const oc = document.createElement('div');
@@ -920,6 +1085,7 @@ let speedMultiplier = 1.0;
     /* ── Get cell left center (% of block width) ── */
     function getCellLeft(idx) {
       const cell = document.getElementById('top' + idx);
+      if(!cell) return 0;
       const block = mirrorBlock.getBoundingClientRect();
       const rect = cell.getBoundingClientRect();
       return rect.left - block.left + rect.width / 2;
@@ -934,228 +1100,174 @@ let speedMultiplier = 1.0;
       document.querySelectorAll('.pair-pill').forEach(p => p.classList.remove('active-pair'));
     }
 
-    /* ── Animate beam from src col to dst col ── */
-    async function animateBeam(srcIdx, dstIdx) {
-      // Move beam to src column (top)
-      const srcLeft = getCellLeft(srcIdx);
-      beamCol.style.transition = 'none';
-      beamCol.style.left = srcLeft + 'px';
-      beamCol.style.transform = 'translateX(-50%)';
-      beamCol.classList.add('active');
-
-      await sleep(50);
-      if (ct.cancelled) return;
-
-      // If src !== dst, slide beam across to dst column
-      if (srcIdx !== dstIdx) {
-        const dstLeft = getCellLeft(dstIdx);
-        beamCol.style.transition = `left ${0.5 + Math.abs(srcIdx - dstIdx) * 0.025}s cubic-bezier(0.4,0,0.2,1)`;
-        beamCol.style.left = dstLeft + 'px';
-        await sleep(600 + Math.abs(srcIdx - dstIdx) * 25);
-        if (ct.cancelled) return;
-      }
-    }
-
-    /* ── Main ── */
-    async function runDemo() {
-      if (running) { ct.cancelled = true; await new Promise(r => setTimeout(r, 80)); }
-      ct = { cancelled: false };
-      running = true;
-      isPaused = false;
-      if (document.getElementById('pauseResumeBtn')) document.getElementById('pauseResumeBtn').textContent = 'Pause';
-      goBtn.disabled = true;
-
-      const raw = 'CIPHER';
-      wordInput.value = raw;
-      const word = raw.split('');
-      const n = word.length;
-
-      // Reset
-      vis(mirrorSec, false);
-      vis(pairLegend, false);
-      vis(infoPanel, false);
-      outputLbl.classList.remove('vis');
-      infoGrid.innerHTML = '';
-      beamCol.classList.remove('active');
-
-      buildRows();
-      buildChips(raw);
-      buildPairLegend();
-
-      // ── Fade in input chips
-      setStatus('Initializing mirror engine…');
-      await sleep(400);
-      if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-      for (let i = 0; i < n; i++) {
-        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-        const chip = document.getElementById('wchip' + i);
-        chip.style.transition = 'opacity .35s, transform .35s';
-        chip.style.opacity = '1';
-        await sleep(110);
-      }
-
-      await sleep(500);
-      if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-      // Reveal mirror grid
-      vis(mirrorSec, true);
-      vis(outputLbl, true);
-      await sleep(600);
-      if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-      // ── Show all 26 pairs softly first ──
-      setStatus('Mapping alphabet mirror…');
-      for (let i = 0; i < 26; i++) {
-        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-        document.getElementById('top' + i).classList.add('pair-soft');
-        document.getElementById('bot' + i).classList.add('pair-soft');
-        await sleep(30);
-      }
-      await sleep(500);
-      if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-      // ── Process each letter ──
-      const results = [];
-      for (let i = 0; i < n; i++) {
-        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-        const ch = word[i];
-        const srcIdx = ALPHA.indexOf(ch);        // column in top row
-        const dstIdx = 25 - srcIdx;              // mirror column
-        const dstCh = ALPHA[dstIdx];
-        results.push({ ch, srcIdx, dstIdx, dstCh });
-
-        // Activate input chip
-        document.querySelectorAll('.letter-chip').forEach(c => c.classList.remove('active', 'done'));
-        const chip = document.getElementById('wchip' + i);
-        if (chip) chip.classList.add('active');
+    async function renderStep(step) {
+        if (isAnimating) return;
+        isAnimating = true;
 
         clearHighlights();
-        setStatus(`Reflecting "${ch}" (pos ${srcIdx}) → mirror pos ${dstIdx} = "${dstCh}"`);
-
-        // Light source in top row
-        document.getElementById('top' + srcIdx).classList.add('src-glow');
-
-        // Highlight pair pill
-        const pillIdx = Math.min(srcIdx, dstIdx);
-        const pill = document.getElementById('pill' + pillIdx);
-        if (pill) pill.classList.add('active-pair');
-
-        await sleep(350);
-        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-        // Animate beam across top then down
-        await animateBeam(srcIdx, dstIdx);
-        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-        // Light mirror cell in bottom row (bot column dstIdx is ALPHA[25-dstIdx] = ch's mirror)
-        document.getElementById('bot' + dstIdx).classList.add('dst-glow');
-        await sleep(350);
-        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
-
-        // Beam fades, output letter lands
+        document.querySelectorAll('.letter-chip').forEach(c => c.classList.remove('active', 'done'));
         beamCol.classList.remove('active');
 
-        const oc = document.getElementById('ochip' + i);
-        const ochr = document.getElementById('ochr' + i);
-        if (oc && ochr) { ochr.textContent = dstCh; oc.classList.add('landed'); }
+        if (step === -1) {
+            setStatus('Ready to reflect');
+            vis(mirrorSec, false);
+            vis(pairLegend, false);
+            vis(infoPanel, false);
+            outputLbl.classList.remove('vis');
+            infoGrid.innerHTML = '';
+            for(let i=0; i<n; i++) {
+                const oc = document.getElementById('ochip' + i);
+                if(oc) {
+                    oc.classList.remove('landed');
+                    document.getElementById('ochr' + i).textContent = ' ';
+                }
+            }
+            prevStepBtn.disabled = true;
+            nextStepBtn.disabled = false;
+            isAnimating = false;
+            return;
+        }
 
-        await sleep(400);
-        if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+        vis(mirrorSec, true);
+        vis(outputLbl, true);
+        vis(pairLegend, false);
+        vis(infoPanel, false);
 
-        if (chip) { chip.classList.remove('active'); chip.classList.add('done'); }
-        await sleep(200);
-      }
+        // Show all pairs softly
+        for (let i = 0; i < 26; i++) {
+            document.getElementById('top' + i).classList.add('pair-soft');
+            document.getElementById('bot' + i).classList.add('pair-soft');
+        }
 
-      /* ── All done ── */
-      setStatus(`Mirror complete · "${raw}" → "${results.map(r => r.dstCh).join('')}"`);
-      clearHighlights();
-      beamCol.classList.remove('active');
+        // Mark past as done
+        for (let i = 0; i < step; i++) {
+            document.getElementById('wchip' + i).classList.add('done');
+            const oc = document.getElementById('ochip' + i);
+            oc.classList.add('landed');
+            document.getElementById('ochr' + i).textContent = results[i].dstCh;
+        }
 
-      // Pulse output
-      for (let i = 0; i < n; i++) {
-        const oc = document.getElementById('ochip' + i);
-        if (oc) oc.style.boxShadow = '0 0 28px rgba(89,242,255,0.75)';
-      }
-      await sleep(300);
-      for (let i = 0; i < n; i++) {
-        const oc = document.getElementById('ochip' + i);
-        if (oc) oc.style.boxShadow = '0 0 10px rgba(89,242,255,0.22)';
-      }
+        if (step >= 0 && step < n) {
+            const r = results[step];
+            const activeChip = document.getElementById('wchip' + step);
+            activeChip.classList.add('active');
 
-      // Pair legend
-      vis(pairLegend, true);
-      await sleep(300);
-      if (ct.cancelled) { running = false; goBtn.disabled = false; return; }
+            setStatus(`Reflecting "${r.ch}" (pos ${r.srcIdx}) → mirror pos ${r.dstIdx} = "${r.dstCh}"`);
 
-      // Info panel
-      infoGrid.innerHTML = `
-    <div class="info-row">
-      <div class="info-row-label">INPUT</div>
-      <div class="info-row-val" style="color:var(--yellow)">${raw}</div>
-    </div>
-    <div class="info-row">
-      <div class="info-row-label">OUTPUT</div>
-      <div class="info-row-val" style="color:var(--cyan)">${results.map(r => r.dstCh).join('')}</div>
-    </div>
-    <div class="info-row">
-      <div class="info-row-label">CIPHER TYPE</div>
-      <div class="info-row-val" style="color:var(--purple)">SELF-INVERSE</div>
-    </div>
-    <div class="info-row">
-      <div class="info-row-label">LETTER MAP</div>
-      <div class="info-row-val" style="color:var(--cyan);font-size:10px;letter-spacing:.05em">
-        ${results.map(r => `${r.ch}→${r.dstCh}`).join('  ')}
-      </div>
-    </div>
-    <div class="formula">
-      <em>Formula:</em>&nbsp; encoded_pos = <strong>25 − plain_pos</strong><br>
-      <em>Example:</em>&nbsp; '${results[0].ch}' is pos <strong>${results[0].srcIdx}</strong>
-      &nbsp;→&nbsp; 25 − ${results[0].srcIdx} = <strong>${results[0].dstIdx}</strong>
-      &nbsp;→&nbsp; '<em>${results[0].dstCh}</em>'<br>
-      <span class="purple">◆ Atbash is self-inverse: encoding again gives back the original.</span>
-    </div>
-  `;
-      vis(infoPanel, true);
+            document.getElementById('top' + r.srcIdx).classList.add('src-glow');
+            const pillIdx = Math.min(r.srcIdx, r.dstIdx);
+            const pill = document.getElementById('pill' + pillIdx);
+            if (pill) pill.classList.add('active-pair');
 
-      running = false;
-      goBtn.disabled = false;
+            await sleep(150);
+
+            // Animate beam
+            const srcLeft = getCellLeft(r.srcIdx);
+            beamCol.style.transition = 'none';
+            beamCol.style.left = srcLeft + 'px';
+            beamCol.style.transform = 'translateX(-50%)';
+            beamCol.classList.add('active');
+
+            await sleep(50);
+
+            if (r.srcIdx !== r.dstIdx) {
+                const dstLeft = getCellLeft(r.dstIdx);
+                beamCol.style.transition = `left 0.4s cubic-bezier(0.4,0,0.2,1)`;
+                beamCol.style.left = dstLeft + 'px';
+                await sleep(400);
+            }
+
+            document.getElementById('bot' + r.dstIdx).classList.add('dst-glow');
+            await sleep(200);
+
+            beamCol.classList.remove('active');
+            
+            const oc = document.getElementById('ochip' + step);
+            document.getElementById('ochr' + step).textContent = r.dstCh;
+            oc.classList.add('landed');
+            
+            await sleep(200);
+            activeChip.classList.remove('active');
+            activeChip.classList.add('done');
+        } else if (step === n) {
+            for (let i = 0; i < n; i++) {
+                document.getElementById('wchip' + i).classList.add('done');
+                const oc = document.getElementById('ochip' + i);
+                oc.classList.add('landed');
+                document.getElementById('ochr' + i).textContent = results[i].dstCh;
+            }
+            
+            setStatus(`Mirror complete · "${raw}" → "${results.map(r => r.dstCh).join('')}"`);
+            clearHighlights();
+            vis(pairLegend, true);
+
+            infoGrid.innerHTML = `
+                <div class="info-row">
+                  <div class="info-row-label">INPUT</div>
+                  <div class="info-row-val" style="color:var(--yellow)">${raw}</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-label">OUTPUT</div>
+                  <div class="info-row-val" style="color:var(--cyan)">${results.map(r => r.dstCh).join('')}</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-label">CIPHER TYPE</div>
+                  <div class="info-row-val" style="color:var(--purple)">SELF-INVERSE</div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-label">LETTER MAP</div>
+                  <div class="info-row-val" style="color:var(--cyan);font-size:10px;letter-spacing:.05em">
+                    ${results.map(r => `${r.ch}→${r.dstCh}`).join('  ')}
+                  </div>
+                </div>
+                <div class="formula">
+                  <em>Formula:</em>&nbsp; encoded_pos = <strong>25 − plain_pos</strong><br>
+                  <em>Example:</em>&nbsp; '${results[0].ch}' is pos <strong>${results[0].srcIdx}</strong>
+                  &nbsp;→&nbsp; 25 − ${results[0].srcIdx} = <strong>${results[0].dstIdx}</strong>
+                  &nbsp;→&nbsp; '<em>${results[0].dstCh}</em>'<br>
+                  <span class="purple">◆ Atbash is self-inverse: encoding again gives back the original.</span>
+                </div>
+            `;
+            vis(infoPanel, true);
+        }
+
+        prevStepBtn.disabled = (step === -1);
+        nextStepBtn.disabled = (step === n);
+        isAnimating = false;
     }
 
-    /* ── Events ── */
-    goBtn.addEventListener('click', runDemo);
-    replayBtn.addEventListener('click', runDemo);
-    wordInput.addEventListener('keydown', e => { if (e.key === 'Enter') runDemo(); });
-    document.getElementById('nextBtn').addEventListener('click', () => {
-      window.location.href = "level1.4.html";
+    prevStepBtn.addEventListener('click', () => {
+        if (currentStep > -1 && !isAnimating) {
+            currentStep--;
+            renderStep(currentStep);
+        }
     });
 
-    const pauseResumeBtn = document.getElementById('pauseResumeBtn');
-    if (pauseResumeBtn) {
-        pauseResumeBtn.addEventListener('click', () => {
-            if (!running) return;
-            isPaused = !isPaused;
-            pauseResumeBtn.textContent = isPaused ? "Resume" : "Pause";
-        });
-    }
+    nextStepBtn.addEventListener('click', () => {
+        if (currentStep < n && !isAnimating) {
+            currentStep++;
+            renderStep(currentStep);
+        }
+    });
 
-    const speedUp = document.getElementById('speedUp');
-    const speedDown = document.getElementById('speedDown');
-    const sDisplay = document.getElementById('speedDisplay');
-    
-    if (speedUp && speedDown && sDisplay) {
-        speedUp.addEventListener("click", () => {
-            if (speedMultiplier < 2.0) speedMultiplier += 0.25;
-            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-        });
-        speedDown.addEventListener("click", () => {
-            if (speedMultiplier > 0.25) speedMultiplier -= 0.25;
-            sDisplay.textContent = speedMultiplier.toFixed(2) + "x";
-        });
-    }
+    replayBtn.addEventListener('click', () => {
+        if (isAnimating) return;
+        currentStep = -1;
+        renderStep(currentStep);
+    });
 
-    runDemo();
+    btnNext.addEventListener('click', () => {
+        window.location.href = "level1.4.html";
+    });
+
+    window.onload = () => {
+        buildRows();
+        buildChips(raw);
+        buildPairLegend();
+        setTimeout(() => {
+            renderStep(currentStep);
+        }, 50);
+    };
 </script>
 </body>
 
