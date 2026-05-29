@@ -959,6 +959,9 @@ def _mp_public_match_dict(mid: str, data: dict, viewer_uid: str):
         return None
     uids = data.get("uids") or []
     answers = data.get("answers") or {}
+    
+    round_start_at = data.get("roundStartAt")
+
     out = {
         "matchId": mid,
         "question": data.get("question"),
@@ -976,6 +979,7 @@ def _mp_public_match_dict(mid: str, data: dict, viewer_uid: str):
         "targetScore": data.get("targetScore", 1),
         "scores": data.get("scores") or {},
         "currentRound": data.get("currentRound", 1),
+        "roundStartAt": round_start_at,
         "myAnswered": viewer_uid in answers,
         "opponentAnswered": any(u != viewer_uid for u in answers.keys()),
         "answersCount": len(answers),
@@ -1219,6 +1223,7 @@ def mp_accept_invite(invite_id):
     enc_text, correct_answer, cipher_type, cipher_hint, xp_reward = generate_mp_question(match_level, [])
 
     start_at = int(time.time() * 1000)
+    round_start_at = start_at + 2000
     match_ref = get_db().collection("mp_matches").document()
     mid = match_ref.id
 
@@ -1244,6 +1249,7 @@ def mp_accept_invite(invite_id):
             "currentRound": 1,
             "usedWords": [correct_answer],
             "startAt": start_at,
+            "roundStartAt": round_start_at,
             "answers": {},
             "status": "open",
             "winnerUid": None,
@@ -1279,6 +1285,7 @@ def mp_accept_invite(invite_id):
         "xpReward": xp_reward,
         "matchLevel": match_level,
         "startAt": start_at,
+        "roundStartAt": round_start_at,
         "answers": {},
         "status": "open",
         "winnerUid": None,
@@ -1286,7 +1293,12 @@ def mp_accept_invite(invite_id):
         "resultReason": None,
     }
 
-    return jsonify({"ok": True, "matchId": mid, "match": _mp_public_match_dict(mid, match_data, my_uid)})
+    return jsonify({
+        "ok": True, 
+        "matchId": mid, 
+        "match": _mp_public_match_dict(mid, match_data, my_uid),
+        "serverNowMs": int(time.time() * 1000)
+    })
 
 
 @app.route("/api/multiplayer/invite/<invite_id>/decline", methods=["POST"])
@@ -1335,7 +1347,10 @@ def mp_active_match():
         return jsonify({"match": None})
 
     data = msnap.to_dict() or {}
-    return jsonify({"match": _mp_public_match_dict(mid, data, my_uid)})
+    return jsonify({
+        "match": _mp_public_match_dict(mid, data, my_uid),
+        "serverNowMs": int(time.time() * 1000)
+    })
 
 
 class MpAnswerError(Exception):
@@ -1363,6 +1378,10 @@ def _mp_submit_answer_txn(transaction, mref, match_id, my_uid, raw):
     answers = dict(match.get("answers") or {})
     if my_uid in answers:
         raise MpAnswerError("You already submitted an answer.", 400)
+
+    round_start_at = match.get("roundStartAt", 0)
+    if now_ms < round_start_at:
+        raise MpAnswerError("Round has not started yet.", 400)
 
     normalized = raw.strip().lower()
     correct_answer = (match.get("correctAnswer") or "").strip().lower()
@@ -1396,20 +1415,40 @@ def _mp_submit_answer_txn(transaction, mref, match_id, my_uid, raw):
             scores[round_winner] += 1
         
         target = match.get("targetScore", 1)
+        match_format = match.get("matchFormat", 1)
+        
         if round_winner and scores[round_winner] >= target:
             new_status = "done"
             winner_uid = round_winner
             loser_uid = [u for u in uids if u != winner_uid][0]
             result_reason = "resolved"
+        elif current_round >= match_format:
+            new_status = "done"
+            p1 = uids[0]
+            p2 = uids[1]
+            if scores[p1] > scores[p2]:
+                winner_uid = p1
+                loser_uid = p2
+                result_reason = "resolved"
+            elif scores[p2] > scores[p1]:
+                winner_uid = p2
+                loser_uid = p1
+                result_reason = "resolved"
+            else:
+                winner_uid = None
+                loser_uid = None
+                result_reason = "none_correct"
         else:
             # Advance to next round
             current_round += 1
+            round_start_at = now_ms + 2000
             enc_text, correct_answer, cipher_type, cipher_hint, _ = generate_mp_question(match.get("matchLevel", 1))
             transaction.update(
                 mref,
                 {
                     "scores": scores,
                     "currentRound": current_round,
+                    "roundStartAt": round_start_at,
                     "question": enc_text,
                     "correctAnswer": correct_answer,
                     "cipherType": cipher_type,
@@ -1420,7 +1459,7 @@ def _mp_submit_answer_txn(transaction, mref, match_id, my_uid, raw):
             )
             return _mp_public_match_dict(
                 match_id,
-                {**match, "scores": scores, "currentRound": current_round, "question": enc_text, "answers": {}, "status": "open"},
+                {**match, "scores": scores, "currentRound": current_round, "roundStartAt": round_start_at, "question": enc_text, "answers": {}, "status": "open"},
                 my_uid
             )
 
@@ -1473,12 +1512,55 @@ def mp_submit_answer(match_id):
                 _update_user_xp(public["winnerUid"], xp_reward)
             except Exception as e:
                 print(f"XP award failed: {e}")
-        return jsonify({"ok": True, "match": public})
+        return jsonify({
+            "ok": True, 
+            "match": public,
+            "serverNowMs": int(time.time() * 1000)
+        })
     except MpAnswerError as exc:
         return jsonify({"error": exc.message}), exc.http_status
     except Exception as exc:
         print(f"mp_submit_answer: {exc}")
         return jsonify({"error": "Could not record answer. Try again."}), 500
+
+
+@app.route("/api/multiplayer/match/<match_id>/forfeit", methods=["POST"])
+@require_auth
+def mp_forfeit_match(match_id):
+    if not firebase_ready:
+        return jsonify({"error": "Server not configured."}), 500
+
+    my_uid = request.session_user["uid"]
+    mref = get_db().collection("mp_matches").document(match_id)
+    msnap = mref.get()
+    
+    if not msnap.exists:
+        return jsonify({"error": "Match not found."}), 404
+
+    match = msnap.to_dict() or {}
+    uids = match.get("uids") or []
+    if my_uid not in uids:
+        return jsonify({"error": "Not in this match."}), 403
+        
+    if match.get("status") != "open":
+        return jsonify({"error": "Match is already finished."}), 400
+
+    winner_uid = [u for u in uids if u != my_uid][0]
+    mref.update({
+        "status": "done",
+        "winnerUid": winner_uid,
+        "loserUid": my_uid,
+        "resultReason": "forfeit"
+    })
+    
+    # Award XP to the winner
+    xp_reward = match.get("xpReward", 15)
+    try:
+        _update_user_xp(winner_uid, xp_reward)
+    except Exception as e:
+        print(f"XP award failed on forfeit: {e}")
+
+    return jsonify({"ok": True})
 
 
 @app.route("/api/multiplayer/match/<match_id>/ack", methods=["POST"])

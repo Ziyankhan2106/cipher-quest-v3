@@ -8,6 +8,7 @@ import Dashboard from './dashboard/Dashboard';
 import Multiplayer from '../multiplayer/Multiplayer';
 import StoryMode from './story_mode/StoryMode';
 import BootLoader from './components/BootLoader';
+import AppIntro from './components/AppIntro';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -17,6 +18,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
+  const [showIntro, setShowIntro] = React.useState(true);
+
   React.useEffect(() => {
     const buildCursorUrl = (color: string) => {
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 3.5V18.5L8.7 14.2L11.8 20.1L15.1 18.7L11.9 12.8H17.5L4 3.5Z" fill="${color}" stroke="#ffffff" stroke-width="1.1" stroke-linejoin="round"/><path d="M7.4 6.5L14.9 11.7" stroke="rgba(255,255,255,0.35)" stroke-width="0.8" stroke-linecap="round"/></svg>`;
@@ -30,6 +33,7 @@ function App() {
   return (
     <AuthProvider>
       <AudioProvider>
+        {showIntro && <AppIntro onComplete={() => setShowIntro(false)} />}
         <Router>
           <BootLoader />
           <Routes>

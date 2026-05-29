@@ -23,12 +23,16 @@ const Multiplayer = () => {
 
   const [answer, setAnswer] = useState('');
   const [roundFeedback, setRoundFeedback] = useState<{winner: string|null, correct: string|null}|null>(null);
-  const [localRound, setLocalRound] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [roundSplash, setRoundSplash] = useState<{show: boolean, num: number}>({show: false, num: 0});
   const [showFinalResults, setShowFinalResults] = useState(false);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [lastConfettiMatch, setLastConfettiMatch] = useState('');
+  const [now, setNow] = useState(Date.now());
+  const [showSurrenderConfirm, setShowSurrenderConfirm] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 100);
+    return () => clearInterval(timer);
+  }, []);
 
   const searchTimer = useRef<NodeJS.Timeout | null>(null);
 
@@ -134,11 +138,19 @@ const Multiplayer = () => {
     if (!match || !match.matchId) return;
     showError('');
     try {
+      const fetchStart = Date.now();
       const data = await api(`/api/multiplayer/match/${encodeURIComponent(match.matchId)}/answer`, {
         method: 'POST',
         body: JSON.stringify({ answer }),
       });
+      const fetchEnd = Date.now();
       if (data.match) {
+        if (data.serverNowMs) {
+          const latency = (fetchEnd - fetchStart) / 2;
+          const adjustedServerNow = data.serverNowMs + latency;
+          const clockSkew = fetchEnd - adjustedServerNow;
+          data.match.localRoundStartAt = data.match.roundStartAt ? data.match.roundStartAt + clockSkew : 0;
+        }
         setMatch(data.match);
         if (data.match.status === 'done') refreshUser();
       }
@@ -155,7 +167,6 @@ const Multiplayer = () => {
         method: 'POST',
       });
       setMatch(null);
-      setLocalRound(0);
       setAnswer('');
       setShowFinalResults(false);
       refreshUser();
@@ -165,9 +176,9 @@ const Multiplayer = () => {
     }
   };
 
-  const forfeitMatch = async () => {
+  const confirmSurrender = async () => {
     if (!match || !match.matchId) return;
-    if (!window.confirm("Are you sure you want to abort this mission? You will forfeit the duel.")) return;
+    setShowSurrenderConfirm(false);
     showError('');
     try {
       await api(`/api/multiplayer/match/${encodeURIComponent(match.matchId)}/forfeit`, {
@@ -191,7 +202,15 @@ const Multiplayer = () => {
 
   const refreshMatch = async () => {
     try {
+      const fetchStart = Date.now();
       const data = await api('/api/multiplayer/active-match');
+      const fetchEnd = Date.now();
+      if (data.match && data.serverNowMs) {
+        const latency = (fetchEnd - fetchStart) / 2;
+        const adjustedServerNow = data.serverNowMs + latency;
+        const clockSkew = fetchEnd - adjustedServerNow;
+        data.match.localRoundStartAt = data.match.roundStartAt ? data.match.roundStartAt + clockSkew : 0;
+      }
       setMatch(data.match);
     } catch {}
   };
@@ -210,8 +229,8 @@ const Multiplayer = () => {
     refreshMatch();
     refreshLeaderboard();
     // Reduce polling lag by checking more frequently or using focus events
-    const invInterval = setInterval(refreshInvites, 5000);
-    const matchInterval = setInterval(refreshMatch, 3000);
+    const invInterval = setInterval(refreshInvites, 3000);
+    const matchInterval = setInterval(refreshMatch, 1000);
     
     // Add visibility change listener to refresh immediately when returning to tab
     const handleVisibility = () => {
@@ -245,44 +264,22 @@ const Multiplayer = () => {
   useEffect(() => {
     if (!match) return;
 
-    // Trigger flow if backend round is ahead of displayed round
-    if (match.status === 'open' && match.currentRound > localRound && !isTransitioning) {
-      const runRoundFlow = async () => {
-        setIsTransitioning(true);
-        
-        // 1. If not the first round, allow time for round results to be viewed
-        if (localRound > 0) {
-          await new Promise(r => setTimeout(r, 4500));
-          setRoundFeedback(null);
-        }
-
-        // 2. Show Round Start Splash
-        setRoundSplash({ show: true, num: match.currentRound });
-        await new Promise(r => setTimeout(r, 2000));
-        setRoundSplash({ show: false, num: 0 });
-
-        // 3. Finally show the new round's question
-        setLocalRound(match.currentRound);
-        setIsTransitioning(false);
-      };
-      runRoundFlow();
-    } else if (match.status === 'done' && !showFinalResults && !isTransitioning) {
+    if (match.status === 'done' && !showFinalResults) {
       const finishMatch = async () => {
-        setIsTransitioning(true);
         // If the match ended normally (not forfeit), pause to show last round results
         if (match.lastRoundCorrectAnswer && match.resultReason !== 'forfeit') {
           await new Promise(r => setTimeout(r, 6000));
           setRoundFeedback(null);
         }
         setShowFinalResults(true);
-        setIsTransitioning(false);
       };
       finishMatch();
-    } else if (match.status === 'open' && localRound === 0) {
-        // Catch-up for initial match load
-        setLocalRound(0); // Ensure flow triggers
     }
-  }, [match?.currentRound, match?.status, localRound, isTransitioning, showFinalResults]);
+  }, [match?.status, showFinalResults]);
+
+  const isWaitingForStart = match?.status === 'open' && match?.localRoundStartAt && match.localRoundStartAt > now;
+  const timeRemainingMs = isWaitingForStart ? Math.max(0, match.localRoundStartAt - now) : 0;
+  const timeRemainingSec = Math.ceil(timeRemainingMs / 1000);
 
   let duelStatus = '';
   if (match && match.status === 'open') {
@@ -311,10 +308,12 @@ const Multiplayer = () => {
       resultClass = "mp-result-line--win";
       resultTitle = "You win!";
       const myRow = match.answers && match.answers[user?.uid];
-      if (myRow && myRow.correct) {
+      if (match.resultReason === 'forfeit') {
+        resultSub = "Opponent surrendered.";
+      } else if (myRow && myRow.correct) {
         resultSub = "You decoded it first! Well done, operative.";
       } else {
-        resultSub = "Correct decode — you take the round.";
+        resultSub = "Correct decode — you take the match.";
       }
       resultXp = `+${xpReward} XP earned`;
     } else if (w) {
@@ -323,7 +322,9 @@ const Multiplayer = () => {
       const names = match.usernames || {};
       const name = names[w] || "Opponent";
       const myRow = match.answers && match.answers[user?.uid || ''];
-      if (myRow && !myRow.correct) {
+      if (match.resultReason === 'forfeit') {
+        resultSub = "You surrendered.";
+      } else if (myRow && !myRow.correct) {
         resultSub = `Wrong decode. ${name} had the correct answer.`;
       } else {
         resultSub = `${name} decoded it first.`;
@@ -332,7 +333,8 @@ const Multiplayer = () => {
     } else {
       resultClass = "text-yellow-400";
       resultTitle = "Draw";
-      resultSub = "Outcome could not be determined.";
+      resultSub = match.resultReason === 'none_correct' ? "Round limit reached. No clear winner." : "Outcome could not be determined.";
+      resultXp = "0 XP";
     }
     
     if (w === user?.uid && match.matchId !== lastConfettiMatch) {
@@ -585,15 +587,16 @@ const Multiplayer = () => {
           {/* Active Duel */}
           {match && match.status === 'open' && (
             <>
-            {roundSplash.show && (
+            {isWaitingForStart && (
               <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-md">
                 <div className="font-mono text-sm tracking-[0.4em] text-[var(--current-theme-color)] uppercase mb-4">Initializing Round</div>
-                <div className="cq-title tracking-widest drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]">ROUND {roundSplash.num}</div>
+                <div className="cq-title tracking-widest drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]">ROUND {match.currentRound || 1}</div>
+                <div className="font-display text-8xl text-white mt-6 mb-2 drop-shadow-[0_0_20px_rgba(255,255,255,0.5)]">{timeRemainingSec}</div>
                 <div className="w-48 h-1 bg-[var(--current-theme-color)] mt-8 animate-pulse shadow-[0_0_20px_var(--current-theme-color)]"></div>
               </div>
             )}
             
-            {!roundSplash.show && (
+            {!isWaitingForStart && (
             <div className="glass-panel border border-[var(--current-theme-color)]/30 overflow-hidden relative group">
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--current-theme-color)]/5 to-transparent pointer-events-none"></div>
               <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--current-theme-color)]/10 blur-[100px] pointer-events-none"></div>
@@ -674,16 +677,19 @@ const Multiplayer = () => {
                         type="text"
                         value={answer}
                         onChange={(e) => setAnswer(e.target.value.toUpperCase())}
-                        onKeyDown={(e) => e.key === 'Enter' && !match.myAnswered && submitAnswer()}
-                        disabled={match.myAnswered}
+                        onKeyDown={(e) => e.key === 'Enter' && !match.myAnswered && !isWaitingForStart && submitAnswer()}
+                        disabled={match.myAnswered || isWaitingForStart}
                         className="w-full bg-transparent text-white font-mono text-[40px] tracking-[0.1em] outline-none uppercase placeholder:text-white/10 disabled:opacity-40 disabled:border-white/5"
                         placeholder="ENTER PLAINTEXT..."
                         spellCheck="false"
                       />
                     </div>
 
-                    <div className="mt-8 flex justify-end">
-                       <button onClick={submitAnswer} disabled={match.myAnswered}
+                    <div className="mt-8 flex justify-between items-center">
+                       <button onClick={() => setShowSurrenderConfirm(true)} className="px-6 py-3 border border-red-500/30 text-red-500/70 font-mono text-[10px] uppercase tracking-[0.2em] hover:bg-red-500/10 hover:text-red-500 transition-all rounded">
+                         Surrender
+                       </button>
+                       <button onClick={submitAnswer} disabled={match.myAnswered || isWaitingForStart}
                                className="px-10 py-5 bg-[var(--current-theme-color)] text-black font-bold font-mono text-[12px] uppercase tracking-[0.3em] hover:bg-white hover:shadow-[0_0_30px_var(--current-theme-color)] transition-all disabled:opacity-20 rounded shadow-[0_0_15px_color-mix(in_srgb,var(--current-theme-color)_50%,transparent)] flex items-center gap-3">
                          Execute Decryption <Send size={16} />
                        </button>
@@ -758,6 +764,21 @@ const Multiplayer = () => {
           {errorMsg && (
             <div className="font-mono text-[11px] text-red-500 bg-red-500/10 border border-red-500/20 px-4 py-3 rounded flex items-center gap-2">
               <AlertCircle size={16} /> {errorMsg}
+            </div>
+          )}
+
+          {/* Surrender Confirmation Modal */}
+          {showSurrenderConfirm && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+              <div className="glass-panel p-8 max-w-sm w-full text-center border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] animate-in zoom-in-95 duration-200">
+                <AlertTriangle size={48} className="text-red-500 mx-auto mb-4 animate-[pulse_2s_infinite]" />
+                <h3 className="font-display text-2xl uppercase mb-2 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">Confirm Surrender</h3>
+                <p className="font-mono text-[11px] text-white/70 mb-8 uppercase tracking-wider leading-relaxed">Are you sure you want to abort this mission?<br/>You will forfeit the duel.</p>
+                <div className="flex gap-4">
+                  <button onClick={() => setShowSurrenderConfirm(false)} className="flex-1 py-4 border border-white/20 text-white/70 font-mono text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-white/5 hover:text-white transition-all rounded outline-none focus-visible:ring-2 focus-visible:ring-white">Cancel</button>
+                  <button onClick={confirmSurrender} className="flex-1 py-4 bg-red-500 text-white font-mono text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-red-600 shadow-[0_0_15px_rgba(239,68,68,0.5)] transition-all rounded outline-none focus-visible:ring-2 focus-visible:ring-red-400">Surrender</button>
+                </div>
+              </div>
             </div>
           )}
         </div>
