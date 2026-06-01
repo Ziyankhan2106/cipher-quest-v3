@@ -48,6 +48,105 @@
   to { transform: rotate(360deg); }
 }
 
+/* ── App Intro (glitch/rain) ─────────────────────────────── */
+.cq-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #000;
+  overflow: hidden;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.cq-intro__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cq-intro__scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(180, 0, 255, 0.03) 2px,
+    rgba(180, 0, 255, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.cq-intro__title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Orbitron', 'Share Tech Mono', sans-serif;
+  font-size: clamp(36px, 8vw, 96px);
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: #fff;
+  z-index: 3;
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.cq-intro__title--animate {
+  animation: cqGlitchReveal 0.7s steps(1) forwards;
+}
+
+.cq-intro__controls {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 4;
+  display: flex;
+  gap: 8px;
+}
+
+.cq-intro__replay,
+.cq-intro__skip {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.4);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+
+.cq-intro__replay:hover,
+.cq-intro__skip:hover {
+  border-color: #bf00ff;
+  color: #bf00ff;
+}
+
+.cq-intro__skip {
+  border-color: rgba(0, 242, 255, 0.35);
+  color: rgba(0, 242, 255, 0.6);
+}
+
+.cq-intro__skip:hover {
+  border-color: #00f2ff;
+  color: #00f2ff;
+}
+
+@keyframes cqGlitchReveal {
+  0%   { opacity: 0; clip-path: inset(50% 0 50% 0); transform: translate(-50%, -50%); }
+  15%  { opacity: 1; clip-path: inset(20% 0 60% 0); transform: translate(-50%, -50%) skewX(-5deg); color: #ff003c; text-shadow: 0 0 30px #ff003c; }
+  30%  { clip-path: inset(60% 0 10% 0); transform: translate(-48%, -50%) skewX(3deg); color: #bf00ff; text-shadow: 0 0 30px #bf00ff; }
+  50%  { clip-path: inset(0 0 0 0); transform: translate(-50%, -50%) skewX(0deg); color: #0080ff; text-shadow: 0 0 20px #0080ff; }
+  70%  { clip-path: inset(30% 0 30% 0); transform: translate(-52%, -50%); color: #ff0099; }
+  100% { opacity: 1; clip-path: inset(0 0 0 0); transform: translate(-50%, -50%); color: #fff; text-shadow: 0 0 40px #bf00ff, 0 0 80px #ff003c, 0 0 120px #0080ff; }
+}
+
 .app-loading-text {
   font-family: ui-monospace, monospace;
   font-size: 14px;

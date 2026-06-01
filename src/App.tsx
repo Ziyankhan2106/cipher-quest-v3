@@ -8,7 +8,7 @@ import Dashboard from './dashboard/Dashboard';
 import Multiplayer from '../multiplayer/Multiplayer';
 import StoryMode from './story_mode/StoryMode';
 import BootLoader from './components/BootLoader';
-import AppIntro from './components/AppIntro';
+import AppIntro from './components/AppIntro.tsx';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
