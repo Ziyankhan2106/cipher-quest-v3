@@ -4,10 +4,31 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CHAPTERS, AVATAR_VARIANTS, AvatarVariant, Chapter } from './lib/game-data';
 import { fetchMission, fetchHint } from './lib/api';
 import { StoryModeProvider, useStoryMode } from './lib/StoryModeContext';
+import { useAudio } from '../context/AudioContext';
 import { generateCertificate } from './lib/certificate';
 import { Download, FileText, X as XIcon, ChevronRight, ChevronLeft, Settings, Lock, Shield, Radar, CheckCircle2, AlertCircle, MoveHorizontal, Terminal, Lightbulb, Unlock, Verified, ShieldX, ArrowRightLeft, AlertTriangle, Zap } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import IntroSequence from './IntroSequence';
+
+const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@$%&!?';
+
+const ScrambleText = ({ text, className }: { text: string; className?: string }) => {
+  const [displayed, setDisplayed] = useState('');
+  useEffect(() => {
+    if (!text) return;
+    let frame = 0;
+    const totalFrames = 22;
+    setDisplayed(text.split('').map(() => SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]).join(''));
+    const iv = setInterval(() => {
+      frame++;
+      if (frame >= totalFrames) { setDisplayed(text); clearInterval(iv); return; }
+      const locked = Math.floor((frame / totalFrames) * text.length);
+      setDisplayed(text.split('').map((ch, i) => i < locked ? ch : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]).join(''));
+    }, 50);
+    return () => clearInterval(iv);
+  }, [text]);
+  return <span className={className}>{displayed}</span>;
+};
 
 const BriefingTerminal = ({ text, speaker, speakerColor, operatorName, onComplete }: any) => {
   const [displayedText, setDisplayedText] = useState('');
@@ -135,6 +156,12 @@ const Dashboard = () => {
     return !prevChapter.missions.every(m => completedMissions.has(m.id));
   };
 
+  const isChapterFullyCompleted = (chapterId: number) => {
+    const chapter = CHAPTERS.find(c => c.id === chapterId);
+    if (!chapter) return false;
+    return chapter.missions.every(m => completedMissions.has(m.id));
+  };
+
   return (
     <div className="h-screen w-screen relative overflow-hidden bg-[#020205] text-white font-sans selection:bg-[var(--current-theme-color)]/30">
       {/* Standardized Background */}
@@ -198,7 +225,7 @@ const Dashboard = () => {
                   <div className="tactical-panel p-10 relative overflow-hidden group transition-all duration-700 z-10 w-full h-[360px] flex flex-col justify-between border-white/5 shadow-2xl">
                     <div className="flex justify-between items-start">
                       <div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center rounded-sm">
-                        {locked ? <Lock className="text-white/20" size={24} /> : <Shield className={getChapterProgress(chapter.id) === 100 ? 'text-[var(--current-theme-color)]' : 'text-white/20'} size={24} />}
+                        {locked ? <Lock className="text-white/20" size={24} /> : <Shield className={isChapterFullyCompleted(chapter.id) ? 'text-[var(--current-theme-color)]' : 'text-white/20'} size={24} />}
                       </div>
                       <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-[var(--current-theme-color)]/60">
                         {locked ? 'SEC_LOCKED' : `SEC_ID: 0${chapter.id}`}
@@ -221,7 +248,7 @@ const Dashboard = () => {
                             className="h-full bg-[var(--current-theme-color)] shadow-[0_0_15px_var(--current-theme-color)]"
                            />
                         </div>
-                        {getChapterProgress(chapter.id) === 100 && (
+                        {isChapterFullyCompleted(chapter.id) && (
                           <button 
                             onClick={(e) => {
                               e.stopPropagation();
@@ -420,7 +447,8 @@ const Dashboard = () => {
 const MissionView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { completeMission, operatorName, xp, selectedAvatar } = useStoryMode();
+  const { completeMission, operatorName, xp, selectedAvatar, completedMissions } = useStoryMode();
+  const { setIsGameActive } = useAudio();
   
   const [missionState, setMissionState] = useState<'briefing' | 'intercept' | 'cipher' | 'failed'>('briefing');
   const [mission, setMission] = useState<any>(null);
@@ -431,6 +459,7 @@ const MissionView = () => {
   const [currentHintIndex, setCurrentHintIndex] = useState(-1);
   const [loading, setLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
   const [completedChapterId, setCompletedChapterId] = useState<number | null>(null);
   
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -449,23 +478,21 @@ const MissionView = () => {
   }, [id]);
 
   useEffect(() => {
+    setIsGameActive(true);
     return () => {
+      setIsGameActive(false);
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, []);
+  }, [setIsGameActive]);
 
   useEffect(() => {
     loadMission();
   }, [id]);
 
   useEffect(() => {
-    if (completedChapterId) {
-      const timer = setTimeout(() => {
-        handleProceedNextChapter();
-      }, 10000);
-      return () => clearTimeout(timer);
-    }
+    // We no longer auto-navigate on chapter completion,
+    // allowing the user to view the certificate and click "Proceed" manually.
   }, [completedChapterId, navigate]);
 
   const handleProceedNextChapter = () => {
@@ -512,17 +539,26 @@ const MissionView = () => {
     if (!mission) return;
     if (input.toUpperCase() === mission.expectedCiphertext.toUpperCase()) {
       setIsSuccess(true);
+      setIsCompleting(true);
       confetti({ particleCount: 150, spread: 70, colors: ['var(--current-theme-color)', '#ff00ff', '#ffffff'] });
       
       const result = await completeMission(id!);
-      if (result?.chapterComplete) {
-         const chapId = parseInt(id!.split('-')[0]);
+      setIsCompleting(false);
+      const chapId = parseInt(id!.split('-')[0]);
+      const missionNum = parseInt(id!.split('-')[1]);
+      const chapter = CHAPTERS.find(c => c.id === chapId);
+      const isLastMission = chapter && missionNum === chapter.missions.length;
+      const isChapterFullyCompleted = chapter && chapter.missions.every(m => m.id === id || completedMissions.has(m.id));
+      
+      if (result?.chapterComplete || (isLastMission && isChapterFullyCompleted)) {
          setCompletedChapterId(chapId);
       } else {
-         const chapId = parseInt(id!.split('-')[0]);
-         const missionNum = parseInt(id!.split('-')[1]);
-         const nextId = `${chapId}-${missionNum + 1}`;
-         setTimeout(() => navigate(`/story/mission/${nextId}`), 2500);
+         if (isLastMission) {
+             setTimeout(() => navigate('/story'), 2500);
+         } else {
+             const nextId = `${chapId}-${missionNum + 1}`;
+             setTimeout(() => navigate(`/story/mission/${nextId}`), 2500);
+         }
       }
     } else {
       setError(true);
@@ -650,6 +686,17 @@ const MissionView = () => {
                     </div>
                     
                     <div className="relative z-10 space-y-3 font-mono text-[11px] leading-relaxed flex flex-col h-full">
+                      {/* Integrity Indicator */}
+                      <div className="flex items-center justify-between bg-black/40 p-4 border border-[#00f2ff]/20 rounded relative overflow-hidden mb-4 mt-1">
+                         <div className="absolute inset-0 bg-[#00f2ff]/5"></div>
+                         <span className="font-mono text-[#00f2ff] uppercase tracking-[0.2em] font-bold text-[12px] relative z-10">SYSTEM_INTEGRITY</span>
+                         <div className="flex items-center gap-3 relative z-10">
+                            {[...Array(3)].map((_, i) => (
+                              <Shield key={i} size={28} className={i < Math.ceil(integrity / 34) ? 'text-[#00f2ff] drop-shadow-[0_0_12px_rgba(0,242,255,1)] fill-[#00f2ff]/20' : 'text-white/10'} />
+                            ))}
+                         </div>
+                      </div>
+
                       <p className="text-[var(--current-theme-color)]/40">&gt;&gt; Firewall online.</p>
                       
                       <div className="mt-2 border border-[var(--current-theme-color)]/20 bg-[var(--current-theme-color)]/5 p-4 rounded mb-4">
@@ -671,7 +718,7 @@ const MissionView = () => {
                          )}
                       </div>
                       
-                      <div className="mt-auto pt-4 border-t border-white/5">
+                      <div className="mt-auto pt-4 border-t border-white/5 flex flex-col gap-4">
                          {hints.length > 0 && currentHintIndex >= 0 && (
                              <div className="bg-[#0a0a0f] border border-[var(--current-theme-color)]/30 p-4 rounded mb-4 shadow-[0_0_15px_rgba(0,0,0,0.5)] relative overflow-hidden">
                                 <div className="absolute inset-0 bg-[var(--current-theme-color)]/5 opacity-50"></div>
@@ -684,7 +731,7 @@ const MissionView = () => {
                          )}
                          
                          {!isSuccess && hints.length === 0 && (
-                             <button onClick={requestHint} className="text-xs uppercase tracking-widest text-white/50 hover:text-[var(--current-theme-color)] border border-white/10 hover:border-[var(--current-theme-color)] bg-[#0a0a0f] px-4 py-2 w-full text-left transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">&gt;&gt; REQUEST FOR HINT</button>
+                             <button onClick={requestHint} className="text-sm uppercase tracking-widest text-[#00f2ff] hover:text-white border border-[#00f2ff]/30 hover:border-[#00f2ff] bg-[#00f2ff]/10 hover:bg-[#00f2ff]/20 px-6 py-3 w-full text-left transition-all shadow-[inset_0_0_15px_rgba(0,242,255,0.2)]">&gt;&gt; REQUEST FOR HINT</button>
                          )}
                       </div>
                     </div>
@@ -704,7 +751,8 @@ const MissionView = () => {
                     </div>
                     
                     <div className="font-mono text-[42px] leading-[1.2] text-white tracking-[0.1em] break-all">
-                      <span className="text-white/10 select-none mr-4">&gt;</span>{mission.plaintext}
+                      <span className="text-white/10 select-none mr-4">&gt;</span>
+                      <ScrambleText text={mission.plaintext} />
                     </div>
                   </div>
 
@@ -766,16 +814,15 @@ const MissionView = () => {
                         <button onClick={checkAnswer} className="cyber-button !bg-[#00f2ff] hover:!bg-white !text-black hover:!text-[#00f2ff] text-[18px] py-3 px-10 hover:shadow-[0_0_25px_rgba(255,255,255,0.8)] border-none outline-none group transition-colors duration-300">
                           <span className="relative z-10 font-bold group-hover:!text-[#00f2ff]">EXECUTE ENCRYPTION</span>
                         </button>
-                      ) : (
-                        <button onClick={() => navigate('/story')} className="relative overflow-hidden text-[#0a0a0f] font-sans font-bold uppercase tracking-[0.2em] text-[14px] py-5 px-14 rounded hover:bg-white transition-all duration-300 outline-none group"
-                                style={{
-                                  backgroundColor: 'var(--current-theme-color)',
-                                  boxShadow: '0 0 30px color-mix(in srgb, var(--current-theme-color) 40%, transparent)'
-                                }}>
-                          <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"></div>
-                          RESUME OPERATIONS
+                      ) : isCompleting ? (
+                        <button disabled className="cyber-button !bg-white/20 !text-white/50 text-[18px] py-3 px-10 border-none outline-none cursor-not-allowed">
+                          <span className="relative z-10 font-bold">PROCESSING...</span>
                         </button>
-                      )}
+                      ) : !completedChapterId ? (
+                        <button onClick={() => navigate('/story')} className="cyber-button !bg-[#00f2ff] hover:!bg-white !text-black hover:!text-[#00f2ff] text-[18px] py-3 px-10 hover:shadow-[0_0_25px_rgba(255,255,255,0.8)] border-none outline-none group transition-colors duration-300">
+                          <span className="relative z-10 font-bold group-hover:!text-[#00f2ff]">RESUME OPERATIONS</span>
+                        </button>
+                      ) : null}
                     </div>
                     
                     {isSuccess && (
@@ -804,18 +851,16 @@ const MissionView = () => {
               animate={{ scale: 1, y: 0 }}
               className="w-full max-w-5xl flex flex-col items-center gap-12 relative"
             >
-              <div className="absolute -top-12 -right-12 z-[110]">
-                <button onClick={handleProceedNextChapter} className="tactical-panel w-12 h-12 flex items-center justify-center hover:bg-white/10 transition-colors">
-                  <XIcon size={24} className="text-white/50 hover:text-white" />
-                </button>
-              </div>
+              <button onClick={handleProceedNextChapter} className="fixed top-8 right-8 z-[120] w-14 h-14 bg-black/50 border border-[#00f2ff]/30 flex items-center justify-center hover:bg-[#00f2ff]/10 hover:border-[#00f2ff] text-white/50 hover:text-[#00f2ff] transition-all rounded backdrop-blur-md cursor-pointer group shadow-[0_0_15px_rgba(0,242,255,0.1)] hover:shadow-[0_0_20px_rgba(0,242,255,0.4)]">
+                <XIcon size={28} className="group-hover:scale-110 transition-transform" />
+              </button>
 
               <div className="text-center space-y-4">
                 <h2 className="cq-title">Sector_Secured</h2>
                 <p className="font-mono text-sm text-[var(--current-theme-color)] uppercase tracking-[0.5em] animate-pulse">Authentication_Clearance_Generated</p>
               </div>
 
-              <div className="relative shadow-[0_0_100px_rgba(0,0,0,0.5)] border border-white/10">
+              <div className="relative shadow-[0_0_100px_rgba(0,242,255,0.2)] border border-[#00f2ff]/30 rounded overflow-hidden">
                 <img 
                   src={generateCertificate(CHAPTERS.find(c => c.id === completedChapterId)!, operatorName, selectedAvatar.colorHex)} 
                   alt="Chapter Completion Certificate"
@@ -827,15 +872,16 @@ const MissionView = () => {
                 <a 
                   href={generateCertificate(CHAPTERS.find(c => c.id === completedChapterId)!, operatorName, selectedAvatar.colorHex)}
                   download={`CipherQuest_Certificate_Sector_${completedChapterId}.png`}
-                  className="cyber-button px-16 h-16 text-lg bg-white text-black hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] flex items-center gap-4"
+                  className="cyber-button px-16 h-16 text-lg !bg-[#00f2ff] !text-black hover:!bg-white hover:!text-[#00f2ff] hover:shadow-[0_0_40px_rgba(0,242,255,0.6)] flex items-center gap-4 transition-colors group border-none outline-none"
                 >
-                  <Download size={24} /> DOWNLOAD_CLEARANCE
+                  <Download size={24} className="group-hover:!text-[#00f2ff] text-black relative z-10 transition-colors" /> 
+                  <span className="relative z-10 font-bold group-hover:!text-[#00f2ff] transition-colors">DOWNLOAD_CLEARANCE</span>
                 </a>
                 <button 
                   onClick={handleProceedNextChapter}
-                  className="cyber-button px-16 h-16 text-lg border-white/10 hover:bg-white/5"
+                  className="cyber-button px-16 h-16 text-lg !bg-[#00f2ff] !text-black hover:!bg-white hover:!text-[#00f2ff] hover:shadow-[0_0_40px_rgba(0,242,255,0.6)] flex items-center transition-colors group border-none outline-none"
                 >
-                  PROCEED_TO_NEXT_SECTOR
+                  <span className="relative z-10 font-bold group-hover:!text-[#00f2ff] transition-colors">PROCEED_TO_NEXT_SECTOR</span>
                 </button>
               </div>
             </motion.div>
@@ -858,6 +904,7 @@ const KNOX_DIALOGUES = [
 const QuantumAscent = () => {
   const navigate = useNavigate();
   const { operatorName, selectedAvatar, progress, completedChapters } = useStoryMode();
+  const { setIsGameActive } = useAudio();
   
   const [dialoguePhase, setDialoguePhase] = useState(true);
   const [dialogueIndex, setDialogueIndex] = useState(-1);
@@ -874,6 +921,8 @@ const QuantumAscent = () => {
       return;
     }
 
+    setIsGameActive(true);
+
     // Start Knox dialogue sequence
     let idx = 0;
     setDialogueIndex(0);
@@ -887,8 +936,11 @@ const QuantumAscent = () => {
       }
     }, 1500);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      clearInterval(interval);
+      setIsGameActive(false);
+    };
+  }, [progress, navigate, setIsGameActive]);
 
   // Shuffle puzzle when dialogue ends
   useEffect(() => {

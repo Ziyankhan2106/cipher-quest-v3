@@ -5,6 +5,7 @@ interface AudioContextType {
   setVolume: (v: number) => void;
   isMuted: boolean;
   setIsMuted: (m: boolean) => void;
+  setIsGameActive: (active: boolean) => void;
 }
 
 const AudioCtx = createContext<AudioContextType>({
@@ -12,6 +13,7 @@ const AudioCtx = createContext<AudioContextType>({
   setVolume: () => {},
   isMuted: false,
   setIsMuted: () => {},
+  setIsGameActive: () => {},
 });
 
 export const useAudio = () => useContext(AudioCtx);
@@ -19,6 +21,7 @@ export const useAudio = () => useContext(AudioCtx);
 export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
   const [volume, setVolume] = useState(0.5);
   const [isMuted, setIsMuted] = useState(false);
+  const [isGameActive, setIsGameActive] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -47,12 +50,12 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = isMuted ? 0 : Math.max(0, Math.min(1, volume));
+      audioRef.current.volume = (isMuted || isGameActive) ? 0 : Math.max(0, Math.min(1, volume));
     }
-  }, [volume, isMuted]);
+  }, [volume, isMuted, isGameActive]);
 
   return (
-    <AudioCtx.Provider value={{ volume, setVolume, isMuted, setIsMuted }}>
+    <AudioCtx.Provider value={{ volume, setVolume, isMuted, setIsMuted, setIsGameActive }}>
       {children}
     </AudioCtx.Provider>
   );

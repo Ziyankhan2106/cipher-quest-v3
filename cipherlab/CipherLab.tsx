@@ -8,6 +8,7 @@ import {
 import { generateMission, calculateScore, CipherMission } from '../src/lib/cipherUtils';
 import confetti from 'canvas-confetti';
 import { useAuth } from '../src/context/AuthContext';
+import { useAudio } from '../src/context/AudioContext';
 
 // --- Types ---
 interface UserData {
@@ -108,6 +109,12 @@ export default function App() {
   const [view, setView] = useState<'dash' | 'lab' | 'leaderboard'>('dash');
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [globalXp, setGlobalXp] = useState(0);
+  const { setIsGameActive } = useAudio();
+
+  useEffect(() => {
+    setIsGameActive(view === 'lab');
+    return () => setIsGameActive(false);
+  }, [view, setIsGameActive]);
 
   useEffect(() => {
     (async () => {
@@ -643,13 +650,12 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
                 </div>
                 
                 {feedback !== 'success' ? (
-                  <button type="submit" disabled={!sessionMission} className="relative group overflow-hidden bg-transparent border-2 border-[var(--current-theme-color)] text-[var(--current-theme-color)] font-mono font-bold uppercase tracking-[0.2em] text-[18px] py-3 px-10 rounded-sm transition-all duration-300 hover:bg-[var(--current-theme-color)] hover:text-black hover:shadow-[0_0_25px_var(--current-theme-color)] hover:-translate-y-1 active:translate-y-0 active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
-                    <span className="relative z-10">SUBMIT</span>
-                    <div className="absolute inset-0 h-full w-full bg-[var(--current-theme-color)]/20 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out"></div>
+                  <button type="submit" disabled={!sessionMission} className="cyber-button !bg-[#00f2ff] hover:!bg-white !text-black hover:!text-[#00f2ff] text-[18px] py-3 px-10 hover:shadow-[0_0_25px_rgba(255,255,255,0.8)] border-none outline-none group transition-colors duration-300 disabled:opacity-50 disabled:pointer-events-none w-full md:w-auto mt-4 md:mt-0">
+                    <span className="relative z-10 font-bold group-hover:!text-[#00f2ff]">SUBMIT</span>
                   </button>
                 ) : (
-                  <button type="button" onClick={startNewMission} className="relative overflow-hidden text-black font-sans font-bold uppercase tracking-[0.12em] text-[16px] py-3 px-8 rounded hover:bg-white transition-all duration-300 bg-[var(--current-theme-color)] shadow-[0_0_20px_color-mix(in_srgb,var(--current-theme-color)_40%,transparent)]">
-                    CONTINUE
+                  <button type="button" onClick={startNewMission} className="cyber-button !bg-[#00f2ff] hover:!bg-white !text-black hover:!text-[#00f2ff] text-[18px] py-3 px-10 hover:shadow-[0_0_25px_rgba(255,255,255,0.8)] border-none outline-none group transition-colors duration-300 w-full md:w-auto mt-4 md:mt-0">
+                    <span className="relative z-10 font-bold group-hover:!text-[#00f2ff]">CONTINUE</span>
                   </button>
                 )}
               </div>

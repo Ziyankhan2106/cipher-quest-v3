@@ -604,7 +604,7 @@ const Dashboard = () => {
               Neural_Clearance_Level: 0{level}
             </p>
             <p className="cq-subheading text-white/60 mb-12">New Rank: {rankName}</p>
-            <button onClick={() => setShowLevelUpdate({ show: false, type: 'promotion' })} className="cyber-button w-full h-16 text-lg">Acknowledge</button>
+            <button onClick={() => setShowLevelUpdate({ show: false, type: 'promotion' })} className="cyber-button w-full h-16 text-lg" style={{ backgroundColor: '#00e5ff', color: 'black' }}>Acknowledge</button>
           </motion.div>
         </div>
       )}

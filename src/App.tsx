@@ -18,7 +18,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
-  const [showIntro, setShowIntro] = React.useState(true);
+  const [showIntro, setShowIntro] = React.useState(() => {
+    if (sessionStorage.getItem('cq_intro_seen')) return false;
+    sessionStorage.setItem('cq_intro_seen', 'true');
+    return true;
+  });
 
   React.useEffect(() => {
     const buildCursorUrl = (color: string) => {

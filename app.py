@@ -771,6 +771,8 @@ def complete_story_mission():
         completed.append(mission_id)
         story_data["completedMissions"] = completed
         
+        user_ref.update({"storyData": story_data, "updatedAt": firestore.SERVER_TIMESTAMP})
+        
         # Check if chapter is completed
         # Simple logic: if mission ends in -5, it's a chapter end (based on game-data.ts)
         if mission_id.endswith("-5"):
@@ -784,8 +786,6 @@ def complete_story_mission():
                 "chapterComplete": True,
                 "message": "Sector Decoded! +100 XP awarded."
             })
-        
-        user_ref.update({"storyData": story_data, "updatedAt": firestore.SERVER_TIMESTAMP})
         
     return jsonify({"ok": True})
 

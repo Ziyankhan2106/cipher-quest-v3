@@ -19,7 +19,7 @@ export default function BootLoader() {
     if (isFirstMount.current) {
       isFirstMount.current = false;
       // Only trigger on first mount if we came from Training Academy
-      if (document.referrer.includes('training_academy') && isMajorRoute) {
+      if (document.referrer.includes('/training') && isMajorRoute) {
         shouldTrigger = true;
       }
     } else {

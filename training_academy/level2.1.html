@@ -1332,8 +1332,8 @@
       shiftVal.textContent = (shift >= 0 ? '+' : '') + shift;
       lockBadge.textContent = (shift >= 0 ? '+' : '') + shift + ' steps';
     }
-    shiftDown.addEventListener('click', () => { if (running) return; if (shift > -25) { shift--; updateShift(); } });
-    shiftUp.addEventListener('click', () => { if (running) return; if (shift < 25) { shift++; updateShift(); } });
+    shiftDown.addEventListener('click', () => { if (currentStep >= 0) return; if (shift > -25) { shift--; updateShift(); } });
+    shiftUp.addEventListener('click', () => { if (currentStep >= 0) return; if (shift < 25) { shift++; updateShift(); } });
 
     /* ── Build alphabet tape ── */
     function buildTape() {

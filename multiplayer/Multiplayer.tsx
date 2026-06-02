@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../src/context/AuthContext';
+import { useAudio } from '../src/context/AudioContext';
 import { X as XIcon, Users, Home, User, Radar, Lock, AlertTriangle, AlertCircle, Trophy, Hourglass, Zap, Settings, ArrowRightLeft, Send, Award, Skull, Handshake } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 
 const Multiplayer = () => {
   const { user, refreshUser } = useAuth();
+  const { setIsGameActive } = useAudio();
   const navigate = useNavigate();
 
   const storyCompleted = (user?.storyData?.completedMissions?.length || 0) >= 20;
@@ -33,6 +35,11 @@ const Multiplayer = () => {
     const timer = setInterval(() => setNow(Date.now()), 100);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    setIsGameActive(!!match);
+    return () => setIsGameActive(false);
+  }, [match, setIsGameActive]);
 
   const searchTimer = useRef<NodeJS.Timeout | null>(null);
 
@@ -438,7 +445,7 @@ const Multiplayer = () => {
                           <span className="font-mono text-[10px] text-white/50 uppercase tracking-widest whitespace-nowrap">Rounds:</span>
                           <div className="flex gap-2">
                             {[1, 3, 5, 7].map(r => (
-                              <button key={r} onClick={() => setMatchFormat(r)} className={`px-4 py-2 font-mono text-sm font-bold rounded transition-all ${matchFormat === r ? 'bg-[var(--current-theme-color)] text-black shadow-[0_0_15px_var(--current-theme-color)]' : 'bg-white/5 text-white/50 border border-white/10 hover:border-white/30'}`}>Best of {r}</button>
+                              <button key={r} onClick={() => setMatchFormat(r)} className={`px-4 py-2 font-mono text-sm font-bold rounded transition-all ${matchFormat === r ? 'bg-[#00e5ff] text-black shadow-[0_0_15px_#00e5ff]' : 'bg-transparent text-[#00e5ff] border border-[#00e5ff] hover:bg-[#00e5ff]/20'}`}>Best of {r}</button>
                             ))}
                           </div>
                         </div>
