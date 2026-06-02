@@ -34,6 +34,14 @@ function App() {
     document.documentElement.style.setProperty('--theme-cursor', buildCursorUrl(saved));
   }, []);
 
+  React.useEffect(() => {
+    // Keep Vercel serverless functions warm
+    const interval = setInterval(() => {
+      fetch('/api/ping').catch(() => {});
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <AuthProvider>
       <AudioProvider>

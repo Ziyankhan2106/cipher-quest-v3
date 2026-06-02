@@ -234,8 +234,9 @@ def require_auth(fn):
 
 # ── Static file serving ──────────────────────────────────────────────────────
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CIPHERLAB_DIST = os.path.join(BASE_DIR, "dist")
+MULTIPLAYER_DIR = os.path.join(BASE_DIR, "multiplayer")
 
 
 @app.route("/assets/<path:filename>")
@@ -244,8 +245,8 @@ def serve_assets(filename):
     dist_assets = os.path.join(CIPHERLAB_DIST, "assets")
     if os.path.exists(os.path.join(dist_assets, filename)):
         return send_from_directory(dist_assets, filename)
-    # Fall back to main assets
-    return send_from_directory(os.path.join(BASE_DIR, "assets"), filename)
+    # Fall back to main assets (moved to public/assets/)
+    return send_from_directory(os.path.join(BASE_DIR, "public", "assets"), filename)
 
 
 @app.route("/styles.css")
@@ -279,7 +280,8 @@ def training_redirect():
 @app.route("/training/")
 @app.route("/training/<path:filename>")
 def serve_training(filename="index.html"):
-    return send_from_directory(os.path.join(BASE_DIR, "training_academy"), filename)
+    # Moved to public/training/
+    return send_from_directory(os.path.join(BASE_DIR, "public", "training"), filename)
 
 
 # ── Auth API ──────────────────────────────────────────────────────────────────
@@ -1741,6 +1743,11 @@ def cl_leaderboard():
         print(f"CipherLab leaderboard error: {exc}")
 
     return jsonify({"entries": entries})
+
+
+@app.route("/api/ping")
+def ping_backend():
+    return jsonify({"status": "ok"})
 
 
 # ── Run ───────────────────────────────────────────────────────────────────────
