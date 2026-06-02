@@ -42,16 +42,35 @@ _db = None
 
 def _get_service_account():
     raw = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
-    if not raw:
-        return None
-    try:
-        sa = json.loads(raw)
-        if "private_key" in sa:
-            sa["private_key"] = sa["private_key"].replace("\\n", "\n")
-        return sa
-    except json.JSONDecodeError as exc:
-        print(f"Invalid FIREBASE_SERVICE_ACCOUNT_JSON: {exc}")
-        return None
+    if raw:
+        raw_clean = raw.strip().strip('"').strip("'")
+        try:
+            sa = json.loads(raw_clean)
+            if "private_key" in sa:
+                sa["private_key"] = sa["private_key"].replace("\\n", "\n")
+            return sa
+        except json.JSONDecodeError as exc:
+            print(f"Invalid FIREBASE_SERVICE_ACCOUNT_JSON JSON parsing failed: {exc}")
+            # Fall back to individual variables
+            
+    # Try individual variables
+    project_id = os.getenv("FIREBASE_PROJECT_ID")
+    client_email = os.getenv("FIREBASE_CLIENT_EMAIL")
+    private_key = os.getenv("FIREBASE_PRIVATE_KEY")
+    
+    if project_id and client_email and private_key:
+        project_id = project_id.strip().strip('"').strip("'")
+        client_email = client_email.strip().strip('"').strip("'")
+        private_key = private_key.strip().strip('"').strip("'")
+        formatted_private_key = private_key.replace("\\n", "\n")
+        return {
+            "type": "service_account",
+            "project_id": project_id,
+            "private_key": formatted_private_key,
+            "client_email": client_email,
+            "token_uri": "https://oauth2.googleapis.com/token",
+        }
+    return None
 
 
 def _init_firebase():
