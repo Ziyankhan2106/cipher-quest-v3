@@ -1112,7 +1112,7 @@ const QuantumAscent = () => {
 
               <div className="relative shadow-[0_0_100px_rgba(0,0,0,0.5)] border border-[var(--current-theme-color)]/30">
                 <img 
-                  src={generateCertificate({ id: 5, title: 'FINAL: QUANTUM ASCENT', missions: [] }, operatorName, selectedAvatar.colorHex)}
+                  src={generateCertificate({ id: 5, title: 'FINAL: QUANTUM ASCENT', missions: [], speaker: 'KNOX', speakerColor: 'text-purple-400' }, operatorName, selectedAvatar.colorHex)}
                   alt="Story Mode Completion Certificate"
                   className="max-w-full h-auto"
                 />
@@ -1120,7 +1120,7 @@ const QuantumAscent = () => {
 
               <div className="flex gap-8">
                 <a 
-                  href={generateCertificate({ id: 5, title: 'FINAL: QUANTUM ASCENT', missions: [] }, operatorName, selectedAvatar.colorHex)}
+                  href={generateCertificate({ id: 5, title: 'FINAL: QUANTUM ASCENT', missions: [], speaker: 'KNOX', speakerColor: 'text-purple-400' }, operatorName, selectedAvatar.colorHex)}
                   download="CipherQuest_Story_Mode_Complete.png"
                   className="cyber-button px-16 h-16 text-lg bg-white text-black hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] flex items-center gap-4"
                 >
