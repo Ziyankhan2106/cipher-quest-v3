@@ -573,7 +573,7 @@ def generate_cipher(plaintext: str, m_type: str):
         s1 = random.randint(1, 10)
         s2 = -random.randint(1, 10)
         expected = "".join(apply_caesar(plaintext[i], s1 if i % 2 == 0 else s2) for i in range(len(plaintext)))
-        rule = f"ALTERNATING SHIFTS: even positions +{s1}, odd positions {s2}"
+        rule = f"ALTERNATING SHIFTS (0-indexed): index 0,2,4,... (even) shift +{s1} | index 1,3,5,... (odd) shift {s2}"
     elif m_type == 'positional':
         expected = "".join(apply_caesar(plaintext[i], i + 1) for i in range(len(plaintext)))
         rule = "POSITIONAL SHIFT: char at index i shifts by (i+1)"
@@ -701,8 +701,8 @@ def get_story_mission(mission_id):
     mission_type_map = {
         '1-1': 'reverse', '1-2': 'caesar', '1-3': 'atbash', '1-4': 'monoalphabetic', '1-5': 'fixed-number',
         '2-1': 'reverse-caesar', '2-2': 'alternating', '2-3': 'positional', '2-4': 'vowel-scrambler', '2-5': 'keyed-substitution',
-        '3-1': 'modular-shift', '3-2': 'vignere', '3-3': 'affine', '3-4': 'permutation', '3-5': 'blocked-rotate',
-        '4-1': 'pairing', '4-2': 'rotate-add', '4-3': 'encrypt-additively', '4-4': 'mini-rsa', '4-5': 'merkle'
+        '3-1': 'modular-shift', '3-2': 'vigenere', '3-3': 'affine', '3-4': 'permutation', '3-5': 'blocked-rotate',
+        '4-1': 'monoalphabetic', '4-2': 'rotate-add', '4-3': 'encrypt-additively', '4-4': 'mini-rsa', '4-5': 'merkle'
     }
     m_type = mission_type_map.get(mission_id, 'reverse')
     
