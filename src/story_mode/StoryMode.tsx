@@ -76,9 +76,17 @@ const BriefingTerminal = ({ text, speaker, speakerColor, operatorName, onComplet
         <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
           <Terminal size={20} className="text-[var(--current-theme-color)]" />
           <span className="text-sm font-bold tracking-[0.3em] uppercase text-white/50">SECURE COMMS LINK</span>
-          <span className="ml-auto text-xs text-red-500 animate-pulse flex items-center gap-2">
-            <Zap size={14} /> LIVE
-          </span>
+          <div className="ml-auto flex items-center gap-4 z-20">
+            <span className="text-xs text-red-500 animate-pulse flex items-center gap-2">
+              <Zap size={14} /> LIVE
+            </span>
+            <button 
+              onClick={onComplete}
+              className="text-[9px] tracking-[0.2em] uppercase font-mono border border-white/10 hover:border-[var(--current-theme-color)]/50 hover:text-[var(--current-theme-color)] px-3 py-1 transition-all text-white/50 hover:bg-[var(--current-theme-color)]/10 cursor-pointer"
+            >
+              Skip
+            </button>
+          </div>
         </div>
 
         <div className="min-h-[150px]">
