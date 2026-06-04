@@ -22,7 +22,7 @@ export interface AvatarVariant {
 }
 
 export const AVATAR_VARIANTS: AvatarVariant[] = [
-  { id: 'cyan', icon: 'layers', colorName: 'Cyber Cyan', colorHex: 'var(--current-theme-color)' },
+  { id: 'cyan', icon: 'layers', colorName: 'Cyber Cyan', colorHex: '#00f2ff' },
   { id: 'green', icon: 'memory', colorName: 'Matrix Green', colorHex: '#00ff88' },
   { id: 'purple', icon: 'api', colorName: 'Neon Purple', colorHex: '#b200ff' },
   { id: 'orange', icon: 'local_fire_department', colorName: 'Plasma Orange', colorHex: '#ff8800' },
