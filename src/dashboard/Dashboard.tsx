@@ -162,7 +162,7 @@ const Dashboard = () => {
   const robotSrc = isTutorialActive ? (ROBOT_SOURCES[currentStep.robotMood] || ROBOT_SOURCES.guide) : ROBOT_SOURCES.idle;
 
   const navigate_ = (path: string) => {
-    if (path === '/training') window.location.href = path;
+    if (path === '/training') window.location.href = '/training/';
     else navigate(path);
   };
 

@@ -329,7 +329,7 @@ const Dashboard = () => {
         {/* Capstone Ascent */}
         <div className="flex-shrink-0 ml-12 pr-40 z-20 flex items-center h-[500px]">
           <div 
-            onClick={() => progress === 100 && navigate('quantum-ascent')}
+            onClick={() => progress === 100 && navigate('/story/quantum-ascent')}
             className={`tactical-panel w-[420px] h-[360px] flex flex-col justify-center items-center relative overflow-hidden group transition-all duration-1000 ${progress === 100 ? 'cursor-pointer hover:border-[var(--current-theme-color)] shadow-2xl' : 'opacity-40 grayscale'}`}
           >
              <div className="absolute w-[300px] h-[300px] border border-white/5 rounded-full group-hover:animate-spin-slow group-hover:border-[var(--current-theme-color)]/20"></div>
