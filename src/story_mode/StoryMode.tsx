@@ -1023,11 +1023,16 @@ const QuantumAscent = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#020205_95%)] pointer-events-none"></div>
       </div>
 
-      <header className="h-20 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-2xl flex justify-between items-center px-10 z-20 relative">
-        <button onClick={() => navigate('/story')} className="flex items-center gap-4 group tactical-panel px-4 py-2 border-white/10 hover:border-[var(--current-theme-color)] transition-all">
-          <ChevronRight className="rotate-180 group-hover:-translate-x-1 transition-transform" size={18} />
-          <span className="font-bold tracking-[0.2em] text-[10px] uppercase text-white/50 group-hover:text-white">Return_to_HQ</span>
-        </button>
+      {/* Left corner back arrow */}
+      <button onClick={() => navigate('/story')} className="fixed top-0 left-0 w-28 h-28 hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-[100] flex items-start justify-start pl-6 pt-6 outline-none bg-[#00f2ff]" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
+         <div className="w-8 h-8 flex items-center justify-center">
+           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
+             <path d="m15 18-6-6 6-6"/>
+           </svg>
+         </div>
+      </button>
+
+      <header className="h-20 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-2xl flex justify-end items-center px-10 z-20 relative">
         <div className="flex items-center gap-4">
           <div className="w-3 h-3 bg-[var(--current-theme-color)] rounded-full animate-pulse" />
           <span className="font-mono text-[10px] text-[var(--current-theme-color)] uppercase tracking-[0.4em] font-bold">Quantum_Protocol_Active</span>
@@ -1039,9 +1044,17 @@ const QuantumAscent = () => {
           {dialoguePhase ? (
             <motion.div key="dialogue" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full max-w-2xl px-8">
               <div className="tactical-panel p-12 bg-[#0a0a0f]/95 border-[var(--current-theme-color)]/20">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-3 h-3 bg-[var(--current-theme-color)] rounded-full animate-ping" />
-                  <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[var(--current-theme-color)] font-bold">KNOX_SYSTEM_LINK</span>
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 bg-[var(--current-theme-color)] rounded-full animate-ping" />
+                    <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[var(--current-theme-color)] font-bold">KNOX_SYSTEM_LINK</span>
+                  </div>
+                  <button 
+                    onClick={() => setDialoguePhase(false)} 
+                    className="text-[9px] tracking-[0.2em] uppercase font-mono border border-white/10 hover:border-[var(--current-theme-color)]/50 hover:text-[var(--current-theme-color)] px-3 py-1 transition-all text-white/50 hover:bg-[var(--current-theme-color)]/10 cursor-pointer"
+                  >
+                    Skip
+                  </button>
                 </div>
                 <div className="space-y-4 font-mono text-sm leading-relaxed">
                   {KNOX_DIALOGUES.map((line, i) => (
@@ -1064,8 +1077,13 @@ const QuantumAscent = () => {
                   <motion.button key={idx} whileTap={{ scale: 0.9 }}
                     onClick={() => toggleNode(idx)}
                     className={`w-24 h-24 rounded-lg border-2 flex items-center justify-center font-mono text-lg font-bold transition-all duration-300 ${
-                      on ? 'bg-[var(--current-theme-color)] border-[var(--current-theme-color)] text-black shadow-[0_0_25px_var(--current-theme-color)]' : 'bg-white/5 border-white/10 text-white/30'
+                      on ? 'text-black' : 'bg-white/5 border-white/10 text-white/30'
                     }`}
+                    style={on ? {
+                      backgroundColor: selectedAvatar?.colorHex || '#00f2ff',
+                      borderColor: selectedAvatar?.colorHex || '#00f2ff',
+                      boxShadow: `0 0 25px ${selectedAvatar?.colorHex || '#00f2ff'}`
+                    } : {}}
                   >
                     {on ? '|1⟩' : '|0⟩'}
                   </motion.button>
