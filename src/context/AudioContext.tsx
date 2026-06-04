@@ -19,9 +19,24 @@ const AudioCtx = createContext<AudioContextType>({
 export const useAudio = () => useContext(AudioCtx);
 
 export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
-  const [volume, setVolume] = useState(0.5);
-  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolumeState] = useState(() => {
+    const saved = localStorage.getItem('cq_volume');
+    return saved !== null ? parseFloat(saved) : 0.5;
+  });
+  const [isMuted, setIsMutedState] = useState(() => {
+    return localStorage.getItem('cq_muted') === 'true';
+  });
   const [isGameActive, setIsGameActive] = useState(false);
+
+  const setVolume = (v: number) => {
+    setVolumeState(v);
+    localStorage.setItem('cq_volume', v.toString());
+  };
+
+  const setIsMuted = (m: boolean) => {
+    setIsMutedState(m);
+    localStorage.setItem('cq_muted', m.toString());
+  };
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
