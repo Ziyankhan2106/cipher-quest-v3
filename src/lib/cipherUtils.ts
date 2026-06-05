@@ -198,7 +198,7 @@ export const ciphers = {
     }
 };
 
-export function generateMission(level: number, usedWords: string[] = []): CipherMission {
+export function generateMission(xp: number, usedWords: string[] = []): CipherMission {
     let availableWords = CIPHERLAB_WORDS.filter(w => !usedWords.includes(w.toUpperCase()));
     if (availableWords.length === 0) availableWords = CIPHERLAB_WORDS;
     
@@ -206,19 +206,28 @@ export function generateMission(level: number, usedWords: string[] = []): Cipher
     const id = `mission_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     
     let difficulty: 'easy' | 'medium' | 'hard' = 'easy';
-    if (level >= 10) difficulty = 'hard';
-    else if (level >= 5) difficulty = 'medium';
+    if (xp >= 800) difficulty = 'hard';
+    else if (xp >= 300) difficulty = 'medium';
 
     const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
     
-    const orderedTypes = [
+    const easyTypes = [
         'reverse', 'caesar', 'atbash', 'monoalphabetic', 'fixed-number',
-        'reverse-caesar', 'alternating', 'positional', 'vowel-scrambler', 'keyed-substitution',
-        'modular-shift', 'vigenere', 'affine', 'permutation', 'blocked-rotate',
-        'pairing', 'rotate-add', 'encrypt-additively', 'mini-rsa', 'merkle'
+        'reverse-caesar', 'alternating'
+    ];
+    const mediumTypes = [
+        'positional', 'vowel-scrambler', 'keyed-substitution',
+        'modular-shift', 'vigenere', 'affine', 'permutation'
+    ];
+    const hardTypes = [
+        'blocked-rotate', 'pairing', 'rotate-add', 'encrypt-additively', 'mini-rsa', 'merkle'
     ];
     
-    const type = orderedTypes[level % orderedTypes.length];
+    let possibleTypes = easyTypes;
+    if (difficulty === 'medium') possibleTypes = mediumTypes;
+    else if (difficulty === 'hard') possibleTypes = hardTypes;
+    
+    const type = possibleTypes[Math.floor(Math.random() * possibleTypes.length)];
     
     let encryptedText = "";
     let schemeHint = "";
@@ -300,11 +309,11 @@ export function generateMission(level: number, usedWords: string[] = []): Cipher
         schemeHint = "MINI MERKLE TREE";
     }
 
-    return { id, level, type, encryptedText, originalText: word, schemeHint, difficulty };
+    return { id, level: Math.floor(xp / 1000), type, encryptedText, originalText: word, schemeHint, difficulty };
 }
 
 export function calculateScore(basePoints: number, timeSpent: number, totalTime: number, hintsCount: number): number {
   const timeFactor = Math.max(0.2, (totalTime - timeSpent) / totalTime);
-  const hintDeduction = hintsCount * 50;
-  return Math.max(10, Math.floor(basePoints * timeFactor) - hintDeduction);
+  const hintDeduction = hintsCount * 5;
+  return Math.max(2, Math.floor(basePoints * timeFactor) - hintDeduction);
 }

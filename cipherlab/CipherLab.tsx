@@ -425,8 +425,7 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
 
   const startNewMission = useCallback(() => {
     if (!user) return;
-    const level = user.completedLevelIds.length;
-    const mission = generateMission(level, user.usedWords || []);
+    const mission = generateMission(globalXp, user.usedWords || []);
     setSessionMission(mission);
     setUserInput('');
     setHintsCount(0);
@@ -458,7 +457,7 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
     if (!sessionMission || !isActive) return;
     if (userInput.toUpperCase().trim() === sessionMission.originalText) {
       const timeSpent = (Date.now() - startTime) / 1000;
-      const basePoints = sessionMission.difficulty === 'easy' ? 100 : sessionMission.difficulty === 'medium' ? 250 : 500;
+      const basePoints = sessionMission.difficulty === 'easy' ? 50 : sessionMission.difficulty === 'medium' ? 80 : 100;
       const points = calculateScore(basePoints, timeSpent, 300, hintsCount);
       setFeedback('success');
       setIsActive(false);
@@ -478,7 +477,7 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
     if (!sessionMission || hintsCount >= sessionMission.originalText.length) return;
     if (globalXp <= 0) return;
     setHintsCount(prev => prev + 1);
-    const result = await updateGlobalXp(-20);
+    const result = await updateGlobalXp(-5);
     onXpChange(result.xp);
   };
 
@@ -540,7 +539,7 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
                   <div className="mt-3 flex flex-col gap-2">
                     <button onClick={revealHint} disabled={hintsCount >= sessionMission.originalText.length || !isActive || globalXp <= 0}
                               className="w-full py-2 border border-[var(--current-theme-color)]/10 text-[var(--current-theme-color)] hover:bg-[var(--current-theme-color)]/10 transition-colors text-[14px] tracking-[0.12em] font-bold disabled:opacity-30 disabled:pointer-events-none rounded flex items-center justify-center gap-2">
-                      <Lightbulb className="w-4 h-4" /> REVEAL INTEL (-20 XP)
+                      <Lightbulb className="w-4 h-4" /> REVEAL INTEL (-5 XP)
                     </button>
                     <button onClick={handleSkip} disabled={!isActive}
                               className="w-full py-2 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-black transition-colors text-[14px] tracking-[0.12em] font-bold disabled:opacity-30 disabled:pointer-events-none rounded">
