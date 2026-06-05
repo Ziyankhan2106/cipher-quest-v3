@@ -51,9 +51,14 @@ export const ciphers = {
         const available = ALPHABET.split('');
         const shuffled = [...available].sort(() => Math.random() - 0.5);
         const map: Record<string, string> = {};
-        for(let i=0; i<26; i++) map[available[i]] = shuffled[i];
+        const decryptMap: Record<string, string> = {};
+        for(let i=0; i<26; i++) {
+            map[available[i]] = shuffled[i];
+            decryptMap[shuffled[i]] = available[i];
+        }
         const enc = text.split('').map(c => map[c] || c).join('');
-        const fullMap = Object.entries(map).map(([k,v]) => `${k}=${v}`).join(', ');
+        const sortedDecryptEntries = Object.entries(decryptMap).sort((a, b) => a[0].localeCompare(b[0]));
+        const fullMap = sortedDecryptEntries.map(([k,v]) => `${k}=${v}`).join(', ');
         return { enc, rule: `RANDOM SUB (${fullMap})` };
     },
     // 5
