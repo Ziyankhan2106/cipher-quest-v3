@@ -16,7 +16,7 @@ const CipherLabMobile = ({
     <div className="min-h-[100dvh] w-full bg-[#020205] text-white flex flex-col font-sans">
       <div className="sticky top-0 z-50 bg-[#020205]/90 backdrop-blur-md border-b border-[#00f2ff]/20 px-4 pt-10 pb-4 flex items-center gap-4">
         <button onClick={() => navigate('/dashboard')} className="p-2 border border-[#00f2ff]/30 rounded bg-[#00f2ff]/10 text-[#00f2ff]">
-          <ArrowLeft size={20} />
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         </button>
         <h1 className="cq-title text-xl uppercase tracking-widest text-white m-0">Cipher Lab</h1>
       </div>
