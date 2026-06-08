@@ -9,6 +9,17 @@ import Multiplayer from '../multiplayer/Multiplayer';
 import StoryMode from './story_mode/StoryMode';
 import BootLoader from './components/BootLoader';
 import AppIntro from './components/AppIntro';
+import { RefreshCw } from 'lucide-react';
+
+const PortraitOverlay = () => {
+  return (
+    <div className="fixed inset-0 z-[999999] bg-[#020205] text-white flex-col items-center justify-center p-8 text-center hidden portrait:flex md:portrait:hidden">
+       <RefreshCw size={64} className="text-[#00f2ff] mb-6 animate-spin-slow" />
+       <h1 className="text-3xl font-bold tracking-widest text-white mb-4">Rotate Device</h1>
+       <p className="font-mono text-sm text-white/60 tracking-wider">Please rotate your device to landscape mode to access the tactical terminal.</p>
+    </div>
+  );
+};
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -45,6 +56,7 @@ function App() {
   return (
     <AuthProvider>
       <AudioProvider>
+        <PortraitOverlay />
         {showIntro && <AppIntro onComplete={() => setShowIntro(false)} />}
         <Router>
           <BootLoader />

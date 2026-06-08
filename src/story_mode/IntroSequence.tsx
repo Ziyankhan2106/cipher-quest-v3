@@ -50,23 +50,27 @@ const IntroSequence = () => {
     return () => clearInterval(interval);
   }, [lineIndex, isBooting, operatorName]);
 
+  const handleAction = () => {
+    if (isTyping) {
+      // Skip typing
+      const currentLine = DIALOGUE[lineIndex].text.replace('{NAME}', operatorName.toUpperCase());
+      setDisplayedText(currentLine);
+      setIsTyping(false);
+    } else if (lineIndex < DIALOGUE.length) {
+      // Next line or finish
+      if (lineIndex === DIALOGUE.length - 1) {
+        completeIntro();
+      } else {
+        setLineIndex(lineIndex + 1);
+      }
+    }
+  };
+
   // Handle Enter key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
-        if (isTyping) {
-          // Skip typing
-          const currentLine = DIALOGUE[lineIndex].text.replace('{NAME}', operatorName.toUpperCase());
-          setDisplayedText(currentLine);
-          setIsTyping(false);
-        } else if (lineIndex < DIALOGUE.length) {
-          // Next line or finish
-          if (lineIndex === DIALOGUE.length - 1) {
-            completeIntro();
-          } else {
-            setLineIndex(lineIndex + 1);
-          }
-        }
+        handleAction();
       }
     };
     
@@ -105,9 +109,10 @@ const IntroSequence = () => {
             key="dialogue"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-4xl px-8 z-10"
+            className="w-full max-w-4xl px-8 z-10 cursor-pointer"
+            onClick={handleAction}
           >
-            <div className="border border-red-500/30 bg-red-950/10 p-10 backdrop-blur-md rounded-lg shadow-[0_0_50px_rgba(255,0,0,0.1)] relative overflow-hidden">
+            <div className="border border-red-500/30 bg-red-950/10 p-6 md:p-10 backdrop-blur-md rounded-lg shadow-[0_0_50px_rgba(255,0,0,0.1)] relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-[var(--current-theme-color)] to-red-500 opacity-50"></div>
               
               <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
@@ -145,10 +150,10 @@ const IntroSequence = () => {
                 )}
               </div>
 
-              <div className="mt-12 flex justify-between items-center text-xs text-white/30 tracking-[0.2em]">
+              <div className="mt-12 flex justify-between items-center text-xs text-white/30 tracking-[0.2em] flex-wrap gap-4">
                 <span>ENCRYPTION NETWORK : OFFLINE</span>
-                <span className={isTyping ? 'opacity-0' : 'opacity-100 animate-pulse text-[var(--current-theme-color)]'}>
-                  {lineIndex === DIALOGUE.length - 1 ? '[PRESS ENTER TO INITIATE LOCKDOWN]' : '[PRESS ENTER TO CONTINUE]'}
+                <span className={isTyping ? 'opacity-0' : 'opacity-100 animate-pulse text-[var(--current-theme-color)] bg-[var(--current-theme-color)]/10 px-4 py-2 border border-[var(--current-theme-color)]/30 rounded'}>
+                  {lineIndex === DIALOGUE.length - 1 ? '[TAP OR PRESS ENTER TO INITIATE LOCKDOWN]' : '[TAP OR PRESS ENTER TO CONTINUE]'}
                 </span>
               </div>
             </div>

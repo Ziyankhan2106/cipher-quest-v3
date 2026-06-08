@@ -250,8 +250,36 @@
         color: #c084fc !important;
       }
 
-
-
+      .cq-portrait-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 999999;
+        background: #020205;
+        color: white;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+        text-align: center;
+      }
+      .cq-spin-icon {
+        animation: spin-slow 4s linear infinite;
+      }
+      @keyframes spin-slow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @media (orientation: portrait) {
+        .cq-portrait-overlay {
+          display: flex;
+        }
+      }
+      @media (min-width: 768px) and (orientation: portrait) {
+        .cq-portrait-overlay {
+          display: none;
+        }
+      }
 
       @media (max-width: 640px) {
         .cq-level-header {
@@ -288,8 +316,21 @@
       document.title = `CipherQuest | Level ${key} | ${levelNames[key]}`;
     }
     enhanceHeader();
+    addPortraitOverlay();
+  }
 
-
+  function addPortraitOverlay() {
+    const overlay = document.createElement("div");
+    overlay.className = "cq-portrait-overlay";
+    overlay.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cq-spin-icon" style="color: #00f2ff; margin-bottom: 24px;">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+        <path d="M3 3v5h5"></path>
+      </svg>
+      <h1 style="font-family: 'Orbitron', sans-serif; font-size: 1.875rem; font-weight: 700; letter-spacing: 0.1em; color: white; margin-bottom: 16px;">Rotate Device</h1>
+      <p style="font-family: monospace; font-size: 0.875rem; color: rgba(255,255,255,0.6); letter-spacing: 0.05em;">Please rotate your device to landscape mode to access the tactical terminal.</p>
+    `;
+    document.body.appendChild(overlay);
   }
 
   if (document.readyState === "loading") {

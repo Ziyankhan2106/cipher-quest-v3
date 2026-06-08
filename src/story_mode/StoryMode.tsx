@@ -52,16 +52,20 @@ const BriefingTerminal = ({ text, speaker, speakerColor, operatorName, onComplet
     return () => clearInterval(interval);
   }, [text, operatorName]);
 
+  const handleAction = () => {
+    if (isTyping) {
+      const currentLine = text.replace('{NAME}', operatorName.toUpperCase());
+      setDisplayedText(currentLine);
+      setIsTyping(false);
+    } else {
+      onComplete();
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
-        if (isTyping) {
-          const currentLine = text.replace('{NAME}', operatorName.toUpperCase());
-          setDisplayedText(currentLine);
-          setIsTyping(false);
-        } else {
-          onComplete();
-        }
+        handleAction();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -69,8 +73,8 @@ const BriefingTerminal = ({ text, speaker, speakerColor, operatorName, onComplet
   }, [isTyping, text, operatorName, onComplete]);
 
   return (
-    <div className="flex-1 flex flex-col justify-center max-w-4xl mx-auto w-full">
-      <div className="border border-[var(--current-theme-color)]/20 bg-[#0a0a0f]/90 p-10 backdrop-blur-md shadow-[0_0_40px_rgba(0,0,0,0.8)] relative overflow-hidden">
+    <div className="flex-1 flex flex-col justify-center max-w-4xl mx-auto w-full cursor-pointer" onClick={handleAction}>
+      <div className="border border-[var(--current-theme-color)]/20 bg-[#0a0a0f]/90 p-6 md:p-10 backdrop-blur-md shadow-[0_0_40px_rgba(0,0,0,0.8)] relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--current-theme-color)] to-transparent opacity-50"></div>
         
         <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
@@ -80,7 +84,7 @@ const BriefingTerminal = ({ text, speaker, speakerColor, operatorName, onComplet
             <span className="text-xs text-red-500 animate-pulse flex items-center gap-2">
               <Zap size={14} /> LIVE
             </span>
-            <button 
+            <button
               onClick={onComplete}
               className="text-[9px] tracking-[0.2em] uppercase font-mono border border-white/10 hover:border-[var(--current-theme-color)]/50 hover:text-[var(--current-theme-color)] px-3 py-1 transition-all text-white/50 hover:bg-[var(--current-theme-color)]/10 cursor-pointer"
             >
@@ -101,10 +105,10 @@ const BriefingTerminal = ({ text, speaker, speakerColor, operatorName, onComplet
           </div>
         </div>
 
-        <div className="mt-12 flex justify-between items-center text-xs text-white/30 tracking-[0.2em]">
+        <div className="mt-12 flex justify-between items-center text-xs text-white/30 tracking-[0.2em] flex-wrap gap-4">
           <span>ENCRYPTION NETWORK : STANDBY</span>
-          <span className={isTyping ? 'opacity-0' : 'opacity-100 animate-pulse text-[var(--current-theme-color)]'}>
-            [PRESS ENTER TO INITIATE PROTOCOL]
+          <span className={isTyping ? 'opacity-0' : 'opacity-100 animate-pulse text-[var(--current-theme-color)] bg-[var(--current-theme-color)]/10 px-4 py-2 border border-[var(--current-theme-color)]/30 rounded'}>
+            [TAP OR PRESS ENTER TO INITIATE]
           </span>
         </div>
       </div>
@@ -223,14 +227,14 @@ const Dashboard = () => {
           
           return (
             <div key={chapter.id} className={`relative flex items-center flex-shrink-0 min-w-[70vw] lg:min-w-[55vw] ${locked ? 'opacity-40 grayscale pointer-events-none' : ''}`}>
-              <div className="grid grid-cols-[auto_1fr] gap-16 w-full h-full">
+              <div className="grid grid-cols-[auto_1fr] gap-8 md:gap-16 w-full h-full items-center">
                 
                 {/* Chapter Header Module */}
-                <div className="relative z-20 flex flex-col justify-center h-[500px] w-[340px]">
-                  <div className="absolute -top-12 -left-12 font-display text-[220px] font-bold text-[var(--current-theme-color)] opacity-[0.03] leading-none select-none z-0 pointer-events-none">
+                <div className="relative z-20 flex flex-col justify-center h-[80vh] max-h-[500px] w-[280px] md:w-[340px]">
+                  <div className="absolute -top-12 -left-12 font-display text-[140px] md:text-[220px] font-bold text-[var(--current-theme-color)] opacity-[0.03] leading-none select-none z-0 pointer-events-none">
                      0{chapter.id}
                   </div>
-                  <div className="tactical-panel p-10 relative overflow-hidden group transition-all duration-700 z-10 w-full h-[360px] flex flex-col justify-between border-white/5 shadow-2xl">
+                  <div className="tactical-panel p-6 md:p-10 relative overflow-hidden group transition-all duration-700 z-10 w-full h-[70vh] max-h-[360px] flex flex-col justify-between border-white/5 shadow-2xl">
                     <div className="flex justify-between items-start">
                       <div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center rounded-sm">
                         {locked ? <Lock className="text-white/20" size={24} /> : <Shield className={isChapterFullyCompleted(chapter.id) ? 'text-[var(--current-theme-color)]' : 'text-white/20'} size={24} />}
@@ -280,21 +284,21 @@ const Dashboard = () => {
                 </div>
 
                 {/* Mission Gallery */}
-                <div className="relative z-10 flex items-center gap-8 overflow-visible h-[500px] w-max pr-12">
+                <div className="relative z-10 flex items-center gap-6 md:gap-8 overflow-visible h-[80vh] max-h-[500px] w-max pr-12">
                   {chapter.missions.map((mission, i) => (
                     <Link key={mission.id} to={locked ? '#' : `/story/mission/${mission.id}`} onClick={(e) => locked && e.preventDefault()}>
-                      <div className={`relative group cursor-pointer outline-none w-[280px] h-[380px] flex-shrink-0 transition-transform duration-500 hover:scale-[1.02] ${['translate-y-4', 'translate-y-[-8px]', 'translate-y-12', 'translate-y-0', 'translate-y-[-4px]'][i % 5]}`}>
+                      <div className={`relative group cursor-pointer outline-none w-[240px] md:w-[280px] h-[65vh] max-h-[380px] flex-shrink-0 transition-transform duration-500 hover:scale-[1.02] ${['translate-y-4', 'translate-y-[-8px]', 'translate-y-12', 'translate-y-0', 'translate-y-[-4px]'][i % 5]}`}>
                         <div className={`absolute inset-0 tactical-panel bg-[#0a0a0f]/95 border-white/5 flex flex-col group-hover:border-[var(--current-theme-color)]/40 group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)] transition-all ${completedMissions.has(mission.id) ? 'border-[var(--current-theme-color)]/20' : ''}`}>
-                          <div className="h-40 bg-white/5 relative overflow-hidden flex items-center justify-center p-8 border-b border-white/5">
+                          <div className="h-32 md:h-40 bg-white/5 relative overflow-hidden flex items-center justify-center p-6 md:p-8 border-b border-white/5">
                              {completedMissions.has(mission.id) && (
                                <div className="absolute top-4 right-4 text-[var(--current-theme-color)] z-20 flex items-center gap-2">
                                   <span className="text-[9px] font-mono font-bold tracking-widest uppercase">Verified</span>
                                   <CheckCircle2 size={14} />
                                </div>
                              )}
-                             <Radar className={`h-20 w-20 text-white/5 group-hover:text-[var(--current-theme-color)]/20 transition-all duration-700 ${completedMissions.has(mission.id) ? 'text-[var(--current-theme-color)]/20' : ''}`} />
+                             <Radar className={`h-16 w-16 md:h-20 md:w-20 text-white/5 group-hover:text-[var(--current-theme-color)]/20 transition-all duration-700 ${completedMissions.has(mission.id) ? 'text-[var(--current-theme-color)]/20' : ''}`} />
                           </div>
-                          <div className="flex-1 p-8 flex flex-col justify-between">
+                          <div className="flex-1 p-6 md:p-8 flex flex-col justify-between overflow-y-auto hide-scrollbar">
                             <div className="space-y-3">
                                <div className="flex items-center gap-2">
                                  <div className="w-1 h-1 bg-[var(--current-theme-color)] rounded-full animate-pulse" />
@@ -327,7 +331,7 @@ const Dashboard = () => {
 
         
         {/* Capstone Ascent */}
-        <div className="flex-shrink-0 ml-12 pr-40 z-20 flex items-center h-[500px]">
+        <div className="flex-shrink-0 ml-12 pr-40 z-20 flex items-center h-[80vh] max-h-[500px]">
           <div 
             onClick={() => progress === 100 && navigate('/story/quantum-ascent')}
             className={`tactical-panel w-[420px] h-[360px] flex flex-col justify-center items-center relative overflow-hidden group transition-all duration-1000 ${progress === 100 ? 'cursor-pointer hover:border-[var(--current-theme-color)] shadow-2xl' : 'opacity-40 grayscale'}`}
@@ -625,8 +629,8 @@ const MissionView = () => {
       </button>
 
       {mission && (
-        <div className="flex-1 overflow-y-auto overflow-x-hidden z-10 flex flex-col items-center py-12 relative hide-scrollbar">
-          <div className="w-full max-w-[1400px] px-8 flex flex-col xl:flex-row gap-16 items-stretch min-h-full">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden z-10 flex flex-col items-center py-16 md:py-12 relative hide-scrollbar">
+          <div className="w-full max-w-[1400px] px-4 md:px-8 flex flex-col xl:flex-row gap-8 md:gap-16 items-stretch min-h-full">
             
             {missionState === 'briefing' && (
               <BriefingTerminal 
@@ -1049,8 +1053,8 @@ const QuantumAscent = () => {
                     <div className="w-3 h-3 bg-[var(--current-theme-color)] rounded-full animate-ping" />
                     <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[var(--current-theme-color)] font-bold">KNOX_SYSTEM_LINK</span>
                   </div>
-                  <button 
-                    onClick={() => setDialoguePhase(false)} 
+                  <button
+                    onClick={() => setDialoguePhase(false)}
                     className="text-[9px] tracking-[0.2em] uppercase font-mono border border-white/10 hover:border-[var(--current-theme-color)]/50 hover:text-[var(--current-theme-color)] px-3 py-1 transition-all text-white/50 hover:bg-[var(--current-theme-color)]/10 cursor-pointer"
                   >
                     Skip
