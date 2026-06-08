@@ -308,6 +308,29 @@
           justify-content: center !important;
         }
       }
+
+      /* Compact landscape view for mobile phones */
+      @media (max-height: 600px) {
+        .glass-panel { padding: 12px !important; }
+        .glass-panel > .cq-level-header { margin: -12px -12px 12px -12px !important; width: calc(100% + 24px) !important; padding: 8px 12px !important; }
+        
+        .mapping-area { margin: 12px 0 !important; gap: 40px !important; }
+        .char-box { width: 40px !important; height: 46px !important; font-size: 24px !important; }
+        .row-label { transform: translateY(12px) !important; font-size: 10px !important; }
+        
+        .robot-section { margin-top: 8px !important; padding-top: 8px !important; gap: 8px !important; }
+        .robot-icon { font-size: 1.5rem !important; }
+        .speech-bubble { font-size: 11px !important; }
+        
+        .footer { margin: 12px -12px -12px -12px !important; padding: 8px 12px !important; }
+        .btn, .foot-btn { padding: 4px 12px !important; font-size: 10px !important; min-height: 28px !important; }
+        
+        .cq-header-title { font-size: 16px !important; }
+        .cq-header-subtitle { font-size: 10px !important; margin: 4px 0 0 0 !important; }
+        .cq-header-chips { gap: 6px !important; transform: scale(0.85); transform-origin: right center; }
+        .cq-header-chip { min-height: 36px !important; padding: 4px 8px !important; }
+        .cq-chip-value { font-size: 11px !important; }
+      }
     `;
     document.head.appendChild(style);
 

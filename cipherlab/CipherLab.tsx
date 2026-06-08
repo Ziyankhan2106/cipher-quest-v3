@@ -631,6 +631,16 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
                 </div>
               </div>
 
+              <div className="mt-6 flex justify-end">
+                <button 
+                  type="submit" 
+                  disabled={feedback === 'success' || !sessionMission || userInput.length === 0}
+                  className="cyber-button !bg-[#00f2ff] hover:!bg-white !text-black hover:!text-[#00f2ff] text-[14px] md:text-[18px] py-3 px-8 hover:shadow-[0_0_25px_rgba(255,255,255,0.8)] border-none outline-none group transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
+                >
+                  <span className="relative z-10 font-bold group-hover:!text-[#00f2ff]">EXECUTE DECRYPTION</span>
+                </button>
+              </div>
+
               <div className="h-8 mt-3 flex items-center">
                  {feedback === 'error' && (
                    <p className="font-mono text-[14px] font-bold text-red-500 tracking-[0.2em] flex items-center gap-2 px-3 py-1 bg-red-500/10 rounded border border-red-500/20">

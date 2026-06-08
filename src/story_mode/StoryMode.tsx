@@ -5,6 +5,8 @@ import { CHAPTERS, AVATAR_VARIANTS, AvatarVariant, Chapter } from './lib/game-da
 import { fetchMission, fetchHint } from './lib/api';
 import { StoryModeProvider, useStoryMode } from './lib/StoryModeContext';
 import { useAudio } from '../context/AudioContext';
+import { useIsMobile } from '../hooks/useIsMobile';
+import StoryModeMobile from './StoryModeMobile';
 import { generateCertificate } from './lib/certificate';
 import { Download, FileText, X as XIcon, ChevronRight, ChevronLeft, Settings, Lock, Shield, Radar, CheckCircle2, AlertCircle, MoveHorizontal, Terminal, Lightbulb, Unlock, Verified, ShieldX, ArrowRightLeft, AlertTriangle, Zap } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -1180,12 +1182,18 @@ const DashboardWrapper = () => {
   return null;
 };
 
+const DashboardSwitcher = () => {
+  const isMobile = useIsMobile();
+  if (isMobile) return <StoryModeMobile />;
+  return <Dashboard />;
+};
+
 function StoryMode() {
   return (
     <StoryModeProvider>
       <Routes>
         <Route path="/" element={<DashboardWrapper />} />
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="dashboard" element={<DashboardSwitcher />} />
         <Route path="intro" element={<IntroSequence />} />
         <Route path="mission/:id" element={<MissionView />} />
         <Route path="quantum-ascent" element={<QuantumAscent />} />

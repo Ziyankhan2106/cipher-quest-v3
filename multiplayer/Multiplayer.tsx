@@ -582,7 +582,6 @@ const Multiplayer = () => {
 
                 </div>
               </div>
-            </div>
             </>
           )}
 
