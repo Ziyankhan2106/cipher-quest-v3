@@ -374,7 +374,7 @@ const Multiplayer = () => {
   };
 
   return (
-    <div className="h-[100dvh] w-full bg-[#020205] flex flex-col text-white relative overflow-hidden font-sans selection:bg-[var(--current-theme-color)]/30">
+    <div className="min-h-[100dvh] w-full bg-[#020205] flex flex-col text-white relative overflow-y-auto overflow-x-hidden font-sans selection:bg-[var(--current-theme-color)]/30">
       {/* Standardized Background */}
       <div className="absolute inset-0 z-0 bg-[#050505] overflow-hidden pointer-events-none">
         <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
@@ -382,9 +382,9 @@ const Multiplayer = () => {
       </div>
 
       {/* Header */}
-      <div className="relative z-50 w-full shrink-0 h-[min(112px,15vh)] pointer-events-none">
+      <div className="relative z-50 w-full shrink-0 h-16 md:h-28 pointer-events-none">
         {/* Left corner back arrow */}
-        <button onClick={() => navigate('/dashboard')} className="absolute top-0 left-0 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-[min(24px,3vw)] pt-[min(24px,3vh)] shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)', width: 'min(112px, 20vh)', height: 'min(112px, 20vh)' }}>
+        <button onClick={() => navigate('/dashboard')} className="absolute top-0 left-0 w-16 h-16 md:w-28 md:h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-3 pt-3 md:pl-6 md:pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
            <div className="w-8 h-8 flex items-center justify-center">
              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
                <path d="m15 18-6-6 6-6"/>
@@ -393,13 +393,13 @@ const Multiplayer = () => {
         </button>
 
         {/* Right side module name */}
-        <div className="absolute top-6 right-10 flex flex-col items-end pointer-events-auto z-40">
-          <h1 className="cq-title tracking-widest uppercase text-right mb-4">Multiplayer</h1>
+        <div className="absolute top-2 md:top-6 right-4 md:right-10 flex flex-col items-end pointer-events-auto">
+          <h1 className="cq-title text-2xl md:text-[80px] tracking-widest uppercase text-right leading-none">Multiplayer</h1>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 flex-1 px-8 pb-12 hide-scrollbar">
+      {/* Main Content Area */}
+      <div className="flex-1 w-full max-w-[1200px] mx-auto px-4 md:px-8 pb-6 md:pb-12 z-10 flex flex-col relative">
         <div className="w-full space-y-6">
 
           {/* Lobby (always visible when no active match) */}
@@ -409,17 +409,16 @@ const Multiplayer = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
               <div className="lg:col-span-2 space-y-6">
                 {/* Search Panel */}
-                <div className="glass-panel p-6 border border-[var(--current-theme-color)]/20 relative overflow-hidden group">
+                <div className="glass-panel p-6 md:p-10 mb-8 border border-[var(--current-theme-color)]/20 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--current-theme-color)]/5 to-transparent pointer-events-none"></div>
-                  <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--current-theme-color)]/10 blur-[80px] pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity"></div>
                   
                   <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="flex items-center gap-3 mb-6">
                       <Radar size={16} className="text-[var(--current-theme-color)] animate-pulse" />
                       <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-[var(--current-theme-color)]">&gt; Challenge Friend</span>
                     </div>
-                    <h2 className="cq-subheading mb-1 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Find Callsign</h2>
-                    <p className="text-white/40 text-xs mb-5">Enter a callsign to find your friend. Send a duel invite and wait for them to accept.</p>
+                    <h2 className="cq-subheading mb-2 text-xl md:text-3xl drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Find Callsign</h2>
+                    <p className="text-white/40 text-xs mb-8">Enter a callsign to find your friend. Send a duel invite and wait for them to accept.</p>
 
                     {!user && (
                       <div className="mb-6 p-5 bg-red-500/10 border border-red-500/30 rounded flex items-center justify-between gap-4">
@@ -538,17 +537,13 @@ const Multiplayer = () => {
                    </div>
                 </div>
 
-                <div className="glass-panel border border-[var(--current-theme-color)]/30 overflow-hidden relative flex flex-col h-full">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--current-theme-color)]/10 blur-[50px] pointer-events-none opacity-50"></div>
-                  <div className="p-6 border-b border-white/10 relative z-10 flex items-center justify-between bg-[#0a0a0f]">
-                    <div className="flex items-center gap-3">
-                      <Trophy className="text-[var(--current-theme-color)]" size={20} />
-                      <h3 className="cq-subheading tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Top Callsigns</h3>
-                    </div>
+                <div className="glass-panel p-6 md:p-10 border border-white/5 flex-1 flex flex-col">
+                  <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/10">
+                    <Trophy className="text-[#00f2ff]" size={24} />
+                    <span className="font-mono text-xs text-[#00f2ff] tracking-[0.3em] uppercase">Global Rankings</span>
                   </div>
                   
-                  <div className="flex-1 overflow-y-auto p-2">
-                    <div className="flex flex-col gap-1 p-4">
+                  <div className="flex flex-col gap-3 md:gap-4 overflow-y-auto pr-2 custom-scrollbar flex-1 max-h-[500px]">
                       {leaderboard.slice(0, 5).map((lb, i) => (
                         <div key={lb.uid} className={`flex items-center justify-between py-3 px-4 rounded transition-colors group relative overflow-hidden ${i < 3 ? 'bg-[var(--current-theme-color)]/10 border border-[var(--current-theme-color)]/30' : 'hover:bg-white/5'}`}>
                           <div className="flex items-center gap-4 relative z-10">

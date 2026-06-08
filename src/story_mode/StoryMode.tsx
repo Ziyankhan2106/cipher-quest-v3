@@ -175,7 +175,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="h-[100dvh] w-full relative overflow-hidden bg-[#020205] text-white font-sans selection:bg-[var(--current-theme-color)]/30 flex flex-col">
+    <div className="min-h-[100dvh] w-full relative overflow-y-auto overflow-x-hidden bg-[#020205] text-white font-sans selection:bg-[var(--current-theme-color)]/30 flex flex-col">
       {/* Standardized Background */}
       <div className="absolute inset-0 z-0 bg-[#050505] overflow-hidden pointer-events-none">
         <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
@@ -183,9 +183,9 @@ const Dashboard = () => {
       </div>
 
       {/* Top Navigation */}
-      <div className="relative w-full z-50 pointer-events-none shrink-0 h-[min(112px,15vh)]">
+      <div className="relative w-full z-50 pointer-events-none shrink-0 h-16 md:h-28">
         {/* Left corner back arrow */}
-        <button onClick={() => navigate('/dashboard')} className="absolute top-0 left-0 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-[min(24px,3vw)] pt-[min(24px,3vh)] shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)', width: 'min(112px, 20vh)', height: 'min(112px, 20vh)' }}>
+        <button onClick={() => navigate('/dashboard')} className="absolute top-0 left-0 w-16 h-16 md:w-28 md:h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-3 pt-3 md:pl-6 md:pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
            <div className="w-8 h-8 flex items-center justify-center">
              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
                <path d="m15 18-6-6 6-6"/>
@@ -194,7 +194,7 @@ const Dashboard = () => {
         </button>
 
         {/* Certificate button beside arrow */}
-        <div className="absolute top-8 left-32 flex items-center gap-6 pointer-events-auto">
+        <div className="absolute top-3 md:top-8 left-16 md:left-32 flex items-center gap-6 pointer-events-auto scale-75 md:scale-100 origin-left">
           <button 
             onClick={(e) => { e.stopPropagation(); setShowCertificates(true); }}
             className="flex items-center gap-3 tactical-panel px-6 py-2 text-[var(--current-theme-color)] border-[var(--current-theme-color)]/30 hover:bg-[var(--current-theme-color)]/10 transition-all group"
@@ -205,8 +205,8 @@ const Dashboard = () => {
         </div>
 
         {/* Right side module name */}
-        <div className="absolute top-6 right-10 flex flex-col items-end pointer-events-auto">
-          <h1 className="cq-title tracking-widest uppercase text-right">Story Mode</h1>
+        <div className="absolute top-2 md:top-6 right-4 md:right-10 flex flex-col items-end pointer-events-auto">
+          <h1 className="cq-title text-2xl md:text-[60px] lg:text-[80px] tracking-widest uppercase text-right leading-none">Story Mode</h1>
         </div>
       </div>
 
@@ -218,7 +218,7 @@ const Dashboard = () => {
         onMouseUp={stopDragging}
         onMouseLeave={stopDragging}
         onWheel={onWheel}
-        className="relative flex-1 flex items-center overflow-x-auto overflow-y-hidden gap-x-24 px-[10vw] hide-scrollbar z-10 py-[min(32px,3vh)] min-h-0 cursor-grab active:cursor-grabbing"
+        className="relative flex-1 flex items-center overflow-x-auto overflow-y-hidden gap-x-12 md:gap-x-24 px-[5vw] md:px-[10vw] hide-scrollbar z-10 py-4 md:py-8 min-h-[300px] md:min-h-0 cursor-grab active:cursor-grabbing"
       >
         <div className="absolute top-[50%] left-0 right-0 min-w-max h-[1px] bg-gradient-to-r from-transparent via-[var(--current-theme-color)]/20 to-transparent -translate-y-1/2 z-0 pointer-events-none"></div>
 
@@ -351,16 +351,16 @@ const Dashboard = () => {
       </div>
 
       {/* Bottom Nav */}
-      <div className="relative w-full bg-gradient-to-t from-black to-transparent pt-[min(48px,5vh)] flex items-end px-[min(48px,5vw)] pb-[min(32px,3vh)] z-50 pointer-events-none shrink-0 mt-auto">
-        <div className="w-full flex justify-between items-end">
+      <div className="relative w-full bg-gradient-to-t from-black to-transparent pt-8 md:pt-12 flex items-end px-4 md:px-12 pb-6 md:pb-8 z-50 pointer-events-none shrink-0 mt-auto">
+        <div className="w-full flex justify-between items-end gap-2">
           <div className="flex flex-col gap-2 items-start pointer-events-auto">
             <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.2em]">Global Completion</span>
-            <div className="flex items-center gap-6 bg-surface-dark/90 backdrop-blur-md border border-white/10 px-8 py-4 rounded-full">
+            <div className="flex items-center gap-4 md:gap-6 bg-surface-dark/90 backdrop-blur-md border border-white/10 px-4 py-2 md:px-8 md:py-4 rounded-full">
               <div className="flex items-baseline gap-1">
-                 <span className="font-display text-4xl font-bold text-white">{progress}</span>
-                 <span className="font-display text-xl text-white/50">%</span>
+                 <span className="font-display text-xl md:text-4xl font-bold text-white">{progress}</span>
+                 <span className="font-display text-sm md:text-xl text-white/50">%</span>
               </div>
-              <div className="w-64 h-1.5 bg-surface-highlight rounded-full overflow-hidden">
+              <div className="w-32 md:w-64 h-1.5 bg-surface-highlight rounded-full overflow-hidden">
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
@@ -369,9 +369,9 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-6 pointer-events-auto">
-             <div className="font-sans text-xs text-white/40 tracking-wider uppercase">Drag or scroll to explore sectors</div>
-             <MoveHorizontal className="text-white/20 animate-bounce" />
+          <div className="flex flex-col md:flex-row items-end md:items-center gap-2 md:gap-6 pointer-events-auto">
+             <div className="font-sans text-[9px] md:text-xs text-white/40 tracking-wider uppercase text-right md:text-left">Drag or scroll to explore sectors</div>
+             <MoveHorizontal className="text-white/20 animate-bounce w-4 h-4 md:w-6 md:h-6" />
           </div>
         </div>
       </div>

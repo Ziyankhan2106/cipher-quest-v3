@@ -202,7 +202,7 @@
 
     <!-- Iframe Overlay -->
     <div id="iframe-overlay">
-        <button id="close-btn" class="absolute top-0 left-0 w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group z-[10001] flex items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none border-none" style="clip-path: polygon(0 0, 100% 0, 0 100%);">
+        <button id="close-btn" class="absolute top-0 left-0 w-16 h-16 md:w-28 md:h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group z-[10001] flex items-start justify-start pl-3 pt-3 md:pl-6 md:pt-6 shadow-[0_0_30px_#00f2ff] outline-none border-none" style="clip-path: polygon(0 0, 100% 0, 0 100%);">
             <div class="w-8 h-8 flex items-center justify-center">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
                     <path d="m15 18-6-6 6-6"/>
@@ -264,15 +264,15 @@
 
         function createNodeMap() {
             let html = `
-                <a href="/dashboard" class="fixed top-0 left-0 w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group z-50 flex items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style="clip-path: polygon(0 0, 100% 0, 0 100%);">
+                <a href="/dashboard" class="fixed top-0 left-0 w-16 h-16 md:w-28 md:h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group z-50 flex items-start justify-start pl-3 pt-3 md:pl-6 md:pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style="clip-path: polygon(0 0, 100% 0, 0 100%);">
                    <div class="w-8 h-8 flex items-center justify-center">
                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
                        <path d="m15 18-6-6 6-6"/>
                      </svg>
                    </div>
                 </a>
-                <div class="fixed top-6 right-10 flex flex-col items-end z-40 pointer-events-none">
-                  <h1 class="font-display text-3xl md:text-4xl font-bold uppercase tracking-tight text-white text-right mb-4">Training Academy</h1>
+                <div class="fixed top-2 md:top-6 right-4 md:right-10 flex flex-col items-end z-40 pointer-events-none">
+                  <h1 class="font-display text-xl md:text-4xl font-bold uppercase tracking-tight text-white text-right mb-4 leading-none">Training Academy</h1>
                 </div>
                 <div class="pt-8"></div>
             `;

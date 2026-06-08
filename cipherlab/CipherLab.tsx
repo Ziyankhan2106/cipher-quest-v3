@@ -160,7 +160,7 @@ export default function App() {
 
   return (
     <div 
-      className="relative h-[100dvh] overflow-hidden terminal-grid selection:bg-white selection:text-black flex flex-col"
+      className="relative min-h-[100dvh] overflow-y-auto overflow-x-hidden terminal-grid selection:bg-white selection:text-black flex flex-col"
     >
       <div className="scanline" />
       {/* Standardized Background */}
@@ -170,9 +170,9 @@ export default function App() {
       </div>
 
       {user && (
-        <nav className="relative w-full shrink-0 z-40 pointer-events-none h-[min(112px,15vh)]">
+        <nav className="relative w-full shrink-0 z-40 pointer-events-none h-16 md:h-28">
           {/* Left corner back arrow */}
-          <button onClick={() => view === 'dash' ? navigate('/dashboard') : setView('dash')} className="absolute top-0 left-0 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-[min(24px,3vw)] pt-[min(24px,3vh)] shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)', width: 'min(112px, 20vh)', height: 'min(112px, 20vh)' }}>
+          <button onClick={() => view === 'dash' ? navigate('/dashboard') : setView('dash')} className="absolute top-0 left-0 w-16 h-16 md:w-28 md:h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-3 pt-3 md:pl-6 md:pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
              <div className="w-8 h-8 flex items-center justify-center">
                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
                  <path d="m15 18-6-6 6-6"/>
@@ -180,14 +180,14 @@ export default function App() {
              </div>
           </button>
 
-          {/* Right side module name */}
-          <div className="absolute top-6 right-10 flex flex-col items-end">
-            <h1 className="cq-title tracking-widest uppercase text-right">Cipher_Lab</h1>
+          {/* Title right */}
+          <div className="absolute top-2 md:top-6 right-4 md:right-10 flex flex-col items-end pointer-events-auto z-40">
+            <h1 className="cq-title text-2xl md:text-[60px] lg:text-[80px] tracking-widest uppercase text-right leading-none mb-2">Cipher_Lab</h1>
           </div>
         </nav>
       )}
 
-      <main className="relative z-10 max-w-7xl mx-auto w-full px-6 flex-1 flex flex-col justify-center overflow-y-auto pb-4">
+      <main className="relative z-10 max-w-7xl mx-auto w-full px-4 md:px-6 flex-1 flex flex-col justify-center pb-8 md:pb-12">
         <AnimatePresence mode="wait">
           {view === 'dash' && user && (
             <Dashboard user={user} leaderboard={leaderboard} onStartLab={() => setView('lab')} storyCompleted={storyCompleted} authUser={authUser} globalXp={globalXp} />

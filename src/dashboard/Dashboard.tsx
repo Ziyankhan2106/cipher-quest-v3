@@ -168,7 +168,7 @@ const Dashboard = () => {
 
   /* ── RENDER ──────────────────────────────────────────────────────── */
   return (
-    <div className="page h-[100dvh] overflow-hidden text-white select-none flex flex-col" style={{ background: '#04060f' }}>
+    <div className="page min-h-[100dvh] overflow-y-auto overflow-x-hidden text-white select-none flex flex-col" style={{ background: '#04060f' }}>
 
       {/* ── Background ──────────────────────────────────────────────── */}
       <div className="absolute inset-0 z-0">
@@ -188,7 +188,7 @@ const Dashboard = () => {
 
       {/* ── TOP BAR ─────────────────────────────────────────────────── */}
       {/* Cyberpunk navbar exactly matching reference image */}
-      <header className="relative z-50 shrink-0" style={{ height: 'min(90px, 20vh)', margin: 'min(10px, 2vh) 14px 0', cursor: 'url("/assets/mouse.png") 4 4, auto' }}>
+      <header className="relative z-50 shrink-0 h-16 md:h-[90px] mt-2 md:mt-3 mx-2 md:mx-[14px]" style={{ cursor: 'url("/assets/mouse.png") 4 4, auto' }}>
         {/* ── Outer wrapper: angled left clip + neon border frame ── */}
         <div style={{
           position: 'absolute', inset: 0,
@@ -239,7 +239,7 @@ const Dashboard = () => {
           {/* LEFT: Logo — angular bracket + CIPHER QUEST */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0' }}>
             {/* Angular bracket shape */}
-            <svg width="44" height="60" viewBox="0 0 32 44" fill="none" style={{ marginRight: '14px', flexShrink: 0 }}>
+            <svg viewBox="0 0 32 44" fill="none" className="w-8 h-10 md:w-[44px] md:h-[60px] flex-shrink-0 mr-2 md:mr-[14px]">
               {/* Left diagonal top */}
               <line x1="2" y1="4" x2="14" y2="4" stroke="#00e5ff" strokeWidth="2" strokeLinecap="round" />
               <line x1="2" y1="4" x2="2" y2="40" stroke="#00e5ff" strokeWidth="2" strokeLinecap="round" />
@@ -249,15 +249,13 @@ const Dashboard = () => {
               <circle cx="27" cy="22" r="1.5" fill="#00e5ff" opacity="0.5" />
             </svg>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-              <span style={{
-                fontSize: '28px', fontWeight: 800, letterSpacing: '0.16em',
+              <span className="text-xl md:text-[28px] font-[800] tracking-[0.16em] leading-[1.1] text-white" style={{
                 fontFamily: "'Rajdhani', 'Orbitron', 'Inter', monospace",
-                lineHeight: 1.1,
-                color: '#ffffff',
                 textShadow: '0 0 12px rgba(255,255,255,0.2)',
               }}>
                 CIPHER{' '}
-                <span style={{ color: '#00e5ff', textShadow: '0 0 14px #00e5ff, 0 0 30px rgba(0,229,255,0.4)' }}>QUEST</span>
+                <span className="hidden md:inline" style={{ color: '#00e5ff', textShadow: '0 0 14px #00e5ff, 0 0 30px rgba(0,229,255,0.4)' }}>QUEST</span>
+                <span className="md:hidden" style={{ color: '#00e5ff', textShadow: '0 0 14px #00e5ff, 0 0 30px rgba(0,229,255,0.4)' }}>Q.</span>
               </span>
               {/* Decorative sub-line */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '3px', marginTop: '1px' }}>
@@ -272,7 +270,7 @@ const Dashboard = () => {
           <div style={{ flex: 1 }} />
 
           {/* CENTER-RIGHT: Rank / Level / XP */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginRight: '40px' }}>
+          <div className="hidden md:flex items-center gap-4 mr-10">
             {/* Rank name — bright cyan */}
             <span style={{
               color: '#00e5ff', fontSize: '18px', fontWeight: 800,
@@ -295,23 +293,16 @@ const Dashboard = () => {
           </div>
 
           {/* RIGHT: CALLSIGN label + username + arrow button + gear */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div className="flex items-center gap-2 md:gap-3">
 
             {/* Callsign block */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
-              <span style={{
-                color: '#b400ff', fontSize: '11px', letterSpacing: '0.35em',
-                fontFamily: 'monospace', fontWeight: 700,
+            <div className="hidden sm:flex flex-col items-end gap-0.5">
+              <span className="text-[8px] md:text-[11px] text-[#b400ff] font-bold tracking-[0.35em] uppercase font-mono" style={{
                 textShadow: '0 0 8px rgba(180,0,255,0.8)',
-                textTransform: 'uppercase',
               }}>CALLSIGN</span>
               <span 
-                className={allSectorsFinished ? "rainbow-text" : ""}
+                className={`text-sm md:text-[20px] font-bold tracking-[0.1em] leading-[1.1] ${allSectorsFinished ? "rainbow-text" : "text-white"}`}
                 style={{
-                  color: allSectorsFinished ? undefined : '#ffffff',
-                  display: 'inline-block',
-                  fontSize: '20px', fontWeight: 700,
-                  letterSpacing: '0.1em', lineHeight: 1.1,
                   textShadow: allSectorsFinished ? 'none' : '0 0 6px rgba(255,255,255,0.3)',
                   fontFamily: "'Rajdhani', 'Inter', monospace",
               }}>{username.toUpperCase()}</span>
@@ -321,15 +312,12 @@ const Dashboard = () => {
             <button
               onClick={() => setBadgesModalOpen(true)}
               title="View Ranks"
+              className="w-10 h-10 md:w-[52px] md:h-[52px] flex items-center justify-center relative overflow-hidden transition-all duration-250 cursor-pointer"
               style={{
-                width: '52px', height: '52px',
                 background: 'linear-gradient(135deg, rgba(0,60,100,0.9) 0%, rgba(0,30,70,0.95) 50%, rgba(0,10,40,0.98) 100%)',
                 border: '1.5px solid rgba(0,229,255,0.7)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: '#00e5ff',
                 boxShadow: '0 0 14px rgba(0,229,255,0.35), inset 0 0 12px rgba(0,229,255,0.08)',
-                cursor: 'pointer', transition: 'all 0.25s',
-                position: 'relative', overflow: 'hidden',
                 clipPath: 'polygon(6px 0%, 100% 0%, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0% 100%, 0% 6px)',
               }}
               onMouseEnter={e => {
@@ -341,7 +329,7 @@ const Dashboard = () => {
                 (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 14px rgba(0,229,255,0.35), inset 0 0 12px rgba(0,229,255,0.08)';
               }}
             >
-              <img src={`/assets/badge${level}.png`} alt="Current Rank Badge" style={{ width: '32px', height: '32px', objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(0,229,255,0.6))' }} />
+              <img src={`/assets/badge${level}.png`} alt="Current Rank Badge" className="w-6 h-6 md:w-8 md:h-8 object-contain" style={{ filter: 'drop-shadow(0 0 6px rgba(0,229,255,0.6))' }} />
             </button>
 
             {/* Settings gear button */}
@@ -349,18 +337,16 @@ const Dashboard = () => {
               <button
                 onClick={() => setSettingsOpen(o => !o)}
                 title="Settings"
+                className="w-10 h-10 md:w-[50px] md:h-[50px] flex items-center justify-center transition-all duration-200 cursor-pointer"
                 style={{
-                  width: '50px', height: '50px',
                   background: settingsOpen ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.2)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
                   color: 'rgba(255,255,255,0.75)',
                   boxShadow: settingsOpen ? '0 0 12px rgba(255,255,255,0.15)' : 'none',
-                  transition: 'all 0.2s',
                   cursor: 'url("/assets/mouse.png") 4 4, pointer',
                 }}
               >
-                <Settings size={22} style={{ transform: settingsOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.4s' }} />
+                <Settings className="w-5 h-5 md:w-[22px] md:h-[22px]" style={{ transform: settingsOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.4s' }} />
               </button>
 
               <AnimatePresence>
@@ -440,10 +426,10 @@ const Dashboard = () => {
 
       {/* ── BOTTOM CARDS ────────────────────────────────────────────── */}
       <div
-        className="relative w-full z-20 mt-auto shrink-0 pb-[min(32px,4vh)] pt-[min(48px,6vh)] px-5"
+        className="relative w-full z-20 mt-auto shrink-0 pb-6 pt-8 md:pb-8 md:pt-12 px-5"
         style={{ zIndex: (isTutorialActive && currentStep.type === 'tile') ? 160 : 20 }}
       >
-        <div className="grid grid-cols-2 min-[600px]:grid-cols-4 landscape:grid-cols-4 gap-3 max-w-[1100px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 max-w-[1100px] mx-auto">
           {TILES.map((tile) => {
             const isHighlighted = isTutorialActive && currentStep.type === 'tile' && currentStep.tileIndex === tile.id;
             const isOtherHighlighted = isTutorialActive && currentStep.type === 'tile' && currentStep.tileIndex !== tile.id;
@@ -451,16 +437,8 @@ const Dashboard = () => {
             <button
               key={tile.id}
               onClick={() => navigate_(tile.path)}
+              className="relative h-[90px] md:h-[140px] bg-[rgba(3,8,20,0.85)] border-none p-0 cursor-pointer text-left transition-all duration-300 backdrop-blur-md"
               style={{
-                position: 'relative',
-                height: 'min(140px, 30vh)',
-                background: 'rgba(3,8,20,0.85)',
-                border: 'none',
-                padding: 0,
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.3s ease',
-                backdropFilter: 'blur(12px)',
                 clipPath: 'polygon(14px 0%, 100% 0%, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0% 100%, 0% 14px)',
                 opacity: isOtherHighlighted ? 0.3 : 1,
                 transform: isHighlighted ? 'scale(1.05)' : 'translateY(0)',
@@ -497,36 +475,36 @@ const Dashboard = () => {
               </div>
 
               {/* Card Content */}
-              <div style={{ position: 'relative', height: '100%', padding: '16px 20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', zIndex: 3 }}>
+              <div className="relative h-full py-3 px-4 md:py-4 md:px-5 flex flex-col justify-between z-10">
                 {/* Top row: MODULE label + >> */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#cc00ff', boxShadow: '0 0 6px #cc00ff' }} />
-                    <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '11px', fontFamily: 'monospace', letterSpacing: '0.15em', fontWeight: 600 }}>
+                    <div className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-[#cc00ff] shadow-[0_0_6px_#cc00ff]" />
+                    <span className="text-white/70 text-[9px] md:text-[11px] font-mono tracking-[0.15em] font-bold">
                       MODULE_0{tile.id + 1}
                     </span>
                   </div>
-                  <span style={{ color: '#cc00ff', fontSize: '11px', fontFamily: 'monospace', fontWeight: 700, textShadow: '0 0 5px #cc00ff', letterSpacing: '0.1em' }}>{'>>'}</span>
+                  <span className="text-[#cc00ff] text-[9px] md:text-[11px] font-mono font-bold tracking-[0.1em] drop-shadow-[0_0_5px_#cc00ff]">{'>>'}</span>
                 </div>
 
                 {/* Title */}
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: '#ffffff', letterSpacing: '0.08em', textShadow: '0 0 15px rgba(255,255,255,0.3)', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif" }}>
+                  <h3 className="m-0 text-base md:text-[24px] font-bold text-white tracking-[0.08em] drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] uppercase font-sans">
                     {tile.name}
                   </h3>
                 </div>
 
                 {/* Bottom row: desc + icon */}
                 <div>
-                  <div style={{ width: '100%', height: '1px', background: 'rgba(0,255,255,0.25)', marginBottom: '10px', position: 'relative' }}>
-                    <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: '30%', background: '#00ffff', boxShadow: '0 0 4px #00ffff' }} />
+                  <div className="w-full h-[1px] bg-[#00ffff]/20 mb-2 relative">
+                    <div className="absolute left-0 top-0 h-full w-[30%] bg-[#00ffff] shadow-[0_0_4px_#00ffff]" />
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ color: '#00ffff', fontSize: '10px', fontFamily: 'monospace', letterSpacing: '0.2em', textTransform: 'uppercase', textShadow: '0 0 5px rgba(0,255,255,0.5)' }}>
+                    <span className="text-[#00ffff] text-[8px] md:text-[10px] font-mono tracking-[0.1em] md:tracking-[0.2em] uppercase drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]">
                       {tile.desc}
                     </span>
-                    <span style={{ color: '#cc00ff', textShadow: '0 0 8px #cc00ff' }}>
-                      {tile.icon}
+                    <span className="text-[#cc00ff] drop-shadow-[0_0_8px_#cc00ff]">
+                      {React.cloneElement(tile.icon, { className: 'w-4 h-4 md:w-5 md:h-5' })}
                     </span>
                   </div>
                 </div>
