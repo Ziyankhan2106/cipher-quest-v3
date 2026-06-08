@@ -24,7 +24,7 @@ const MultiplayerMobile = ({
         <button onClick={() => navigate('/dashboard')} className="p-2 border border-[#00f2ff]/30 rounded bg-[#00f2ff]/10 text-[#00f2ff]">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         </button>
-        <h1 className="cq-title text-xl uppercase tracking-widest text-[#00f2ff] m-0">Warzone</h1>
+        <h1 className="cq-title text-xl uppercase tracking-widest text-[#00f2ff] m-0">Multiplayer</h1>
       </div>
 
       <div className="flex-1 p-4 flex flex-col gap-6">
@@ -46,11 +46,7 @@ const MultiplayerMobile = ({
                 </div>
               )}
 
-              {user && !storyCompleted && (
-                 <div className="mb-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded text-yellow-500/80 text-[10px] font-mono tracking-widest uppercase">
-                    WARNING: Complete 20 story missions before entering the Warzone to ensure survival.
-                 </div>
-              )}
+
 
               <div className="flex gap-2">
                 <input 
