@@ -160,7 +160,7 @@ export default function App() {
 
   return (
     <div 
-      className="relative min-h-[100dvh] overflow-y-auto overflow-x-hidden terminal-grid selection:bg-white selection:text-black flex flex-col"
+      className="relative h-[100dvh] overflow-hidden terminal-grid selection:bg-white selection:text-black flex flex-col"
     >
       <div className="scanline" />
       {/* Standardized Background */}
@@ -170,9 +170,9 @@ export default function App() {
       </div>
 
       {user && (
-        <nav className="relative w-full shrink-0 z-40 pointer-events-none h-28">
+        <nav className="relative w-full shrink-0 z-40 pointer-events-none h-[min(112px,15vh)]">
           {/* Left corner back arrow */}
-          <button onClick={() => view === 'dash' ? navigate('/dashboard') : setView('dash')} className="absolute top-0 left-0 w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
+          <button onClick={() => view === 'dash' ? navigate('/dashboard') : setView('dash')} className="absolute top-0 left-0 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-[min(24px,3vw)] pt-[min(24px,3vh)] shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)', width: 'min(112px, 20vh)', height: 'min(112px, 20vh)' }}>
              <div className="w-8 h-8 flex items-center justify-center">
                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
                  <path d="m15 18-6-6 6-6"/>
@@ -187,7 +187,7 @@ export default function App() {
         </nav>
       )}
 
-      <main className="relative z-10 max-w-7xl mx-auto w-full px-6 flex-1 flex flex-col justify-center pb-12">
+      <main className="relative z-10 max-w-7xl mx-auto w-full px-6 flex-1 flex flex-col justify-center overflow-y-auto pb-4">
         <AnimatePresence mode="wait">
           {view === 'dash' && user && (
             <Dashboard user={user} leaderboard={leaderboard} onStartLab={() => setView('lab')} storyCompleted={storyCompleted} authUser={authUser} globalXp={globalXp} />

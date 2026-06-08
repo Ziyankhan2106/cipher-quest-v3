@@ -175,7 +175,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-[100dvh] w-full relative overflow-y-auto overflow-x-hidden bg-[#020205] text-white font-sans selection:bg-[var(--current-theme-color)]/30 flex flex-col">
+    <div className="h-[100dvh] w-full relative overflow-hidden bg-[#020205] text-white font-sans selection:bg-[var(--current-theme-color)]/30 flex flex-col">
       {/* Standardized Background */}
       <div className="absolute inset-0 z-0 bg-[#050505] overflow-hidden pointer-events-none">
         <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
@@ -183,9 +183,9 @@ const Dashboard = () => {
       </div>
 
       {/* Top Navigation */}
-      <div className="relative w-full z-50 pointer-events-none shrink-0 h-28">
+      <div className="relative w-full z-50 pointer-events-none shrink-0 h-[min(112px,15vh)]">
         {/* Left corner back arrow */}
-        <button onClick={() => navigate('/dashboard')} className="absolute top-0 left-0 w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
+        <button onClick={() => navigate('/dashboard')} className="absolute top-0 left-0 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-[min(24px,3vw)] pt-[min(24px,3vh)] shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)', width: 'min(112px, 20vh)', height: 'min(112px, 20vh)' }}>
            <div className="w-8 h-8 flex items-center justify-center">
              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
                <path d="m15 18-6-6 6-6"/>
@@ -218,7 +218,7 @@ const Dashboard = () => {
         onMouseUp={stopDragging}
         onMouseLeave={stopDragging}
         onWheel={onWheel}
-        className="relative flex-1 flex items-center overflow-x-auto overflow-y-hidden gap-x-24 px-[10vw] hide-scrollbar z-10 py-8 min-h-[450px] cursor-grab active:cursor-grabbing"
+        className="relative flex-1 flex items-center overflow-x-auto overflow-y-hidden gap-x-24 px-[10vw] hide-scrollbar z-10 py-[min(32px,3vh)] min-h-0 cursor-grab active:cursor-grabbing"
       >
         <div className="absolute top-[50%] left-0 right-0 min-w-max h-[1px] bg-gradient-to-r from-transparent via-[var(--current-theme-color)]/20 to-transparent -translate-y-1/2 z-0 pointer-events-none"></div>
 
@@ -351,7 +351,7 @@ const Dashboard = () => {
       </div>
 
       {/* Bottom Nav */}
-      <div className="relative w-full bg-gradient-to-t from-black to-transparent pt-12 flex items-end px-12 pb-8 z-50 pointer-events-none shrink-0 mt-auto">
+      <div className="relative w-full bg-gradient-to-t from-black to-transparent pt-[min(48px,5vh)] flex items-end px-[min(48px,5vw)] pb-[min(32px,3vh)] z-50 pointer-events-none shrink-0 mt-auto">
         <div className="w-full flex justify-between items-end">
           <div className="flex flex-col gap-2 items-start pointer-events-auto">
             <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.2em]">Global Completion</span>

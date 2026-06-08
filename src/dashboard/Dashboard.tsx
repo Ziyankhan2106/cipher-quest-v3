@@ -168,7 +168,7 @@ const Dashboard = () => {
 
   /* ── RENDER ──────────────────────────────────────────────────────── */
   return (
-    <div className="page min-h-[100dvh] overflow-y-auto overflow-x-hidden text-white select-none flex flex-col" style={{ background: '#04060f' }}>
+    <div className="page h-[100dvh] overflow-hidden text-white select-none flex flex-col" style={{ background: '#04060f' }}>
 
       {/* ── Background ──────────────────────────────────────────────── */}
       <div className="absolute inset-0 z-0">
@@ -188,7 +188,7 @@ const Dashboard = () => {
 
       {/* ── TOP BAR ─────────────────────────────────────────────────── */}
       {/* Cyberpunk navbar exactly matching reference image */}
-      <header className="relative z-50 shrink-0" style={{ height: '90px', margin: '10px 14px 0', cursor: 'url("/assets/mouse.png") 4 4, auto' }}>
+      <header className="relative z-50 shrink-0" style={{ height: 'min(90px, 20vh)', margin: 'min(10px, 2vh) 14px 0', cursor: 'url("/assets/mouse.png") 4 4, auto' }}>
         {/* ── Outer wrapper: angled left clip + neon border frame ── */}
         <div style={{
           position: 'absolute', inset: 0,
@@ -440,10 +440,10 @@ const Dashboard = () => {
 
       {/* ── BOTTOM CARDS ────────────────────────────────────────────── */}
       <div
-        className="relative w-full z-20 mt-auto shrink-0 pb-8 pt-12 px-5"
+        className="relative w-full z-20 mt-auto shrink-0 pb-[min(32px,4vh)] pt-[min(48px,6vh)] px-5"
         style={{ zIndex: (isTutorialActive && currentStep.type === 'tile') ? 160 : 20 }}
       >
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-[1100px] mx-auto">
+        <div className="grid grid-cols-2 min-[600px]:grid-cols-4 landscape:grid-cols-4 gap-3 max-w-[1100px] mx-auto">
           {TILES.map((tile) => {
             const isHighlighted = isTutorialActive && currentStep.type === 'tile' && currentStep.tileIndex === tile.id;
             const isOtherHighlighted = isTutorialActive && currentStep.type === 'tile' && currentStep.tileIndex !== tile.id;
@@ -453,7 +453,7 @@ const Dashboard = () => {
               onClick={() => navigate_(tile.path)}
               style={{
                 position: 'relative',
-                height: '140px',
+                height: 'min(140px, 30vh)',
                 background: 'rgba(3,8,20,0.85)',
                 border: 'none',
                 padding: 0,
