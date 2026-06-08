@@ -160,33 +160,19 @@ export default function App() {
 
   return (
     <div 
-      className="relative h-screen overflow-hidden terminal-grid selection:bg-white selection:text-black"
+      className="relative min-h-[100dvh] overflow-y-auto overflow-x-hidden terminal-grid selection:bg-white selection:text-black flex flex-col"
     >
       <div className="scanline" />
       {/* Standardized Background */}
-      <div className="fixed inset-0 z-0 bg-[#050505] overflow-hidden pointer-events-none">
-        <div className="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
-        <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
+      <div className="absolute inset-0 z-0 bg-[#050505] overflow-hidden pointer-events-none">
+        <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
       </div>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-4 h-full flex flex-col justify-center">
-        <AnimatePresence mode="wait">
-          {view === 'dash' && user && (
-            <Dashboard user={user} leaderboard={leaderboard} onStartLab={() => setView('lab')} storyCompleted={storyCompleted} authUser={authUser} globalXp={globalXp} />
-          )}
-          {view === 'lab' && user && (
-            <CipherLab user={user} globalXp={globalXp} onComplete={handleComplete} onExit={() => setView('dash')} onXpChange={setGlobalXp} />
-          )}
-          {view === 'leaderboard' && user && (
-            <Leaderboard user={user} entries={leaderboard} onExit={() => setView('dash')} />
-          )}
-        </AnimatePresence>
-      </main>
-
       {user && (
-        <nav className="fixed top-0 left-0 w-full z-40 pointer-events-none">
+        <nav className="relative w-full shrink-0 z-40 pointer-events-none h-28">
           {/* Left corner back arrow */}
-          <button onClick={() => view === 'dash' ? navigate('/dashboard') : setView('dash')} className="fixed top-0 left-0 w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
+          <button onClick={() => view === 'dash' ? navigate('/dashboard') : setView('dash')} className="absolute top-0 left-0 w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
              <div className="w-8 h-8 flex items-center justify-center">
                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
                  <path d="m15 18-6-6 6-6"/>
@@ -200,6 +186,20 @@ export default function App() {
           </div>
         </nav>
       )}
+
+      <main className="relative z-10 max-w-7xl mx-auto w-full px-6 flex-1 flex flex-col justify-center pb-12">
+        <AnimatePresence mode="wait">
+          {view === 'dash' && user && (
+            <Dashboard user={user} leaderboard={leaderboard} onStartLab={() => setView('lab')} storyCompleted={storyCompleted} authUser={authUser} globalXp={globalXp} />
+          )}
+          {view === 'lab' && user && (
+            <CipherLab user={user} globalXp={globalXp} onComplete={handleComplete} onExit={() => setView('dash')} onXpChange={setGlobalXp} />
+          )}
+          {view === 'leaderboard' && user && (
+            <Leaderboard user={user} entries={leaderboard} onExit={() => setView('dash')} />
+          )}
+        </AnimatePresence>
+      </main>
     </div>
   );
 }
@@ -496,8 +496,7 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
         opacity: 1, scale: 1,
       } : { opacity: 1, scale: 1, x: 0, filter: 'brightness(1) hue-rotate(0deg)' }}
       transition={{ duration: 0.45, ease: 'easeOut' }}
-      className="flex-1 w-full max-w-[1400px] mx-auto px-2 lg:px-4 py-4 flex flex-col items-center text-lg"
-      style={{ maxHeight: 'calc(100vh - 56px)', overflow: 'hidden' }}
+      className="flex-1 w-full max-w-[1400px] mx-auto lg:px-4 py-4 flex flex-col items-center text-lg mt-8"
     >
       {/* Full-screen red glitch flash on wrong answer */}
       <AnimatePresence>

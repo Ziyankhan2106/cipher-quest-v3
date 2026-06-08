@@ -374,17 +374,17 @@ const Multiplayer = () => {
   };
 
   return (
-    <div className="h-screen w-screen bg-[#020205] flex flex-col text-white relative overflow-hidden font-sans selection:bg-[var(--current-theme-color)]/30">
+    <div className="min-h-[100dvh] w-full bg-[#020205] flex flex-col text-white relative overflow-y-auto overflow-x-hidden font-sans selection:bg-[var(--current-theme-color)]/30">
       {/* Standardized Background */}
       <div className="absolute inset-0 z-0 bg-[#050505] overflow-hidden pointer-events-none">
-        <div className="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
-        <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
+        <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[120px] bg-[#00f2ff]" />
       </div>
 
       {/* Header */}
-      <div className="relative z-10 w-full mb-12">
+      <div className="relative z-50 w-full shrink-0 h-28 pointer-events-none">
         {/* Left corner back arrow */}
-        <button onClick={() => navigate('/dashboard')} className="fixed top-0 left-0 w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
+        <button onClick={() => navigate('/dashboard')} className="absolute top-0 left-0 w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
            <div className="w-8 h-8 flex items-center justify-center">
              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
                <path d="m15 18-6-6 6-6"/>
@@ -399,7 +399,7 @@ const Multiplayer = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex-1 overflow-y-auto px-8 py-4 hide-scrollbar">
+      <div className="relative z-10 flex-1 px-8 pb-12 hide-scrollbar">
         <div className="w-full space-y-6">
 
           {/* Lobby (always visible when no active match) */}
