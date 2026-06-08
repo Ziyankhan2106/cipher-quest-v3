@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AudioProvider } from './context/AudioContext';
 import Auth from './auth/Auth';
@@ -12,6 +12,9 @@ import AppIntro from './components/AppIntro';
 import { RefreshCw } from 'lucide-react';
 
 const PortraitOverlay = () => {
+  const location = useLocation();
+  if (location.pathname.startsWith('/multiplayer')) return null;
+
   return (
     <div className="fixed inset-0 z-[999999] bg-[#020205] text-white flex-col items-center justify-center p-8 text-center hidden portrait:flex md:portrait:hidden">
        <RefreshCw size={64} className="text-[#00f2ff] mb-6 animate-spin-slow" />
@@ -56,9 +59,9 @@ function App() {
   return (
     <AuthProvider>
       <AudioProvider>
-        <PortraitOverlay />
         {showIntro && <AppIntro onComplete={() => setShowIntro(false)} />}
         <Router>
+          <PortraitOverlay />
           <BootLoader />
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" />} />

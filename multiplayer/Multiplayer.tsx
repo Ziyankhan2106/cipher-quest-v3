@@ -384,7 +384,7 @@ const Multiplayer = () => {
         setSearchQuery={setSearchQuery} handleSearchChange={handleSearchChange} runSearch={runSearch}
         searchResults={searchResults} searchHint={searchHint} errorMsg={errorMsg}
         invites={invites} outgoingInvites={outgoingInvites} sendInvite={sendInvite}
-        cancelInvite={cancelInvite} acceptInvite={acceptInvite} declineInvite={declineInvite}
+        cancelInvite={clearInvite} acceptInvite={acceptInvite} declineInvite={declineInvite}
         answer={answer} setAnswer={setAnswer} submitAnswer={submitAnswer} showSurrenderConfirm={showSurrenderConfirm}
         setShowSurrenderConfirm={setShowSurrenderConfirm} confirmSurrender={confirmSurrender}
         roundFeedback={roundFeedback} setRoundFeedback={setRoundFeedback} showFinalResults={showFinalResults}
