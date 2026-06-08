@@ -105,9 +105,22 @@ const DashboardMobile = () => {
         </AnimatePresence>
 
         {/* Grid */}
-        <div className="flex-1 flex flex-col gap-4">
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex justify-between items-center">
-            <span className="font-mono text-xs uppercase text-white/50">Current XP</span>
+        <div className="flex-1 flex flex-col gap-4 mt-2">
+          
+          {/* Robu Feature */}
+          <div className="relative w-full flex justify-center mb-6 mt-4">
+            <div className="absolute inset-0 bg-[#00f2ff]/5 rounded-full blur-[40px] opacity-50 pointer-events-none"></div>
+            <img src="/assets/robu_hi.webp" alt="Robu Guide" className="h-48 object-contain drop-shadow-[0_0_25px_rgba(0,242,255,0.4)] relative z-10 animate-[bounce_4s_infinite]" />
+            
+            {/* Cyberpunk Accents */}
+            <div className="absolute top-1/2 left-4 w-12 h-[1px] bg-[#00f2ff]/30"></div>
+            <div className="absolute top-1/2 right-4 w-12 h-[1px] bg-[#00f2ff]/30"></div>
+            <div className="absolute top-1/4 right-8 w-2 h-2 rounded-full bg-[#b400ff]/50 shadow-[0_0_10px_#b400ff] animate-pulse"></div>
+            <div className="absolute bottom-1/4 left-8 w-2 h-2 rounded-full bg-[#00f2ff]/50 shadow-[0_0_10px_#00f2ff] animate-pulse"></div>
+          </div>
+
+          <div className="bg-[#0a0a0f]/80 backdrop-blur-sm border border-[#00f2ff]/20 rounded-xl p-4 flex justify-between items-center shadow-[0_0_15px_rgba(0,242,255,0.05)]">
+            <span className="font-mono text-xs uppercase text-white/50 tracking-widest">Global Experience</span>
             <span className="font-display font-bold text-[#00f2ff] text-xl">{xp.toLocaleString()}</span>
           </div>
 
