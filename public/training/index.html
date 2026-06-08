@@ -202,9 +202,18 @@
 
     <!-- Iframe Overlay -->
     <div id="iframe-overlay">
-        <button id="close-btn" class="absolute top-4 left-4 p-2 border border-[#00f2ff]/30 rounded bg-[#00f2ff]/10 text-[#00f2ff] z-[10001] cursor-pointer outline-none">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        </button>
+        <div class="absolute top-0 left-0 z-[10001]">
+          <button id="close-btn-desktop" class="hidden lg:flex w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none border-none" style="clip-path: polygon(0 0, 100% 0, 0 100%);">
+            <div class="w-8 h-8 flex items-center justify-center">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
+                    <path d="m15 18-6-6 6-6"/>
+                </svg>
+            </div>
+          </button>
+          <button id="close-btn-mobile" class="flex lg:hidden absolute top-4 left-4 p-2 border border-[#00f2ff]/30 rounded bg-[#00f2ff]/10 text-[#00f2ff] cursor-pointer outline-none">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+        </div>
         <iframe id="level-frame" src=""></iframe>
     </div>
 
@@ -260,13 +269,18 @@
 
         function createNodeMap() {
             let html = `
-                <a href="/dashboard" class="fixed top-0 left-0 w-16 h-16 md:w-28 md:h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group z-50 flex items-start justify-start pl-3 pt-3 md:pl-6 md:pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style="clip-path: polygon(0 0, 100% 0, 0 100%);">
-                   <div class="w-8 h-8 flex items-center justify-center">
-                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
-                       <path d="m15 18-6-6 6-6"/>
-                     </svg>
-                   </div>
-                </a>
+                <div class="fixed top-0 left-0 z-50 pointer-events-auto">
+                    <a href="/dashboard" class="hidden lg:flex w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style="clip-path: polygon(0 0, 100% 0, 0 100%);">
+                       <div class="w-8 h-8 flex items-center justify-center">
+                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
+                           <path d="m15 18-6-6 6-6"/>
+                         </svg>
+                       </div>
+                    </a>
+                    <a href="/dashboard" class="flex lg:hidden absolute top-4 left-4 p-2 border border-[#00f2ff]/30 rounded bg-[#00f2ff]/10 text-[#00f2ff] shadow-md">
+                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    </a>
+                </div>
                 <div class="fixed top-2 md:top-6 right-4 md:right-10 flex flex-col items-end z-40 pointer-events-none">
                   <h1 class="font-display text-xl md:text-4xl font-bold uppercase tracking-tight text-white text-right mb-4 leading-none">Training Academy</h1>
                 </div>
@@ -316,12 +330,18 @@
             }, 150);
         }
 
-        closeBtn.addEventListener('click', () => {
+        const closeDesktop = document.getElementById('close-btn-desktop');
+        const closeMobile = document.getElementById('close-btn-mobile');
+        
+        const closeOverlay = () => {
             overlay.classList.remove('active');
             setTimeout(() => {
                 levelFrame.src = '';
             }, 400); // Wait for transition
-        });
+        };
+        
+        if (closeDesktop) closeDesktop.addEventListener('click', closeOverlay);
+        if (closeMobile) closeMobile.addEventListener('click', closeOverlay);
 
         // Initialize
         createNodeMap();

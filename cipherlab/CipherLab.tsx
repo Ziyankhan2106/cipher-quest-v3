@@ -171,14 +171,21 @@ export default function App() {
 
       {user && (
         <nav className="relative w-full shrink-0 z-40 pointer-events-none h-16 md:h-28">
-          {/* Left corner back arrow */}
-          <button onClick={() => view === 'dash' ? navigate('/dashboard') : setView('dash')} className="absolute top-0 left-0 w-16 h-16 md:w-28 md:h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group pointer-events-auto z-50 flex items-start justify-start pl-3 pt-3 md:pl-6 md:pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
-             <div className="w-8 h-8 flex items-center justify-center">
-               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
-                 <path d="m15 18-6-6 6-6"/>
-               </svg>
-             </div>
-          </button>
+          {/* Back button container */}
+          <div className="absolute top-0 left-0 z-50 pointer-events-auto">
+            {/* Desktop Triangle Button */}
+            <button onClick={() => view === 'dash' ? navigate('/dashboard') : setView('dash')} className="hidden lg:flex w-28 h-28 bg-[#00f2ff] hover:bg-white transition-colors cursor-pointer group items-start justify-start pl-6 pt-6 shadow-[0_0_30px_#00f2ff] outline-none" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}>
+               <div className="w-8 h-8 flex items-center justify-center">
+                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-black group-hover:stroke-[#00f2ff] group-hover:-translate-x-1 transition-transform">
+                   <path d="m15 18-6-6 6-6"/>
+                 </svg>
+               </div>
+            </button>
+            {/* Mobile Square Button */}
+            <button onClick={() => view === 'dash' ? navigate('/dashboard') : setView('dash')} className="flex lg:hidden absolute top-4 left-4 p-2 border border-[#00f2ff]/30 rounded bg-[#00f2ff]/10 text-[#00f2ff] shadow-md">
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+          </div>
 
           {/* Title right */}
           <div className="absolute top-2 md:top-6 right-4 md:right-10 flex flex-col items-end pointer-events-auto z-40">
