@@ -625,4 +625,13 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+import { useIsMobile } from '../hooks/useIsMobile';
+import DashboardMobile from './DashboardMobile';
+
+const DashboardSwitcher = () => {
+  const isMobile = useIsMobile();
+  if (isMobile) return <DashboardMobile />;
+  return <Dashboard />;
+};
+
+export default DashboardSwitcher;

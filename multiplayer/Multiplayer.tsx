@@ -6,6 +6,9 @@ import { X as XIcon, Users, Home, User, Radar, Lock, AlertTriangle, AlertCircle,
 import confetti from 'canvas-confetti';
 
 
+import { useIsMobile } from '../src/hooks/useIsMobile';
+import MultiplayerMobile from './MultiplayerMobile';
+
 const Multiplayer = () => {
   const { user, refreshUser } = useAuth();
   const { setIsGameActive } = useAudio();
@@ -372,6 +375,24 @@ const Multiplayer = () => {
     }
     return dots;
   };
+
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <MultiplayerMobile 
+        user={user} navigate={navigate} match={match} searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery} handleSearchChange={handleSearchChange} runSearch={runSearch}
+        searchResults={searchResults} searchHint={searchHint} errorMsg={errorMsg}
+        invites={invites} outgoingInvites={outgoingInvites} sendInvite={sendInvite}
+        cancelInvite={cancelInvite} acceptInvite={acceptInvite} declineInvite={declineInvite}
+        answer={answer} setAnswer={setAnswer} submitAnswer={submitAnswer} showSurrenderConfirm={showSurrenderConfirm}
+        setShowSurrenderConfirm={setShowSurrenderConfirm} confirmSurrender={confirmSurrender}
+        roundFeedback={roundFeedback} setRoundFeedback={setRoundFeedback} showFinalResults={showFinalResults}
+        ackMatch={ackMatch} leaderboard={leaderboard} now={now} storyCompleted={storyCompleted}
+      />
+    );
+  }
 
   return (
     <div className="min-h-[100dvh] w-full bg-[#020205] flex flex-col text-white relative overflow-y-auto overflow-x-hidden font-sans selection:bg-[var(--current-theme-color)]/30">

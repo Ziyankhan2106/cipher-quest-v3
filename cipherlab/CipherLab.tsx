@@ -84,7 +84,7 @@ async function updateGlobalXp(delta: number): Promise<{xp: number, level: number
 /* ── ScrambleText: randomises characters then locks into real text ── */
 const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@$%&!?';
 
-const ScrambleText = ({ text, className }: { text: string; className?: string }) => {
+export const ScrambleText = ({ text, className }: { text: string; className?: string }) => {
   const [displayed, setDisplayed] = useState('');
   useEffect(() => {
     if (!text) return;
@@ -412,7 +412,12 @@ function Dashboard({ user, leaderboard, onStartLab, storyCompleted, authUser, gl
 }
 
 // --- CipherLab Gameplay ---
+import { useIsMobile } from '../src/hooks/useIsMobile';
+import CipherLabMobile from './CipherLabMobile';
+
 function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: UserData, globalXp: number, onComplete: (points: number, id: string) => void, onExit: () => void, onXpChange: (xp: number) => void }) {
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const [sessionMission, setSessionMission] = useState<CipherMission | null>(null);
   const [userInput, setUserInput] = useState('');
   const [hintsCount, setHintsCount] = useState(0);
@@ -486,6 +491,28 @@ function CipherLab({ user, globalXp, onComplete, onExit, onXpChange }: { user: U
     const revealedCount = hintsCount;
     return sessionMission.originalText.split('').map((char, i) => i < revealedCount ? char : '_').join(' ');
   };
+
+  if (isMobile) {
+    return (
+      <CipherLabMobile
+        sessionMission={sessionMission}
+        hintsCount={hintsCount}
+        userInput={userInput}
+        setUserInput={setUserInput}
+        feedback={feedback}
+        isShaking={isShaking}
+        inputRef={inputRef}
+        globalXp={globalXp}
+        startNewMission={startNewMission}
+        revealHint={revealHint}
+        handleSkip={handleSkip}
+        handleSubmit={handleSubmit}
+        getRevealedWord={getRevealedWord}
+        navigate={navigate}
+        ScrambleText={ScrambleText}
+      />
+    );
+  }
 
   return (
     <motion.div
