@@ -1,6 +1,6 @@
 import React from 'react';
 import { Shield, Radar, Lock, AlertTriangle, AlertCircle, Trophy, Hourglass, Zap, Settings, ArrowRightLeft, Send, Award, Skull, Handshake, ArrowLeft } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 
 const MultiplayerMobile = ({
   user, navigate, match, searchQuery, setSearchQuery, handleSearchChange, runSearch,
@@ -12,6 +12,11 @@ const MultiplayerMobile = ({
 
   const isWaitingForStart = match && match.status === 'starting';
   const duelStatus = match ? (isWaitingForStart ? 'INITIATING LINK...' : 'DUEL IN PROGRESS') : '';
+
+  const myScore = match?.scores?.[user?.uid || ''] || 0;
+  const opponentUid = match?.uids?.find((uid: string) => uid !== user?.uid);
+  const opponentScore = opponentUid ? (match?.scores?.[opponentUid] || 0) : 0;
+  const opponentName = opponentUid ? (match?.usernames?.[opponentUid] || 'ENEMY') : 'ENEMY';
 
   return (
     <div className="min-h-[100dvh] w-full bg-[#020205] text-white flex flex-col font-sans pb-10">
@@ -130,15 +135,15 @@ const MultiplayerMobile = ({
             <div className="bg-[#0a0a0f] border border-[var(--current-theme-color)]/30 rounded-xl p-4 flex justify-between items-center shadow-[0_0_15px_rgba(0,242,255,0.1)]">
                <div className="flex flex-col items-center flex-1">
                  <span className="font-mono text-[10px] text-[var(--current-theme-color)] uppercase">You</span>
-                 <span className="font-bold text-lg font-mono text-white">{match.players[user?.uid]?.score || 0}</span>
+                 <span className="font-bold text-lg font-mono text-white">{myScore}</span>
                </div>
                <div className="flex flex-col items-center px-4 font-mono font-bold text-[var(--current-theme-color)]">
                  <span className="text-[10px] tracking-[0.3em] uppercase">Round</span>
-                 <span className="text-xl">{match.round}/{match.totalRounds}</span>
+                 <span className="text-xl">{match.currentRound || 1}/{match.matchFormat || 1}</span>
                </div>
                <div className="flex flex-col items-center flex-1">
-                 <span className="font-mono text-[10px] text-red-500 uppercase">Enemy</span>
-                 <span className="font-bold text-lg font-mono text-white">{Object.values(match.players).find((p: any) => p.callsign !== user?.username)?.score || 0}</span>
+                 <span className="font-mono text-[10px] text-red-500 uppercase">{opponentName}</span>
+                 <span className="font-bold text-lg font-mono text-white">{opponentScore}</span>
                </div>
             </div>
 
@@ -160,7 +165,7 @@ const MultiplayerMobile = ({
 
                  <div className="mb-6 bg-black/50 border border-white/10 rounded p-4 text-center">
                     <span className="text-white/30 text-[10px] font-mono uppercase block mb-2 tracking-widest">Intercepted Data</span>
-                    <div className="font-mono text-2xl text-[var(--current-theme-color)] break-all">{match.encryptedText || 'AWAITING_DATA...'}</div>
+                    <div className="font-mono text-2xl text-[var(--current-theme-color)] break-all">{match.question || 'AWAITING_DATA...'}</div>
                  </div>
 
                  <div className="flex flex-col gap-3">
@@ -195,7 +200,7 @@ const MultiplayerMobile = ({
                  <Trophy size={48} className="text-[var(--current-theme-color)] mb-4" />
                  <h2 className="font-display text-3xl uppercase text-white mb-2">Match Concluded</h2>
                  <p className="font-mono text-sm text-[var(--current-theme-color)] mb-8 uppercase tracking-widest">
-                   Winner: {match.winnerCallsign === user?.username ? 'YOU' : match.winnerCallsign}
+                   Winner: {match.winnerUid === user?.uid ? 'YOU' : opponentName}
                  </p>
                  <button onClick={ackMatch} className="w-full py-4 bg-[var(--current-theme-color)] text-black font-bold uppercase tracking-widest text-[12px] rounded shadow-[0_0_15px_rgba(0,242,255,0.3)]">
                    Return to Network
